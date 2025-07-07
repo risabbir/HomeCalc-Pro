@@ -43,9 +43,9 @@ export function Header() {
                 </Button>
                 <div 
                   data-state={isMegaMenuOpen ? 'open' : 'closed'}
-                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max max-w-4xl origin-top transition-opacity duration-200 data-[state=closed]:opacity-0 data-[state=open]:opacity-100 data-[state=closed]:pointer-events-none"
+                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max max-w-5xl origin-top transition-opacity duration-200 data-[state=closed]:opacity-0 data-[state=open]:opacity-100 data-[state=closed]:pointer-events-none"
                 >
-                  <div className="bg-popover text-popover-foreground rounded-lg border shadow-lg p-6 grid grid-cols-4 gap-x-12 gap-y-6 animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95">
+                  <div className="bg-popover text-popover-foreground rounded-lg border shadow-lg p-6 grid grid-cols-4 gap-x-12 gap-y-6 animate-in fade-in-0 zoom-in-95 data-[state=open]:slide-in-from-top-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=closed]:slide-out-to-top-2">
                     {calculatorsByCategory.map((category) => (
                       <div key={category.name}>
                         <h3 className="font-semibold text-foreground mb-4">{category.name}</h3>
@@ -85,11 +85,11 @@ export function Header() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-full max-w-sm">
-                    <Link href="/" className="mb-8 inline-block" tabIndex={-1}>
-                      <SheetClose asChild>
+                    <SheetClose asChild>
+                      <Link href="/" className="mb-8 inline-block" tabIndex={-1}>
                         <Logo />
-                      </SheetClose>
-                    </Link>
+                      </Link>
+                    </SheetClose>
                     <div className="flex flex-col gap-4">
                         <SheetClose asChild><Link href="/" className="text-lg font-medium">Home</Link></SheetClose>
                         <Accordion type="single" collapsible className="w-full">
