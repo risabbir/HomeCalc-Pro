@@ -1,39 +1,40 @@
-export function Logo() {
+import { cn } from "@/lib/utils";
+
+export function Logo({ showText = true, className }: { showText?: boolean, className?: string }) {
   return (
-    <div className="bg-primary rounded-md h-8 w-8 flex items-center justify-center p-1.5">
-      <svg
-        className="w-full h-full text-primary-foreground"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M4 21V9.78C4 9.21 4.25 8.68 4.68 8.32L10.68 3.32C11.45 2.67 12.55 2.67 13.32 3.32L19.32 8.32C19.75 8.68 20 9.21 20 9.78V21H4Z"
+    <div className={cn("flex items-center gap-2", className)}>
+      <div className="text-primary">
+        <svg
+          className="h-9 w-9"
+          viewBox="0 0 24 24"
+          fill="none"
           stroke="currentColor"
-          strokeWidth="2"
-          strokeMiterlimit="10"
+          strokeWidth="1.2"
           strokeLinecap="round"
           strokeLinejoin="round"
-        />
-        <rect
-          x="8"
-          y="12"
-          width="8"
-          height="5"
-          rx="1"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M10.5 15.5H13.5"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M3.5 10.5L12 3.5L20.5 10.5" />
+          <path d="M4.5 21.5V10.5H19.5V21.5H4.5Z" />
+          <rect x="7.5" y="12.5" width="9" height="3" rx="0.5" />
+          <path d="M8.5 17.5h.01" strokeWidth="2" />
+          <path d="M11.5 17.5h.01" strokeWidth="2" />
+          <path d="M14.5 17.5h.01" strokeWidth="2" />
+          <path d="M8.5 19.5h.01" strokeWidth="2" />
+          <path d="M11.5 19.5h.01" strokeWidth="2" />
+          <path d="M14.5 19.5h.01" strokeWidth="2" />
+        </svg>
+      </div>
+      {showText && (
+        <>
+          <span className="text-2xl font-semibold tracking-tight text-foreground hidden sm:inline-block">
+            HomeCalc
+          </span>
+          <span className="text-2xl font-semibold tracking-tight bg-primary text-primary-foreground px-2.5 py-0.5 rounded-lg hidden sm:inline-block">
+            Pro
+          </span>
+        </>
+      )}
     </div>
   );
 }

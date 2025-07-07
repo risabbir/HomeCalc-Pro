@@ -8,14 +8,16 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 text-lg font-bold text-foreground transition-opacity hover:opacity-80">
-              <Logo />
+              <Logo showText={false} />
               HomeCalc Pro
             </Link>
             <p className="text-sm text-muted-foreground">Your trusted partner for home project calculations.</p>
           </div>
           <div className="md:col-start-3">
-            <h4 className="font-semibold text-foreground mb-4">Resources</h4>
+            <h4 className="font-semibold text-foreground mb-4">Navigation</h4>
             <ul className="space-y-2 text-sm">
+              <li><Link href="/" className="text-muted-foreground hover:text-primary">Home</Link></li>
+              <li><Link href="/#calculators" className="text-muted-foreground hover:text-primary">Calculators</Link></li>
               <li><Link href="/faq" className="text-muted-foreground hover:text-primary">FAQ</Link></li>
             </ul>
           </div>
