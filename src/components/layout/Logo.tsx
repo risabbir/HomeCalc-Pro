@@ -1,26 +1,18 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
-export function Logo({ showText = true, className }: { showText?: boolean, className?: string }) {
+export function Logo({ className }: { className?: string }) {
+  // This is a placeholder for the logo image you provided.
+  // Once you host your logo, replace the src URL below.
   return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <Image
-        src="https://cdn-icons-png.flaticon.com/512/2825/2825684.png"
-        alt="HomeCalc Pro Logo"
-        width={36}
-        height={36}
-        className="h-9 w-9"
-      />
-      {showText && (
-        <>
-          <span className="text-2xl font-semibold tracking-tight text-foreground hidden sm:inline-block">
-            HomeCalc
-          </span>
-          <span className="text-2xl font-semibold tracking-tight bg-primary text-primary-foreground px-2.5 py-0.5 rounded-lg hidden sm:inline-block">
-            Pro
-          </span>
-        </>
-      )}
-    </div>
+    <Image
+      src="https://placehold.co/240x40.png"
+      data-ai-hint="logo home calculator"
+      alt="HomeCalc Pro Logo"
+      width={160}
+      height={27}
+      className={cn(className)}
+      priority
+    />
   );
 }
