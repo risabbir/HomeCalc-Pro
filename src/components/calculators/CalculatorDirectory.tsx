@@ -38,7 +38,7 @@ export function CalculatorDirectory() {
 
   return (
     <div id="calculators">
-      <div className="max-w-4xl mx-auto mb-12 space-y-6">
+      <div className="max-w-4xl mx-auto mb-12 space-y-4">
         <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
