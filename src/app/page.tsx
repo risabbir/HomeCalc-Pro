@@ -1,4 +1,6 @@
 import { CalculatorDirectory } from '@/components/calculators/CalculatorDirectory';
+import { AiRecommendations } from '@/components/calculators/AiRecommendations';
+import { Separator } from '@/components/ui/separator';
 
 export default function Home() {
   return (
@@ -14,6 +16,8 @@ export default function Home() {
       
       <div className="container mx-auto px-4 py-8">
         <CalculatorDirectory />
+        <Separator className="my-16" />
+        <AiRecommendations />
       </div>
     </>
   );

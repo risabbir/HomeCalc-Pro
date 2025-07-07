@@ -32,11 +32,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface HvacCalculatorProps {
-  calculator: Omit<Calculator, 'Icon'>;
-}
-
-export function HvacCalculator({ calculator }: HvacCalculatorProps) {
+export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const { toast } = useToast();
@@ -68,9 +64,12 @@ export function HvacCalculator({ calculator }: HvacCalculatorProps) {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-        Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'btuResult')
-    );
+    const parameters = {
+        roomArea: values.roomArea,
+        ceilingHeight: values.ceilingHeight,
+        insulation: values.insulation,
+        sunExposure: values.sunExposure,
+    };
 
     try {
         const result = await getAiAssistance({
@@ -128,9 +127,9 @@ export function HvacCalculator({ calculator }: HvacCalculatorProps) {
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>{calculator.name}</CardTitle>
+        <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Enter your room's dimensions and environmental factors to get an estimate of the cooling capacity (in BTUs) your AC unit needs.
+            Enter your room's dimensions and environmental factors to get an estimate of the cooling capacity (in British Thermal Units or BTUs) your air conditioner needs. This is a simplified estimate for residential spaces.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">

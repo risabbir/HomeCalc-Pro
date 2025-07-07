@@ -54,9 +54,12 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'fertilizerResult')
-    );
+    const parameters = {
+        gardenArea: values.gardenArea,
+        nitrogenRatio: values.nitrogenRatio,
+        phosphorusRatio: values.phosphorusRatio,
+        potassiumRatio: values.potassiumRatio,
+    };
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
       if (result.autoCalculatedValues) {
@@ -103,9 +106,9 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>{calculator.name}</CardTitle>
+        <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Give your garden the right amount of nutrients. Enter your garden's area and the N-P-K ratio from the fertilizer bag to calculate how much to apply.
+            Give your garden the right amount of nutrients. Enter your garden's area and the N-P-K (Nitrogen-Phosphorus-Potassium) ratio from the fertilizer bag to calculate how much to apply. A common starting point for lawns is 1 pound of Nitrogen per 1,000 sq ft.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">

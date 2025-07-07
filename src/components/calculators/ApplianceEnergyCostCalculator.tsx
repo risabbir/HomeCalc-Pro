@@ -48,9 +48,11 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'costResult')
-    );
+    const parameters = {
+        wattage: values.wattage,
+        hoursPerDay: values.hoursPerDay,
+        costPerKwh: values.costPerKwh,
+    };
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
       if (result.autoCalculatedValues) {
@@ -98,9 +100,9 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>{calculator.name}</CardTitle>
+        <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Calculate the annual energy cost of an appliance. Enter the appliance's wattage (check the label), its daily usage, and your local electricity rate.
+            Calculate the annual energy cost of an appliance. Enter the appliance's wattage (check the label), its daily usage, and your local electricity rate. The average cost per kWh in the US is pre-filled, but you can find a more accurate rate on your utility bill.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">

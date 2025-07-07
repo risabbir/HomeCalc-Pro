@@ -43,9 +43,10 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'paintGallons')
-    );
+    const parameters = {
+        wallArea: values.wallArea,
+        coats: values.coats,
+    };
 
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -93,9 +94,9 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>{calculator.name}</CardTitle>
+        <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Figure out how much paint you'll need. Calculate the total area of your walls (subtracting doors and windows) and decide on the number of coats.
+            Figure out how much paint you'll need. Calculate the total area of your walls (length x height) and subtract the area of any doors and windows. A standard gallon of paint covers about 350 sq ft. Two coats are recommended for best coverage.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">

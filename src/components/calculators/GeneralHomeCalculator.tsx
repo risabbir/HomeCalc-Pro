@@ -55,9 +55,11 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'monthlyPayment')
-    );
+    const parameters = {
+        loanAmount: values.loanAmount,
+        interestRate: values.interestRate,
+        loanTerm: values.loanTerm,
+    };
 
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -106,9 +108,9 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>{calculator.name}</CardTitle>
+        <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Estimate your monthly mortgage payment (principal and interest). Enter your loan details to see what your payments might look like.
+            Estimate your monthly mortgage payment (principal and interest). This calculation does not include taxes, insurance, or PMI. Enter your desired loan amount, the annual interest rate, and the loan term in years.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">

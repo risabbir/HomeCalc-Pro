@@ -63,9 +63,14 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'savingsResult')
-    );
+    const parameters = {
+        oldSeer: values.oldSeer,
+        newSeer: values.newSeer,
+        coolingBtu: values.coolingBtu,
+        hoursPerDay: values.hoursPerDay,
+        daysPerYear: values.daysPerYear,
+        costPerKwh: values.costPerKwh,
+    };
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
       if (result.autoCalculatedValues) {
@@ -115,9 +120,9 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>{calculator.name}</CardTitle>
+        <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            See how much you could save by upgrading to a more energy-efficient AC unit. A higher SEER (Seasonal Energy Efficiency Ratio) rating means lower energy bills.
+            See how much you could save by upgrading to a more energy-efficient AC unit. A higher SEER (Seasonal Energy Efficiency Ratio) rating means lower energy bills. You can find the SEER rating on your current unit's yellow EnergyGuide label.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
