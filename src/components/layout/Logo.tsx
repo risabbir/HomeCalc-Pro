@@ -3,17 +3,12 @@ export function Logo() {
     <div className="bg-primary text-primary-foreground p-1.5 rounded-lg">
       <svg
         className="h-6 w-6"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        viewBox="0 0 512 512"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z" />
-        <polyline points="9 22 9 12 15 12 15 22" />
-        <rect x="10" y="14" width="4" height="5" rx="0.5" ry="0.5" strokeWidth="1.5"/>
-        <line x1="10.5" y1="16.5" x2="13.5" y2="16.5" strokeWidth="1.5" />
+        <path d="M501.2,206.5l-235.3-190c-6.2-5-15.1-5-21.3,0l-235.3,190c-5.5,4.4-8.8,11.3-8.8,18.4v266.3c0,8.7,7.1,15.8,15.8,15.8h191.9v-195.9h110.3v195.9h191.9c8.7,0,15.8-7.1,15.8-15.8V224.9C510,217.8,506.7,210.9,501.2,206.5z"/>
+        <path d="M298.6,263H212c-8.7,0-15.8,7.1-15.8,15.8v158.4c0,8.7,7.1,15.8,15.8,15.8h86.6c8.7,0,15.8-7.1,15.8-15.8V278.8C314.4,270.1,307.3,263,298.6,263z M247.9,339.2h-12.8v-12.8h12.8V339.2z M247.9,364.8h-12.8v-12.8h12.8V364.8z M247.9,390.4h-12.8v-12.8h12.8V390.4z M273.5,339.2h-12.8v-12.8h12.8V339.2z M273.5,364.8h-12.8v-12.8h12.8V364.8z M273.5,390.4h-12.8v-12.8h12.8V390.4z M299.1,390.4h-12.8v-38.4h12.8V390.4z M299.1,339.2h-12.8v-12.8h12.8V339.2z M286.3,300.9v-12.8h-61.5v12.8H286.3z"/>
       </svg>
     </div>
   );
