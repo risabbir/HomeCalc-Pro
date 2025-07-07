@@ -1,15 +1,9 @@
-import Image from 'next/image';
+import { Calculator } from 'lucide-react';
 
 export function Logo() {
   return (
     <div className="bg-primary text-primary-foreground p-1.5 rounded-lg">
-      <Image
-        src="https://static.thenounproject.com/png/3898205-200.png"
-        alt="HomeCalc Pro Logo"
-        width={24}
-        height={24}
-        className='filter brightness-0 invert'
-      />
+      <Calculator className="h-6 w-6" strokeWidth={2.5} />
     </div>
   );
 }
