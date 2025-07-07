@@ -15,15 +15,15 @@ import { Download, Loader2, Wand2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const formSchema = z.object({
-  loanAmount: z.string().min(1, 'Loan amount is required.'),
-  interestRate: z.string().min(1, 'Interest rate is required.'),
-  loanTerm: z.string().min(1, 'Loan term is required.'),
-  monthlyPayment: z.string().optional(),
+  wattage: z.string().min(1, 'Wattage is required.'),
+  hoursPerDay: z.string().min(1, 'Hours per day is required.'),
+  costPerKwh: z.string().min(1, 'Cost per kWh is required.'),
+  costResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
+export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const { toast } = useToast();
@@ -31,24 +31,17 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      loanAmount: '',
-      interestRate: '',
-      loanTerm: '30',
-      monthlyPayment: '',
+      wattage: '',
+      hoursPerDay: '',
+      costPerKwh: '0.15', // Average US cost
+      costResult: '',
     },
   });
 
   const onSubmit = (values: FormValues) => {
-    const principal = parseFloat(values.loanAmount);
-    const rate = parseFloat(values.interestRate) / 100 / 12;
-    const term = parseFloat(values.loanTerm) * 12;
-
-    if (principal > 0 && rate > 0 && term > 0) {
-        const monthlyPayment = (principal * rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
-        form.setValue('monthlyPayment', `$${monthlyPayment.toFixed(2)} / month`);
-    } else {
-        toast({ title: 'Invalid input', description: 'Please check your numbers.', variant: 'destructive' });
-    }
+    const dailyKwh = (parseFloat(values.wattage) * parseFloat(values.hoursPerDay)) / 1000;
+    const annualCost = dailyKwh * 365 * parseFloat(values.costPerKwh);
+    form.setValue('costResult', `$${annualCost.toFixed(2)} per year`);
   };
 
   const handleAiAssist = async () => {
@@ -56,16 +49,15 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'monthlyPayment')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'costResult')
     );
-
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
         });
-        toast({ title: 'AI Assistance', description: 'We\'ve filled in some values for you.' });
+        toast({ title: 'AI Assistance', description: "We've filled in some values for you." });
       }
       if (result.hintsAndNextSteps) {
         setAiHint(result.hintsAndNextSteps);
@@ -79,16 +71,16 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.monthlyPayment) {
+    if (!values.costResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} (Mortgage)\n\n` +
-      `Loan Amount: $${values.loanAmount}\n` +
-      `Interest Rate: ${values.interestRate}%\n` +
-      `Loan Term: ${values.loanTerm} years\n\n`+
+    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
+      `Appliance Wattage: ${values.wattage} W\n` +
+      `Hours Used Per Day: ${values.hoursPerDay}\n` +
+      `Cost per kWh: $${values.costPerKwh}\n\n`+
       `--------------------\n` +
-      `Estimated Monthly Payment: ${values.monthlyPayment}\n`;
+      `Estimated Annual Cost: ${values.costResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -101,40 +93,40 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
     URL.revokeObjectURL(url);
   };
   
-  const monthlyPayment = form.watch('monthlyPayment');
+  const costResult = form.watch('costResult');
 
   return (
     <Card className="max-w-2xl mx-auto">
-      <CardHeader><CardTitle>Mortgage Calculator</CardTitle></CardHeader>
+      <CardHeader><CardTitle>Appliance Energy Cost</CardTitle></CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField control={form.control} name="loanAmount" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Loan Amount ($)</FormLabel>
-                    <FormControl><Input type="number" placeholder="e.g., 300000" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-              )}/>
-               <FormField control={form.control} name="interestRate" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Annual Interest Rate (%)</FormLabel>
-                    <FormControl><Input type="number" step="0.01" placeholder="e.g., 6.5" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-              )}/>
-               <FormField control={form.control} name="loanTerm" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Loan Term (Years)</FormLabel>
-                    <FormControl><Input type="number" placeholder="e.g., 30" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-              )}/>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <FormField control={form.control} name="wattage" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Appliance Wattage (W)</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 1500" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                <FormField control={form.control} name="hoursPerDay" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Hours Used Per Day</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 2" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                <FormField control={form.control} name="costPerKwh" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Cost per kWh ($)</FormLabel>
+                        <FormControl><Input type="number" step="0.01" placeholder="e.g., 0.15" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Payment</Button>
+              <Button type="submit">Calculate Cost</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
@@ -145,12 +137,12 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
         {aiHint && (
           <Alert className="mt-6"><Wand2 className="h-4 w-4" /><AlertTitle>AI Suggestion</AlertTitle><AlertDescription>{aiHint}</AlertDescription></Alert>
         )}
-        {monthlyPayment && (
+        {costResult && (
           <Card className="mt-6 bg-accent">
-            <CardHeader><CardTitle>Estimated Monthly Payment</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Estimated Annual Cost</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold">{monthlyPayment}</p>
+                <p className="text-2xl font-bold">{costResult}</p>
               </div>
               <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
             </CardContent>

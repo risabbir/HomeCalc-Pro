@@ -33,7 +33,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface HvacCalculatorProps {
-  calculator: Calculator;
+  calculator: Omit<Calculator, 'Icon'>;
 }
 
 export function HvacCalculator({ calculator }: HvacCalculatorProps) {
@@ -69,7 +69,7 @@ export function HvacCalculator({ calculator }: HvacCalculatorProps) {
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-        Object.entries(values).filter(([, value]) => value !== '' && value !== undefined && key !== 'btuResult')
+        Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'btuResult')
     );
 
     try {
@@ -127,6 +127,9 @@ export function HvacCalculator({ calculator }: HvacCalculatorProps) {
 
   return (
     <Card className="max-w-2xl mx-auto">
+      <CardHeader>
+        <CardTitle>AC Unit BTU Sizing</CardTitle>
+      </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

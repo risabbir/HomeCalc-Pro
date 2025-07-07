@@ -21,7 +21,7 @@ const formSchema = z.object({
 });
 type FormValues = z.infer<typeof formSchema>;
 
-export function HomeImprovementCalculator({ calculator }: { calculator: Calculator }) {
+export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const { toast } = useToast();
@@ -44,7 +44,7 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Calculat
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([, value]) => value !== '' && value !== undefined && key !== 'paintGallons')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'paintGallons')
     );
 
     try {

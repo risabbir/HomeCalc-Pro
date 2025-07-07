@@ -24,7 +24,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function GardeningCalculator({ calculator }: { calculator: Calculator }) {
+export function GardeningCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const { toast } = useToast();
@@ -55,7 +55,7 @@ export function GardeningCalculator({ calculator }: { calculator: Calculator }) 
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([, value]) => value !== '' && value !== undefined && key !== 'fertilizerResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'fertilizerResult')
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
