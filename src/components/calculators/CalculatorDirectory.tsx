@@ -38,28 +38,30 @@ export function CalculatorDirectory() {
 
   return (
     <div id="calculators">
-      <div className="max-w-4xl mx-auto mb-12 space-y-4">
-        <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-                type="search"
-                placeholder="Search calculators..."
-                className="w-full pl-10"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                aria-label="Search for a calculator"
-            />
-        </div>
-        <div className="flex flex-wrap items-center justify-center gap-2">
-            {categories.map(cat => (
-                <Button 
-                    key={cat} 
-                    variant={selectedCategory === cat ? 'default' : 'outline'}
-                    onClick={() => setSelectedCategory(cat)}
-                >
-                    {cat}
-                </Button>
-            ))}
+      <div className="max-w-4xl mx-auto mb-12">
+        <div className="flex flex-col md:flex-row items-center gap-4">
+          <div className="relative w-full flex-grow">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                  type="search"
+                  placeholder="Search calculators..."
+                  className="w-full pl-10"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  aria-label="Search for a calculator"
+              />
+          </div>
+          <div className="flex flex-shrink-0 items-center justify-center flex-wrap gap-2">
+              {categories.map(cat => (
+                  <Button 
+                      key={cat} 
+                      variant={selectedCategory === cat ? 'default' : 'outline'}
+                      onClick={() => setSelectedCategory(cat)}
+                  >
+                      {cat}
+                  </Button>
+              ))}
+          </div>
         </div>
       </div>
 
