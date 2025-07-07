@@ -16,6 +16,10 @@ import { ThermostatSavingsCalculator } from '@/components/calculators/Thermostat
 import { FlooringCalculator } from '@/components/calculators/FlooringCalculator';
 import { WallpaperCalculator } from '@/components/calculators/WallpaperCalculator';
 import { SoilCalculator } from '@/components/calculators/SoilCalculator';
+import { AtticInsulationCalculator } from '@/components/calculators/AtticInsulationCalculator';
+import { KitchenRemodelEstimator } from '@/components/calculators/KitchenRemodelEstimator';
+import { DeckingCalculator } from '@/components/calculators/DeckingCalculator';
+import { ConcreteSlabCalculator } from '@/components/calculators/ConcreteSlabCalculator';
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const calculator = calculators.find((c) => c.slug === params.slug);
@@ -41,20 +45,11 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
 
   const renderCalculator = () => {
     switch (params.slug) {
-      // Existing
+      // HVAC
       case 'btu-calculator':
         return <HvacCalculator calculator={calculatorData} />;
       case 'seer-savings':
         return <SeerSavingsCalculator calculator={calculatorData} />;
-      case 'energy-consumption':
-        return <ApplianceEnergyCostCalculator calculator={calculatorData} />;
-      case 'paint-coverage':
-        return <HomeImprovementCalculator calculator={calculatorData} />;
-      case 'fertilizer-needs':
-        return <GardeningCalculator calculator={calculatorData} />;
-      case 'mortgage-calculator':
-        return <GeneralHomeCalculator calculator={calculatorData} />;
-      // New
       case 'hvac-load':
         return <HvacLoadCalculator calculator={calculatorData} />;
       case 'duct-size':
@@ -65,19 +60,42 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
         return <HeatPumpCostCalculator calculator={calculatorData} />;
       case 'thermostat-savings':
         return <ThermostatSavingsCalculator calculator={calculatorData} />;
+      case 'attic-insulation':
+        return <AtticInsulationCalculator calculator={calculatorData} />;
+
+      // Home Improvement
+      case 'paint-coverage':
+        return <HomeImprovementCalculator calculator={calculatorData} />;
       case 'flooring-area':
         return <FlooringCalculator calculator={calculatorData} />;
       case 'wallpaper':
         return <WallpaperCalculator calculator={calculatorData} />;
+      case 'kitchen-remodel-cost':
+        return <KitchenRemodelEstimator calculator={calculatorData} />;
+      case 'decking-calculator':
+        return <DeckingCalculator calculator={calculatorData} />;
+      case 'concrete-slab-calculator':
+        return <ConcreteSlabCalculator calculator={calculatorData} />;
+
+      // Gardening
+      case 'fertilizer-needs':
+        return <GardeningCalculator calculator={calculatorData} />;
       case 'soil-volume':
         return <SoilCalculator calculator={calculatorData} />;
+
+      // Other
+      case 'energy-consumption':
+        return <ApplianceEnergyCostCalculator calculator={calculatorData} />;
+      case 'mortgage-calculator':
+        return <GeneralHomeCalculator calculator={calculatorData} />;
+
       default:
         return null;
     }
   };
 
   return (
-    <div>
+    <div className="container mx-auto px-4 py-8">
       <div className="text-center mb-8">
         <Icon className="h-16 w-16 mx-auto text-primary mb-4" />
         <h1 className="text-4xl font-bold font-headline">{calculator.name}</h1>

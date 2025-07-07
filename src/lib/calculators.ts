@@ -1,7 +1,8 @@
 import type { LucideIcon } from 'lucide-react';
 import { 
   ThermometerSun, Wrench, Sprout, Home, Wind, PlugZap, Building2, AirVent, 
-  Heater, Snowflake, Gauge, Square, Wallpaper as WallpaperIcon, Shovel 
+  Heater, Snowflake, Gauge, Square, Wallpaper as WallpaperIcon, Shovel,
+  CookingPot, Construction, Layers, Warehouse
 } from 'lucide-react';
 
 export interface Calculator {
@@ -63,6 +64,13 @@ export const calculators: Calculator[] = [
     Icon: Gauge,
     category: 'HVAC',
   },
+  {
+    slug: 'attic-insulation',
+    name: 'Attic Insulation Calculator',
+    description: 'Determine the R-value and amount of insulation for your attic.',
+    Icon: Warehouse,
+    category: 'HVAC',
+  },
 
   // Home Improvement
   {
@@ -84,6 +92,27 @@ export const calculators: Calculator[] = [
     name: 'Wallpaper Calculator',
     description: 'Estimate the number of wallpaper rolls needed for a room.',
     Icon: WallpaperIcon,
+    category: 'Home Improvement',
+  },
+  {
+    slug: 'kitchen-remodel-cost',
+    name: 'Kitchen Remodel Cost Estimator',
+    description: 'Get a ballpark estimate for your kitchen renovation project.',
+    Icon: CookingPot,
+    category: 'Home Improvement',
+  },
+  {
+    slug: 'decking-calculator',
+    name: 'Decking Calculator',
+    description: 'Calculate materials needed for building a deck.',
+    Icon: Construction,
+    category: 'Home Improvement',
+  },
+  {
+    slug: 'concrete-slab-calculator',
+    name: 'Concrete Slab Calculator',
+    description: 'Estimate the amount of concrete needed for a slab.',
+    Icon: Layers,
     category: 'Home Improvement',
   },
 
