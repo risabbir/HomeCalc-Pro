@@ -1,5 +1,6 @@
 import { Logo } from '@/components/layout/Logo';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export function Header() {
   return (
@@ -10,6 +11,11 @@ export function Header() {
             <Logo />
             HomeCalc Pro
           </Link>
+          <nav>
+            <Button variant="ghost" asChild>
+                <Link href="/#calculators">All Calculators</Link>
+            </Button>
+          </nav>
         </div>
       </div>
     </header>

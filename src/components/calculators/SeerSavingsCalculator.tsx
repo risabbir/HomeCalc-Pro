@@ -8,7 +8,7 @@ import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Download, Loader2, Wand2 } from 'lucide-react';
@@ -114,7 +114,12 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
 
   return (
     <Card className="max-w-2xl mx-auto">
-      <CardHeader><CardTitle>SEER Savings Calculator</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle>{calculator.name}</CardTitle>
+        <CardDescription>
+            See how much you could save by upgrading to a more energy-efficient AC unit. A higher SEER (Seasonal Energy Efficiency Ratio) rating means lower energy bills.
+        </CardDescription>
+      </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

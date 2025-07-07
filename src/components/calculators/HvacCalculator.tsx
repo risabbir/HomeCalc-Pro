@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Download, Loader2, Wand2 } from 'lucide-react';
@@ -128,7 +128,10 @@ export function HvacCalculator({ calculator }: HvacCalculatorProps) {
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>AC Unit BTU Sizing</CardTitle>
+        <CardTitle>{calculator.name}</CardTitle>
+        <CardDescription>
+            Enter your room's dimensions and environmental factors to get an estimate of the cooling capacity (in BTUs) your AC unit needs.
+        </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
@@ -226,7 +229,7 @@ export function HvacCalculator({ calculator }: HvacCalculatorProps) {
             </CardHeader>
             <CardContent className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground">Required HVAC Capacity</p>
+                <p className="text-muted-foreground">Required AC Capacity</p>
                 <p className="text-2xl font-bold">{btuResult}</p>
               </div>
               <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results">

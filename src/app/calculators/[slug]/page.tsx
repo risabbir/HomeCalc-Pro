@@ -20,6 +20,7 @@ import { AtticInsulationCalculator } from '@/components/calculators/AtticInsulat
 import { KitchenRemodelEstimator } from '@/components/calculators/KitchenRemodelEstimator';
 import { DeckingCalculator } from '@/components/calculators/DeckingCalculator';
 import { ConcreteSlabCalculator } from '@/components/calculators/ConcreteSlabCalculator';
+import { MiniSplitCostEstimator } from '@/components/calculators/MiniSplitCostEstimator';
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const calculator = calculators.find((c) => c.slug === params.slug);
@@ -62,6 +63,8 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
         return <ThermostatSavingsCalculator calculator={calculatorData} />;
       case 'attic-insulation':
         return <AtticInsulationCalculator calculator={calculatorData} />;
+      case 'mini-split-cost':
+        return <MiniSplitCostEstimator calculator={calculatorData} />;
 
       // Home Improvement
       case 'paint-coverage':
@@ -99,7 +102,7 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
       <div className="text-center mb-8">
         <Icon className="h-16 w-16 mx-auto text-primary mb-4" />
         <h1 className="text-4xl font-bold font-headline">{calculator.name}</h1>
-        <p className="text-muted-foreground mt-2">{calculator.description}</p>
+        <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">{calculator.description}</p>
       </div>
       {renderCalculator()}
     </div>

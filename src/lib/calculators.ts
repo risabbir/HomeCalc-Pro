@@ -2,7 +2,7 @@ import type { LucideIcon } from 'lucide-react';
 import { 
   ThermometerSun, Wrench, Sprout, Home, Wind, PlugZap, Building2, AirVent, 
   Heater, Snowflake, Gauge, Square, Wallpaper as WallpaperIcon, Shovel,
-  CookingPot, Construction, Layers, Warehouse
+  CookingPot, Construction, Layers, Warehouse, Fan
 } from 'lucide-react';
 
 export interface Calculator {
@@ -18,21 +18,21 @@ export const calculators: Calculator[] = [
   {
     slug: 'hvac-load',
     name: 'HVAC Load Calculator',
-    description: 'Determine the total heating and cooling load for a building.',
+    description: 'Determine the total heating and cooling load for a building (Manual J).',
     Icon: Building2,
     category: 'HVAC',
   },
   {
     slug: 'btu-calculator',
-    name: 'BTU Calculator',
-    description: 'Estimate the required BTU for heating and cooling a room.',
+    name: 'AC Size (BTU) Calculator',
+    description: 'Estimate the required BTU for cooling a room.',
     Icon: ThermometerSun,
     category: 'HVAC',
   },
   {
     slug: 'duct-size',
     name: 'Duct Size Calculator',
-    description: 'Calculate the appropriate size for HVAC ductwork.',
+    description: 'Calculate the appropriate size for residential HVAC ductwork.',
     Icon: AirVent,
     category: 'HVAC',
   },
@@ -41,6 +41,13 @@ export const calculators: Calculator[] = [
     name: 'SEER Energy Savings',
     description: 'Estimate savings from upgrading to a higher SEER-rated AC unit.',
     Icon: Wind,
+    category: 'HVAC',
+  },
+   {
+    slug: 'mini-split-cost',
+    name: 'Mini-Split Cost Estimator',
+    description: 'Estimate the cost to install a ductless mini-split system.',
+    Icon: Fan,
     category: 'HVAC',
   },
   {
@@ -60,14 +67,14 @@ export const calculators: Calculator[] = [
   {
     slug: 'thermostat-savings',
     name: 'Thermostat Savings Calculator',
-    description: 'Estimate savings from a programmable thermostat.',
+    description: 'Estimate savings from setting back your programmable thermostat.',
     Icon: Gauge,
     category: 'HVAC',
   },
   {
     slug: 'attic-insulation',
     name: 'Attic Insulation Calculator',
-    description: 'Determine the R-value and amount of insulation for your attic.',
+    description: 'Determine the R-value and amount of insulation needed for your attic.',
     Icon: Warehouse,
     category: 'HVAC',
   },
@@ -82,8 +89,8 @@ export const calculators: Calculator[] = [
   },
   {
     slug: 'flooring-area',
-    name: 'Flooring Area Calculator',
-    description: 'Calculate the square footage for your flooring project.',
+    name: 'Flooring Calculator',
+    description: 'Calculate the square footage and waste for your flooring project.',
     Icon: Square,
     category: 'Home Improvement',
   },
@@ -96,14 +103,14 @@ export const calculators: Calculator[] = [
   },
   {
     slug: 'kitchen-remodel-cost',
-    name: 'Kitchen Remodel Cost Estimator',
+    name: 'Kitchen Remodel Estimator',
     description: 'Get a ballpark estimate for your kitchen renovation project.',
     Icon: CookingPot,
     category: 'Home Improvement',
   },
   {
     slug: 'decking-calculator',
-    name: 'Decking Calculator',
+    name: 'Decking Materials Calculator',
     description: 'Calculate materials needed for building a deck.',
     Icon: Construction,
     category: 'Home Improvement',
@@ -142,7 +149,7 @@ export const calculators: Calculator[] = [
   },
   {
     slug: 'energy-consumption',
-    name: 'Energy Consumption Calculator',
+    name: 'Appliance Energy Cost',
     description: 'Calculate the energy usage and cost of your appliances.',
     Icon: PlugZap,
     category: 'Other',

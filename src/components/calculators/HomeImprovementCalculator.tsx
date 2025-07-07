@@ -8,7 +8,7 @@ import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Download, Loader2, Wand2 } from 'lucide-react';
@@ -93,7 +93,10 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Paint Estimator</CardTitle>
+        <CardTitle>{calculator.name}</CardTitle>
+        <CardDescription>
+            Figure out how much paint you'll need. Calculate the total area of your walls (subtracting doors and windows) and decide on the number of coats.
+        </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>

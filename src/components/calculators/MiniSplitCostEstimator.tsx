@@ -8,22 +8,23 @@ import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Download, Loader2, Wand2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const formSchema = z.object({
-  loanAmount: z.string().min(1, 'Loan amount is required.'),
-  interestRate: z.string().min(1, 'Interest rate is required.'),
-  loanTerm: z.string().min(1, 'Loan term is required.'),
-  monthlyPayment: z.string().optional(),
+  zones: z.string().min(1, 'Number of zones is required.'),
+  btuRating: z.string().min(1, 'BTU rating is required.'),
+  seerRating: z.string().min(1, 'SEER rating is required.'),
+  costResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
+export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const { toast } = useToast();
@@ -31,24 +32,26 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      loanAmount: '',
-      interestRate: '',
-      loanTerm: '30',
-      monthlyPayment: '',
+      zones: '1',
+      btuRating: '12000',
+      seerRating: '20',
+      costResult: '',
     },
   });
 
   const onSubmit = (values: FormValues) => {
-    const principal = parseFloat(values.loanAmount);
-    const rate = parseFloat(values.interestRate) / 100 / 12;
-    const term = parseFloat(values.loanTerm) * 12;
+    // Simplified cost estimation logic
+    const zones = parseInt(values.zones);
+    const btu = parseInt(values.btuRating);
+    const seer = parseInt(values.seerRating);
 
-    if (principal > 0 && rate > 0 && term > 0) {
-        const monthlyPayment = (principal * rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
-        form.setValue('monthlyPayment', `$${monthlyPayment.toFixed(2)} / month`);
-    } else {
-        toast({ title: 'Invalid input', description: 'Please check your numbers.', variant: 'destructive' });
-    }
+    let costPerZone = 1500;
+    if (btu > 12000) costPerZone += (btu - 12000) * 0.1;
+    if (seer > 20) costPerZone += (seer - 20) * 50;
+
+    const totalCost = costPerZone * zones + 750 * zones; // +750 for labor per zone
+
+    form.setValue('costResult', `~$${totalCost.toFixed(0)} - $${(totalCost * 1.4).toFixed(0)}`);
   };
 
   const handleAiAssist = async () => {
@@ -56,16 +59,15 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'monthlyPayment')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'costResult')
     );
-
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
         });
-        toast({ title: 'AI Assistance', description: 'We\'ve filled in some values for you.' });
+        toast({ title: 'AI Assistance', description: "We've filled in some values for you." });
       }
       if (result.hintsAndNextSteps) {
         setAiHint(result.hintsAndNextSteps);
@@ -79,67 +81,66 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.monthlyPayment) {
+    if (!values.costResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} (Mortgage)\n\n` +
-      `Loan Amount: $${values.loanAmount}\n` +
-      `Interest Rate: ${values.interestRate}%\n` +
-      `Loan Term: ${values.loanTerm} years\n\n`+
+    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
+      `Number of Zones: ${values.zones}\n` +
+      `BTU Rating: ${values.btuRating}\n` +
+      `SEER Rating: ${values.seerRating}\n\n`+
       `--------------------\n` +
-      `Estimated Monthly Payment: ${values.monthlyPayment}\n`;
+      `Estimated Cost: ${values.costResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `${calculator.slug}-results.txt`;
-    document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
   
-  const monthlyPayment = form.watch('monthlyPayment');
+  const costResult = form.watch('costResult');
 
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-            Estimate your monthly mortgage payment (principal and interest). Enter your loan details to see what your payments might look like.
+          Estimate the total cost to purchase and install a ductless mini-split system. Costs can vary based on brand, complexity, and location.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField control={form.control} name="loanAmount" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Loan Amount ($)</FormLabel>
-                    <FormControl><Input type="number" placeholder="e.g., 300000" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-              )}/>
-               <FormField control={form.control} name="interestRate" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Annual Interest Rate (%)</FormLabel>
-                    <FormControl><Input type="number" step="0.01" placeholder="e.g., 6.5" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-              )}/>
-               <FormField control={form.control} name="loanTerm" render={({ field }) => (
-                  <FormItem className="md:col-span-2">
-                    <FormLabel>Loan Term (Years)</FormLabel>
-                    <FormControl><Input type="number" placeholder="e.g., 30" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-              )}/>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <FormField control={form.control} name="zones" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Number of Zones</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                <FormField control={form.control} name="btuRating" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Total BTU Rating</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 12000" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                 <FormField control={form.control} name="seerRating" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>SEER Rating</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 20" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Payment</Button>
+              <Button type="submit">Estimate Cost</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
@@ -150,13 +151,11 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
         {aiHint && (
           <Alert className="mt-6"><Wand2 className="h-4 w-4" /><AlertTitle>AI Suggestion</AlertTitle><AlertDescription>{aiHint}</AlertDescription></Alert>
         )}
-        {monthlyPayment && (
+        {costResult && (
           <Card className="mt-6 bg-accent">
-            <CardHeader><CardTitle>Estimated Monthly Payment</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Estimated Installation Cost</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-bold">{monthlyPayment}</p>
-              </div>
+              <p className="text-2xl font-bold">{costResult}</p>
               <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
             </CardContent>
           </Card>

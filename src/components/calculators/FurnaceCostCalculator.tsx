@@ -8,7 +8,7 @@ import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Download, Loader2, Wand2 } from 'lucide-react';
@@ -106,7 +106,12 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
 
   return (
     <Card className="max-w-2xl mx-auto">
-      <CardHeader><CardTitle>{calculator.name}</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle>{calculator.name}</CardTitle>
+        <CardDescription>
+            Get a rough estimate for a new furnace installation. Cost depends heavily on home size, fuel type, efficiency rating (AFUE), and local labor rates.
+        </CardDescription>
+      </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
