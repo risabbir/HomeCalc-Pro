@@ -17,13 +17,13 @@ export default function Home() {
           }}
         ></div>
         <div className="container relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 font-headline text-primary">HomeCalc Pro</h1>
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 font-headline text-primary">Empower Your Home Projects</h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
-             Your one-stop destination for all home-related calculations. From renovation projects to garden planning, we've got you covered.
+            Precision calculators for every corner of your home. Plan with confidence, build with precision.
           </p>
-          <Button size="lg" asChild>
+          <Button size="lg" asChild className="group">
             <Link href="/#calculators">
-              Get Started <ArrowRight />
+              Get Started <ArrowRight className="transition-transform group-hover:translate-x-1" />
             </Link>
           </Button>
         </div>
