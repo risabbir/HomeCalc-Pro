@@ -6,7 +6,7 @@ import { CalculatorCard } from './CalculatorCard';
 import { calculators } from '@/lib/calculators';
 import { Search } from 'lucide-react';
 import { H2 } from '@/components/ui/typography';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const categories = ['All', 'HVAC', 'Home Improvement', 'Gardening', 'Other'];
 
@@ -38,13 +38,13 @@ export function CalculatorDirectory() {
 
   return (
     <div id="calculators">
-       <div className="flex flex-col md:flex-row items-center gap-4 mb-16 max-w-4xl mx-auto">
-        <div className="relative flex-grow w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+      <div className="mb-16 max-w-2xl mx-auto text-center space-y-6">
+        <div className="relative w-full">
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search for a calculator..."
-            className="w-full pl-10 h-11 text-base rounded-md shadow-sm"
+            placeholder="Search calculators by name or keyword..."
+            className="w-full pl-14 pr-4 h-14 text-lg rounded-full border-2 border-border focus:border-primary transition-all duration-300 shadow-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             aria-label="Search for a calculator"
@@ -53,14 +53,18 @@ export function CalculatorDirectory() {
 
         <div className="flex items-center justify-center gap-2 flex-wrap">
           {categories.map(cat => (
-            <Button
+            <button
               key={cat}
-              variant={selectedCategory === cat ? 'default' : 'ghost'}
               onClick={() => setSelectedCategory(cat)}
-              className="rounded-md px-3 h-11"
+              className={cn(
+                "px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-200 ease-in-out border-2",
+                selectedCategory === cat 
+                  ? "bg-primary text-primary-foreground border-primary" 
+                  : "bg-transparent text-foreground border-border hover:bg-secondary/50 hover:border-secondary"
+              )}
             >
               {cat}
-            </Button>
+            </button>
           ))}
         </div>
       </div>
