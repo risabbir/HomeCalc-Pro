@@ -10,8 +10,11 @@ import { ThemeProvider } from '@/components/layout/ThemeProvider';
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: 'HomeCalc Pro',
-  description: 'A collection of home-related calculators.',
+  title: {
+    default: 'HomeCalc Pro | Precision Calculators for Every Project',
+    template: '%s | HomeCalc Pro',
+  },
+  description: 'Your one-stop destination for all home-related calculations. From renovation projects to garden planning, we have the tools to help you plan with confidence.',
 };
 
 export default function RootLayout({
