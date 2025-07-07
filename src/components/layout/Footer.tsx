@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4 md:col-span-1">
-            <Link href="/" className="inline-block transition-opacity hover:opacity-80">
+            <Link href="/" className="inline-block">
               <Logo />
             </Link>
             <p className="text-sm text-muted-foreground">Your trusted partner for home project calculations.</p>

@@ -24,7 +24,7 @@ export function Header() {
     <header className="bg-background/90 border-b sticky top-0 z-50 backdrop-blur-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
-          <Link href="/" className="transition-opacity hover:opacity-80">
+          <Link href="/">
             <Logo />
           </Link>
 
@@ -43,9 +43,9 @@ export function Header() {
                 </Button>
                 <div 
                   data-state={isMegaMenuOpen ? 'open' : 'closed'}
-                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max max-w-5xl origin-top transition-opacity duration-200 data-[state=closed]:opacity-0 data-[state=open]:opacity-100 data-[state=closed]:pointer-events-none"
+                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max max-w-5xl origin-top transition-all duration-300 data-[state=closed]:opacity-0 data-[state=closed]:-translate-y-2 data-[state=open]:opacity-100 data-[state=open]:translate-y-0 data-[state=closed]:pointer-events-none"
                 >
-                  <div className="bg-popover text-popover-foreground rounded-lg border shadow-lg p-6 grid grid-cols-4 gap-x-12 gap-y-6 animate-in fade-in-0 zoom-in-95 data-[state=open]:slide-in-from-top-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=closed]:slide-out-to-top-2">
+                  <div className="bg-popover text-popover-foreground rounded-lg border shadow-lg p-6 grid grid-cols-4 gap-x-12 gap-y-6">
                     {calculatorsByCategory.map((category) => (
                       <div key={category.name}>
                         <h3 className="font-semibold text-foreground mb-4">{category.name}</h3>
