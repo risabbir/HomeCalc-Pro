@@ -1,11 +1,21 @@
-import { calculators, type Calculator } from '@/lib/calculators';
+import { calculators } from '@/lib/calculators';
 import { notFound } from 'next/navigation';
+
 import { HvacCalculator } from '@/components/calculators/HvacCalculator';
+import { SeerSavingsCalculator } from '@/components/calculators/SeerSavingsCalculator';
+import { ApplianceEnergyCostCalculator } from '@/components/calculators/ApplianceEnergyCostCalculator';
 import { HomeImprovementCalculator } from '@/components/calculators/HomeImprovementCalculator';
 import { GardeningCalculator } from '@/components/calculators/GardeningCalculator';
 import { GeneralHomeCalculator } from '@/components/calculators/GeneralHomeCalculator';
-import { SeerSavingsCalculator } from '@/components/calculators/SeerSavingsCalculator';
-import { ApplianceEnergyCostCalculator } from '@/components/calculators/ApplianceEnergyCostCalculator';
+
+import { HvacLoadCalculator } from '@/components/calculators/HvacLoadCalculator';
+import { DuctSizeCalculator } from '@/components/calculators/DuctSizeCalculator';
+import { FurnaceCostCalculator } from '@/components/calculators/FurnaceCostCalculator';
+import { HeatPumpCostCalculator } from '@/components/calculators/HeatPumpCostCalculator';
+import { ThermostatSavingsCalculator } from '@/components/calculators/ThermostatSavingsCalculator';
+import { FlooringCalculator } from '@/components/calculators/FlooringCalculator';
+import { WallpaperCalculator } from '@/components/calculators/WallpaperCalculator';
+import { SoilCalculator } from '@/components/calculators/SoilCalculator';
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const calculator = calculators.find((c) => c.slug === params.slug);
@@ -31,18 +41,36 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
 
   const renderCalculator = () => {
     switch (params.slug) {
-      case 'hvac':
+      // Existing
+      case 'btu-calculator':
         return <HvacCalculator calculator={calculatorData} />;
       case 'seer-savings':
         return <SeerSavingsCalculator calculator={calculatorData} />;
-      case 'appliance-energy-cost':
+      case 'energy-consumption':
         return <ApplianceEnergyCostCalculator calculator={calculatorData} />;
-      case 'home-improvement':
+      case 'paint-coverage':
         return <HomeImprovementCalculator calculator={calculatorData} />;
-      case 'gardening':
+      case 'fertilizer-needs':
         return <GardeningCalculator calculator={calculatorData} />;
-      case 'general-home':
+      case 'mortgage-calculator':
         return <GeneralHomeCalculator calculator={calculatorData} />;
+      // New
+      case 'hvac-load':
+        return <HvacLoadCalculator calculator={calculatorData} />;
+      case 'duct-size':
+        return <DuctSizeCalculator calculator={calculatorData} />;
+      case 'furnace-cost':
+        return <FurnaceCostCalculator calculator={calculatorData} />;
+      case 'heat-pump-cost':
+        return <HeatPumpCostCalculator calculator={calculatorData} />;
+      case 'thermostat-savings':
+        return <ThermostatSavingsCalculator calculator={calculatorData} />;
+      case 'flooring-area':
+        return <FlooringCalculator calculator={calculatorData} />;
+      case 'wallpaper':
+        return <WallpaperCalculator calculator={calculatorData} />;
+      case 'soil-volume':
+        return <SoilCalculator calculator={calculatorData} />;
       default:
         return null;
     }

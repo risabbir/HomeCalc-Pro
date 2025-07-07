@@ -10,6 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { calculators } from '@/lib/calculators';
 
 const RecommendCalculatorsInputSchema = z.object({
   pastActivity: z
@@ -33,6 +34,8 @@ export async function recommendCalculators(
   return recommendCalculatorsFlow(input);
 }
 
+const availableCalculators = calculators.map(c => c.name).join(', ');
+
 const prompt = ai.definePrompt({
   name: 'recommendCalculatorsPrompt',
   input: {schema: RecommendCalculatorsInputSchema},
@@ -43,7 +46,7 @@ const prompt = ai.definePrompt({
   {{pastActivity}}
 
   Recommend a list of calculators that the user might find helpful. Only return the names of the calculators.
-  The available calculators are: HVAC, Home Improvement, Gardening, and General Home.
+  The available calculators are: ${availableCalculators}
   Format your response as a JSON array of strings.
   `,
 });

@@ -16,7 +16,8 @@ export function CalculatorDirectory() {
     return calculators.filter(
       (calc) =>
         calc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        calc.description.toLowerCase().includes(searchTerm.toLowerCase())
+        calc.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        calc.category.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm]);
 
@@ -26,7 +27,7 @@ export function CalculatorDirectory() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <Input
           type="search"
-          placeholder="Search for a calculator..."
+          placeholder="Search for a calculator (e.g., 'paint', 'hvac', 'cost')..."
           className="w-full pl-10"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
