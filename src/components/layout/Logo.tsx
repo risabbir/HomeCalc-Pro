@@ -8,7 +8,7 @@ export function Logo({ className }: { className?: string }) {
       alt="HomeCalc Pro Logo"
       width={200}
       height={34}
-      className={cn(className)}
+      className={cn("dark:invert", className)}
       priority
       unoptimized
     />
