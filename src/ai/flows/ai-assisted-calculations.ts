@@ -12,14 +12,14 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const AiAssistedCalculationsInputSchema = z.object({
-  calculatorType: z.string().describe('The type of calculator being used (e.g., HVAC, Home Improvement).'),
-  parameters: z.record(z.string(), z.union([z.string(), z.number()])).describe('A key-value pair of parameters provided by the user.'),
+  calculatorType: z.string().describe('The type of calculator being used (e.g., "BTU Calculator", "Paint Coverage Calculator").'),
+  parameters: z.record(z.string(), z.union([z.string(), z.number()])).describe('A key-value pair of parameters provided by the user. Empty strings represent fields the user has not filled in.'),
 });
 export type AiAssistedCalculationsInput = z.infer<typeof AiAssistedCalculationsInputSchema>;
 
 const AiAssistedCalculationsOutputSchema = z.object({
-  autoCalculatedValues: z.record(z.string(), z.union([z.string(), z.number()])).optional().describe('Values automatically calculated by the AI.'),
-  hintsAndNextSteps: z.string().optional().describe('Hints and next steps suggested by the AI to complete the calculation.'),
+  autoCalculatedValues: z.record(z.string(), z.union([z.string(), z.number()])).optional().describe('An object of suggested values for fields the user left blank. The keys should match the parameter keys from the input.'),
+  hintsAndNextSteps: z.string().optional().describe('Helpful advice, hints, or next steps for the user to find the missing information themselves.'),
 });
 export type AiAssistedCalculationsOutput = z.infer<typeof AiAssistedCalculationsOutputSchema>;
 
@@ -31,18 +31,30 @@ const prompt = ai.definePrompt({
   name: 'aiAssistedCalculationsPrompt',
   input: {schema: AiAssistedCalculationsInputSchema},
   output: {schema: AiAssistedCalculationsOutputSchema},
-  prompt: `You are an AI assistant helping users complete calculations for their home projects.
+  prompt: `You are a friendly and helpful AI assistant for a web application called HomeCalc Pro. Your role is to help users complete home-related calculations by providing reasonable estimates for missing information.
 
-The user is using a calculator of type: {{{calculatorType}}}
+The user is currently using the '{{{calculatorType}}}'.
 
-The following parameters have been provided:
+These are the parameters they have already filled in:
 {{#each parameters}}
-  {{@key}}: {{this}}
+  {{#if this}}
+    - {{@key}}: {{this}}
+  {{/if}}
 {{/each}}
 
-Based on the available parameters, either automatically calculate any missing values or provide hints and next steps to the user to complete the calculation.
+These are the parameters they have left blank:
+{{#each parameters}}
+  {{#unless this}}
+    - {{@key}}
+  {{/unless}}
+{{/each}}
 
-If enough parameters are available to calculate missing values, populate the autoCalculatedValues field with the calculated values. Otherwise, provide helpful hints and next steps in the hintsAndNextSteps field.
+Your task is to analyze the provided parameters and suggest reasonable, common-sense estimates for the blank fields.
+- Base your suggestions on the calculator type and the data the user has already provided.
+- Populate the 'autoCalculatedValues' field with your suggested estimates. Use the exact parameter keys for the fields you are suggesting values for.
+- If you cannot provide a reasonable estimate for a field, provide a helpful hint in the 'hintsAndNextSteps' field. For example, for 'Appliance Wattage', you could suggest "Check the label on the back of the appliance for the wattage. A typical refrigerator uses 150-200 watts."
+- DO NOT perform the final calculation. Only suggest values for the blank input fields.
+- If all required fields are filled, respond with an empty object. Your role is to help fill in blanks, not to confirm their inputs.
 `,
 });
 
