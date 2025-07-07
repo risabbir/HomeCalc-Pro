@@ -1,6 +1,7 @@
 import { Logo } from '@/components/layout/Logo';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from './ThemeToggle';
 
 export function Header() {
   return (
@@ -11,17 +12,14 @@ export function Header() {
             <Logo />
             <span className='hidden sm:inline-block'>HomeCalc Pro</span>
           </Link>
-          <nav>
-            <Button variant="ghost" asChild>
-                <Link href="/#calculators">All Calculators</Link>
-            </Button>
-            <Button variant="ghost" asChild>
-                <Link href="/faq">FAQ</Link>
-            </Button>
-            <Button variant="ghost" asChild>
-                <Link href="/resources">Resources</Link>
-            </Button>
-          </nav>
+          <div className="flex items-center gap-4">
+            <nav>
+              <Button variant="ghost" asChild>
+                  <Link href="/#calculators">All Calculators</Link>
+              </Button>
+            </nav>
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </header>
