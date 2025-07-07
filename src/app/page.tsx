@@ -6,7 +6,7 @@ import Image from 'next/image';
 export default function Home() {
   return (
     <>
-      <section className="relative text-center py-20 md:py-28 bg-gradient-to-b from-primary/5 to-transparent overflow-hidden">
+      <section className="relative text-center py-20 md:py-28 bg-gradient-to-b from-primary/10 to-transparent overflow-hidden">
         <div className="absolute inset-0">
             <Image
                 src="https://placehold.co/1920x1080.png"

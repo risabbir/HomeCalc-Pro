@@ -3,32 +3,24 @@ export function Logo() {
     <svg
       width="32"
       height="32"
-      viewBox="0 0 48 48"
+      viewBox="0 0 24 24"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="text-primary"
     >
-      <path
-        d="M24 6L4 19.5V42H44V19.5L24 6Z"
-        className="fill-primary/20 stroke-primary"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M34 42V24H14V42"
-        className="fill-background stroke-primary"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <rect
-        x="20" y="29" width="8" height="3" rx="1.5"
-        className="fill-primary"
-      />
-      <rect
-        x="20" y="34" width="8" height="3" rx="1.5"
-        className="fill-primary"
-      />
+      <rect width="16" height="20" x="4" y="2" rx="2" />
+      <line x1="8" x2="16" y1="6" y2="6" />
+      <line x1="16" x2="16" y1="14" y2="18" />
+      <path d="M16 10h.01" />
+      <path d="M12 10h.01" />
+      <path d="M8 10h.01" />
+      <path d="M12 14h.01" />
+      <path d="M8 14h.01" />
+      <path d="M12 18h.01" />
+      <path d="M8 18h.01" />
     </svg>
   );
 }
