@@ -2,11 +2,17 @@
 
 import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { CalculatorCard } from './CalculatorCard';
 import { calculators } from '@/lib/calculators';
-import { Search } from 'lucide-react';
+import { Search, ListFilter } from 'lucide-react';
 import { H2 } from '@/components/ui/typography';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const categories = ['All', 'HVAC', 'Home Improvement', 'Gardening', 'Other'];
 
@@ -41,26 +47,30 @@ export function CalculatorDirectory() {
       <div className="max-w-4xl mx-auto mb-12">
         <div className="flex flex-col md:flex-row items-center gap-4">
           <div className="relative w-full flex-grow">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                   type="search"
-                  placeholder="Search calculators..."
-                  className="w-full pl-10"
+                  placeholder="Search calculators by name or keyword..."
+                  className="w-full pl-12 pr-4 py-3 text-base h-12 rounded-lg border-2 border-input focus:border-primary transition-colors"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   aria-label="Search for a calculator"
               />
           </div>
-          <div className="flex flex-shrink-0 items-center justify-center flex-wrap gap-2">
-              {categories.map(cat => (
-                  <Button 
-                      key={cat} 
-                      variant={selectedCategory === cat ? 'default' : 'outline'}
-                      onClick={() => setSelectedCategory(cat)}
-                  >
-                      {cat}
-                  </Button>
-              ))}
+          <div className="flex-shrink-0 w-full md:w-auto">
+            <Select onValueChange={setSelectedCategory} defaultValue={selectedCategory}>
+              <SelectTrigger className="w-full md:w-[240px] h-12 rounded-lg text-base">
+                <div className="flex items-center gap-2">
+                  <ListFilter className="h-5 w-5 text-muted-foreground" />
+                  <SelectValue placeholder="Filter by category" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map(cat => (
+                  <SelectItem key={cat} value={cat} className="text-base">{cat}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
