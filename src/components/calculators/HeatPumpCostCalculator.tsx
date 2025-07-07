@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -13,13 +13,11 @@ import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Download, Loader2, Wand2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const formSchema = z.object({
   homeSize: z.string().min(1, 'Home size is required.'),
   seerRating: z.string().min(1, 'SEER rating is required.'),
   unitSize: z.string().min(1, 'Unit size is required.'),
-  costResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -27,6 +25,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function HeatPumpCostCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [costResult, setCostResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -35,29 +34,33 @@ export function HeatPumpCostCalculator({ calculator }: { calculator: Omit<Calcul
       homeSize: '2000',
       seerRating: '16',
       unitSize: '3',
-      costResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    // Simplified cost estimation logic
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const size = parseFloat(values.unitSize);
     const seer = parseFloat(values.seerRating);
-    
-    let baseCost = 1500 * size; // Base on tonnage
-    if (seer > 16) baseCost += (seer - 16) * 500;
+    const homeSize = parseFloat(values.homeSize);
 
-    const totalCost = baseCost + 1500; // +1500 for labor
-
-    form.setValue('costResult', `~$${totalCost.toFixed(0)} - $${(totalCost * 1.6).toFixed(0)}`);
-  };
+    if (size > 0 && seer > 0 && homeSize > 0) {
+      let baseCost = 1500 * size; // Base on tonnage
+      if (seer > 16) baseCost += (seer - 16) * 500;
+      const totalCost = baseCost + 1500; // +1500 for labor
+      setCostResult(`~$${totalCost.toFixed(0)} - $${(totalCost * 1.6).toFixed(0)}`);
+    } else {
+      setCostResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'costResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -79,7 +82,7 @@ export function HeatPumpCostCalculator({ calculator }: { calculator: Omit<Calcul
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.costResult) {
+    if (!costResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -88,7 +91,7 @@ export function HeatPumpCostCalculator({ calculator }: { calculator: Omit<Calcul
       `SEER Rating: ${values.seerRating}\n` +
       `Unit Size: ${values.unitSize} Ton\n\n`+
       `--------------------\n` +
-      `Estimated Cost: ${values.costResult}\n`;
+      `Estimated Cost: ${costResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -100,19 +103,17 @@ export function HeatPumpCostCalculator({ calculator }: { calculator: Omit<Calcul
     URL.revokeObjectURL(url);
   };
   
-  const costResult = form.watch('costResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-            Estimate the installed cost of a new heat pump. The unit's size (in tons) and its SEER rating are major cost factors.
+            Estimate the installed cost of a new heat pump. The unit's size (in tons) and its SEER rating are major cost factors. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="homeSize" render={({ field }) => (
                     <FormItem>
@@ -138,7 +139,6 @@ export function HeatPumpCostCalculator({ calculator }: { calculator: Omit<Calcul
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Estimate Cost</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

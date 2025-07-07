@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -18,7 +18,6 @@ const formSchema = z.object({
   loanAmount: z.string().min(1, 'Loan amount is required.'),
   interestRate: z.string().min(1, 'Interest rate is required.'),
   loanTerm: z.string().min(1, 'Loan term is required.'),
-  monthlyPayment: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -26,6 +25,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [monthlyPayment, setMonthlyPayment] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -34,22 +34,24 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
       loanAmount: '',
       interestRate: '',
       loanTerm: '30',
-      monthlyPayment: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const principal = parseFloat(values.loanAmount);
     const rate = parseFloat(values.interestRate) / 100 / 12;
     const term = parseFloat(values.loanTerm) * 12;
 
     if (principal > 0 && rate > 0 && term > 0) {
-        const monthlyPayment = (principal * rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
-        form.setValue('monthlyPayment', `$${monthlyPayment.toFixed(2)} / month`);
+        const payment = (principal * rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
+        setMonthlyPayment(`$${payment.toFixed(2)} / month`);
     } else {
-        toast({ title: 'Invalid input', description: 'Please check your numbers.', variant: 'destructive' });
+        setMonthlyPayment(null);
     }
-  };
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
@@ -81,7 +83,7 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.monthlyPayment) {
+    if (!monthlyPayment) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -90,7 +92,7 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
       `Interest Rate: ${values.interestRate}%\n` +
       `Loan Term: ${values.loanTerm} years\n\n`+
       `--------------------\n` +
-      `Estimated Monthly Payment: ${values.monthlyPayment}\n`;
+      `Estimated Monthly Payment: ${monthlyPayment}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -103,19 +105,17 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
     URL.revokeObjectURL(url);
   };
   
-  const monthlyPayment = form.watch('monthlyPayment');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Estimate your monthly mortgage payment (principal and interest). This calculation does not include taxes, insurance, or PMI. Enter your desired loan amount, the annual interest rate, and the loan term in years.
+            Estimate your monthly mortgage payment (principal and interest). This calculation does not include taxes, insurance, or PMI. Enter your desired loan amount, the annual interest rate, and the loan term in years. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField control={form.control} name="loanAmount" render={({ field }) => (
                   <FormItem>
@@ -141,7 +141,6 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
             </div>
             
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Payment</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

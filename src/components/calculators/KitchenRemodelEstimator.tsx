@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -18,7 +18,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 const formSchema = z.object({
   kitchenSize: z.string().min(1, 'Kitchen size is required.'),
   quality: z.enum(['basic', 'mid-range', 'high-end']),
-  costResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -32,6 +31,7 @@ const COST_PER_SQFT = {
 export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [costResult, setCostResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -39,27 +39,32 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
     defaultValues: {
       kitchenSize: '',
       quality: 'mid-range',
-      costResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const size = parseFloat(values.kitchenSize);
-    const costFactor = COST_PER_SQFT[values.quality];
-    const estimatedCost = size * costFactor;
-
-    const minCost = estimatedCost * 0.8;
-    const maxCost = estimatedCost * 1.2;
-
-    form.setValue('costResult', `$${minCost.toLocaleString(undefined, {maximumFractionDigits: 0})} - $${maxCost.toLocaleString(undefined, {maximumFractionDigits: 0})}`);
-  };
+    
+    if (size > 0 && values.quality) {
+      const costFactor = COST_PER_SQFT[values.quality];
+      const estimatedCost = size * costFactor;
+      const minCost = estimatedCost * 0.8;
+      const maxCost = estimatedCost * 1.2;
+      setCostResult(`$${minCost.toLocaleString(undefined, {maximumFractionDigits: 0})} - $${maxCost.toLocaleString(undefined, {maximumFractionDigits: 0})}`);
+    } else {
+      setCostResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'costResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -81,7 +86,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.costResult) {
+    if (!costResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -89,7 +94,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
       `Kitchen Size: ${values.kitchenSize} sq ft\n` +
       `Finish Quality: ${values.quality}\n\n`+
       `--------------------\n` +
-      `Estimated Cost: ${values.costResult}\n`;
+      `Estimated Cost: ${costResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -101,19 +106,17 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
     URL.revokeObjectURL(url);
   };
   
-  const costResult = form.watch('costResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-            Budget for your dream kitchen. Select your kitchen's size and the desired quality of finishes to get a cost estimate.
+            Budget for your dream kitchen. Select your kitchen's size and the desired quality of finishes to get a cost estimate. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="kitchenSize" render={({ field }) => (
                     <FormItem>
@@ -139,7 +142,6 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Estimate Cost</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

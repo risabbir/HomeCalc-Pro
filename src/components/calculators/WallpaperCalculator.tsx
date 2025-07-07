@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -19,7 +19,6 @@ const formSchema = z.object({
   wallHeight: z.string().min(1, 'Wall height is required.'),
   rollWidth: z.string().min(1, 'Roll width is required.'),
   rollLength: z.string().min(1, 'Roll length is required.'),
-  wallpaperResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -27,6 +26,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [wallpaperResult, setWallpaperResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -36,30 +36,35 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
       wallHeight: '8',
       rollWidth: '20.5',
       rollLength: '33',
-      wallpaperResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const perimeter = parseFloat(values.roomPerimeter);
     const height = parseFloat(values.wallHeight);
-    const wallArea = perimeter * height;
-    
-    const rWidth = parseFloat(values.rollWidth) / 12; // in to ft
+    const rWidth = parseFloat(values.rollWidth);
     const rLength = parseFloat(values.rollLength);
-    const rollArea = rWidth * rLength;
 
-    const rollsNeeded = Math.ceil(wallArea / rollArea * 1.1); // 10% waste
-
-    form.setValue('wallpaperResult', `${rollsNeeded} rolls`);
-  };
+    if (perimeter > 0 && height > 0 && rWidth > 0 && rLength > 0) {
+      const wallArea = perimeter * height;
+      const rollWidthInFt = rWidth / 12; // in to ft
+      const rollArea = rollWidthInFt * rLength;
+      const rollsNeeded = Math.ceil(wallArea / rollArea * 1.1); // 10% waste
+      setWallpaperResult(`${rollsNeeded} rolls`);
+    } else {
+      setWallpaperResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'wallpaperResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -81,7 +86,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.wallpaperResult) {
+    if (!wallpaperResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -91,7 +96,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
       `Roll Width: ${values.rollWidth} in\n` +
       `Roll Length: ${values.rollLength} ft\n\n`+
       `--------------------\n` +
-      `Rolls Needed: ${values.wallpaperResult}\n`;
+      `Rolls Needed: ${wallpaperResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -103,19 +108,17 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
     URL.revokeObjectURL(url);
   };
   
-  const wallpaperResult = form.watch('wallpaperResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-          Buy the right amount of wallpaper. Calculate the total wall area (perimeter times height) and use your wallpaper roll's dimensions to find how many rolls you need.
+          Buy the right amount of wallpaper. Calculate the total wall area (perimeter times height) and use your wallpaper roll's dimensions to find how many rolls you need. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="roomPerimeter" render={({ field }) => (
                     <FormItem>
@@ -148,7 +151,6 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Rolls</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

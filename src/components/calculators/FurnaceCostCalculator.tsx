@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -19,7 +19,6 @@ const formSchema = z.object({
   homeSize: z.string().min(1, 'Home size is required.'),
   furnaceType: z.enum(['gas', 'electric', 'oil']),
   efficiency: z.enum(['standard', 'high']),
-  costResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -27,6 +26,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [costResult, setCostResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -35,31 +35,38 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
       homeSize: '',
       furnaceType: 'gas',
       efficiency: 'standard',
-      costResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    // Simplified cost estimation logic
-    let baseCost = 0;
-    if (values.furnaceType === 'gas') baseCost = 2000;
-    if (values.furnaceType === 'electric') baseCost = 1500;
-    if (values.furnaceType === 'oil') baseCost = 2500;
+  const watchedValues = form.watch();
 
-    if (values.efficiency === 'high') baseCost *= 1.5;
+  useEffect(() => {
+    const values = watchedValues;
+    const homeSize = parseFloat(values.homeSize);
 
-    const sizeMultiplier = parseFloat(values.homeSize) / 1500;
-    const totalCost = baseCost * sizeMultiplier + 1000; // +1000 for labor
+    if (homeSize > 0 && values.furnaceType && values.efficiency) {
+      let baseCost = 0;
+      if (values.furnaceType === 'gas') baseCost = 2000;
+      if (values.furnaceType === 'electric') baseCost = 1500;
+      if (values.furnaceType === 'oil') baseCost = 2500;
 
-    form.setValue('costResult', `~$${totalCost.toFixed(0)} - $${(totalCost * 1.5).toFixed(0)}`);
-  };
+      if (values.efficiency === 'high') baseCost *= 1.5;
+
+      const sizeMultiplier = homeSize / 1500;
+      const totalCost = baseCost * sizeMultiplier + 1000; // +1000 for labor
+
+      setCostResult(`~$${totalCost.toFixed(0)} - $${(totalCost * 1.5).toFixed(0)}`);
+    } else {
+      setCostResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'costResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -81,7 +88,7 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.costResult) {
+    if (!costResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -90,7 +97,7 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
       `Furnace Type: ${values.furnaceType}\n` +
       `Efficiency: ${values.efficiency}\n\n`+
       `--------------------\n` +
-      `Estimated Cost: ${values.costResult}\n`;
+      `Estimated Cost: ${costResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -102,19 +109,17 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
     URL.revokeObjectURL(url);
   };
   
-  const costResult = form.watch('costResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-            Get a rough estimate for a new furnace installation. Cost depends heavily on home size, fuel type, efficiency rating (AFUE), and local labor rates.
+            Get a rough estimate for a new furnace installation. Cost depends heavily on home size, fuel type, efficiency rating (AFUE), and local labor rates. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="homeSize" render={({ field }) => (
                     <FormItem>
@@ -153,7 +158,6 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Estimate Cost</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

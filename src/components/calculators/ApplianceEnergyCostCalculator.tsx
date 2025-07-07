@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -18,7 +18,6 @@ const formSchema = z.object({
   wattage: z.string().min(1, 'Wattage is required.'),
   hoursPerDay: z.string().min(1, 'Hours per day is required.'),
   costPerKwh: z.string().min(1, 'Cost per kWh is required.'),
-  costResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -26,6 +25,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [costResult, setCostResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -34,15 +34,25 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
       wattage: '',
       hoursPerDay: '',
       costPerKwh: '0.15', // Average US cost
-      costResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    const dailyKwh = (parseFloat(values.wattage) * parseFloat(values.hoursPerDay)) / 1000;
-    const annualCost = dailyKwh * 365 * parseFloat(values.costPerKwh);
-    form.setValue('costResult', `$${annualCost.toFixed(2)} per year`);
-  };
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
+    const wattage = parseFloat(values.wattage);
+    const hours = parseFloat(values.hoursPerDay);
+    const cost = parseFloat(values.costPerKwh);
+
+    if (!isNaN(wattage) && !isNaN(hours) && !isNaN(cost) && wattage > 0 && hours > 0 && cost > 0) {
+      const dailyKwh = (wattage * hours) / 1000;
+      const annualCost = dailyKwh * 365 * cost;
+      setCostResult(`$${annualCost.toFixed(2)} per year`);
+    } else {
+      setCostResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
@@ -73,7 +83,7 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.costResult) {
+    if (!costResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -82,7 +92,7 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
       `Hours Used Per Day: ${values.hoursPerDay}\n` +
       `Cost per kWh: $${values.costPerKwh}\n\n`+
       `--------------------\n` +
-      `Estimated Annual Cost: ${values.costResult}\n`;
+      `Estimated Annual Cost: ${costResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -95,19 +105,17 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
     URL.revokeObjectURL(url);
   };
   
-  const costResult = form.watch('costResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Calculate the annual energy cost of an appliance. Enter the appliance's wattage (check the label), its daily usage, and your local electricity rate. The average cost per kWh in the US is pre-filled, but you can find a more accurate rate on your utility bill.
+            Calculate the annual energy cost of an appliance. Enter the appliance's wattage (check the label), its daily usage, and your local electricity rate. The average cost per kWh in the US is pre-filled, but you can find a more accurate rate on your utility bill. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="wattage" render={({ field }) => (
                     <FormItem>
@@ -133,10 +141,9 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Cost</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
-                AI Assist
+                Need a hint? Use AI Assist
               </Button>
             </div>
           </form>

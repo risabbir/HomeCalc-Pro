@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -18,7 +18,6 @@ const formSchema = z.object({
   totalArea: z.string().min(1, 'Total area is required.'),
   climateZone: z.string().min(1, 'Climate zone is required.'),
   windowsArea: z.string().min(1, 'Windows area is required.'),
-  loadResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -26,6 +25,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [loadResult, setLoadResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -34,28 +34,34 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
       totalArea: '',
       climateZone: '5',
       windowsArea: '',
-      loadResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    // Simplified Manual J calculation for demonstration
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const area = parseFloat(values.totalArea);
     const windows = parseFloat(values.windowsArea);
-    const climateFactor = 30 - (parseFloat(values.climateZone) * 2);
+    const climateZone = parseFloat(values.climateZone);
 
-    const coolingLoad = (area * climateFactor) + (windows * 100);
-    const heatingLoad = (area * (50 - climateFactor));
-
-    form.setValue('loadResult', `Cooling: ${coolingLoad.toFixed(0)} BTU/hr | Heating: ${heatingLoad.toFixed(0)} BTU/hr`);
-  };
+    if (area > 0 && windows >= 0 && climateZone >= 1 && climateZone <= 7) {
+      // Simplified Manual J calculation for demonstration
+      const climateFactor = 30 - (climateZone * 2);
+      const coolingLoad = (area * climateFactor) + (windows * 100);
+      const heatingLoad = (area * (50 - climateFactor));
+      setLoadResult(`Cooling: ${coolingLoad.toFixed(0)} BTU/hr | Heating: ${heatingLoad.toFixed(0)} BTU/hr`);
+    } else {
+      setLoadResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'loadResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -77,7 +83,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.loadResult) {
+    if (!loadResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -86,7 +92,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
       `Climate Zone: ${values.climateZone}\n` +
       `Windows Area: ${values.windowsArea} sq ft\n\n`+
       `--------------------\n` +
-      `Estimated Load: ${values.loadResult}\n`;
+      `Estimated Load: ${loadResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -98,19 +104,17 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
     URL.revokeObjectURL(url);
   };
   
-  const loadResult = form.watch('loadResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-            A simplified "Manual J" calculation to determine the heating and cooling load for your entire home, essential for sizing a new HVAC system.
+            A simplified "Manual J" calculation to determine the heating and cooling load for your entire home, essential for sizing a new HVAC system. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="totalArea" render={({ field }) => (
                     <FormItem>
@@ -136,7 +140,6 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Load</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

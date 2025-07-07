@@ -4,16 +4,19 @@ import { Button } from '@/components/ui/button';
 
 export function Header() {
   return (
-    <header className="bg-background/80 border-b sticky top-0 z-10 backdrop-blur-sm">
+    <header className="bg-background/80 border-b sticky top-0 z-10 backdrop-blur-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-3 text-xl font-bold font-headline transition-opacity hover:opacity-80">
+          <Link href="/" className="flex items-center gap-2 text-lg font-bold transition-opacity hover:opacity-80">
             <Logo />
-            HomeCalc Pro
+            <span className='hidden sm:inline-block'>HomeCalc Pro</span>
           </Link>
           <nav>
             <Button variant="ghost" asChild>
                 <Link href="/#calculators">All Calculators</Link>
+            </Button>
+            <Button variant="ghost" asChild>
+                <Link href="/faq">FAQ</Link>
             </Button>
           </nav>
         </div>

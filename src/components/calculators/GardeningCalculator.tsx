@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -19,7 +19,6 @@ const formSchema = z.object({
   nitrogenRatio: z.string().min(1, 'Required.'),
   phosphorusRatio: z.string().min(1, 'Required.'),
   potassiumRatio: z.string().min(1, 'Required.'),
-  fertilizerResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -27,6 +26,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function GardeningCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [fertilizerResult, setFertilizerResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -36,19 +36,25 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
       nitrogenRatio: '10',
       phosphorusRatio: '10',
       potassiumRatio: '10',
-      fertilizerResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const area = parseFloat(values.gardenArea);
     const n = parseFloat(values.nitrogenRatio);
-    // Assuming 1 pound of Nitrogen per 1000 sq ft is a common recommendation
-    const nitrogenNeeded = (area / 1000) * 1; 
-    const fertilizerAmount = (nitrogenNeeded / (n / 100));
-    
-    form.setValue('fertilizerResult', `${fertilizerAmount.toFixed(2)} lbs of ${values.nitrogenRatio}-${values.phosphorusRatio}-${values.potassiumRatio} fertilizer`);
-  };
+
+    if (area > 0 && n > 0 && values.phosphorusRatio && values.potassiumRatio) {
+      // Assuming 1 pound of Nitrogen per 1000 sq ft is a common recommendation
+      const nitrogenNeeded = (area / 1000) * 1; 
+      const fertilizerAmount = (nitrogenNeeded / (n / 100));
+      setFertilizerResult(`${fertilizerAmount.toFixed(2)} lbs of ${values.nitrogenRatio}-${values.phosphorusRatio}-${values.potassiumRatio} fertilizer`);
+    } else {
+      setFertilizerResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
@@ -80,7 +86,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.fertilizerResult) {
+    if (!fertilizerResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -88,7 +94,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
       `Garden Area: ${values.gardenArea} sq ft\n` +
       `Fertilizer Ratio (N-P-K): ${values.nitrogenRatio}-${values.phosphorusRatio}-${values.potassiumRatio}\n\n`+
       `--------------------\n` +
-      `Amount Needed: ${values.fertilizerResult}\n`;
+      `Amount Needed: ${fertilizerResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -101,19 +107,17 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
     URL.revokeObjectURL(url);
   };
   
-  const fertilizerResult = form.watch('fertilizerResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Give your garden the right amount of nutrients. Enter your garden's area and the N-P-K (Nitrogen-Phosphorus-Potassium) ratio from the fertilizer bag to calculate how much to apply. A common starting point for lawns is 1 pound of Nitrogen per 1,000 sq ft.
+            Give your garden the right amount of nutrients. Enter your garden's area and the N-P-K (Nitrogen-Phosphorus-Potassium) ratio from the fertilizer bag to calculate how much to apply. A common starting point for lawns is 1 pound of Nitrogen per 1,000 sq ft. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <FormField control={form.control} name="gardenArea" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Garden Area (sq ft)</FormLabel>
@@ -132,7 +136,6 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Fertilizer</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

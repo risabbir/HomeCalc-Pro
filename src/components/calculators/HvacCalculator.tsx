@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -27,7 +27,6 @@ const formSchema = z.object({
   ceilingHeight: z.string().min(1, 'Ceiling height is required.'),
   insulation: z.enum(['good', 'average', 'poor']),
   sunExposure: z.enum(['shady', 'sunny']),
-  btuResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -35,6 +34,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [btuResult, setBtuResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -44,21 +44,29 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       ceilingHeight: '',
       insulation: 'average',
       sunExposure: 'shady',
-      btuResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const area = parseFloat(values.roomArea);
-    const volume = area * parseFloat(values.ceilingHeight);
-    let btu = volume * 10;
+    const height = parseFloat(values.ceilingHeight);
 
-    if (values.insulation === 'poor') btu *= 1.2;
-    if (values.insulation === 'good') btu *= 0.8;
-    if (values.sunExposure === 'sunny') btu *= 1.1;
+    if (area > 0 && height > 0) {
+      const volume = area * height;
+      let btu = volume * 10;
 
-    form.setValue('btuResult', `${Math.ceil(btu)} BTU/hr`);
-  };
+      if (values.insulation === 'poor') btu *= 1.2;
+      if (values.insulation === 'good') btu *= 0.8;
+      if (values.sunExposure === 'sunny') btu *= 1.1;
+
+      setBtuResult(`${Math.ceil(btu)} BTU/hr`);
+    } else {
+      setBtuResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
@@ -99,7 +107,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
   
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.btuResult) {
+    if (!btuResult) {
         toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
         return;
     }
@@ -109,7 +117,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
         `Insulation: ${values.insulation}\n` +
         `Sun Exposure: ${values.sunExposure}\n\n` +
         `--------------------\n` +
-        `Required Capacity: ${values.btuResult}\n`;
+        `Required Capacity: ${btuResult}\n`;
 
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -122,19 +130,17 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     URL.revokeObjectURL(url);
   };
 
-  const btuResult = form.watch('btuResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Enter your room's dimensions and environmental factors to get an estimate of the cooling capacity (in British Thermal Units or BTUs) your air conditioner needs. This is a simplified estimate for residential spaces.
+            Enter your room's dimensions and environmental factors to get an estimate of the cooling capacity (in British Thermal Units or BTUs) your air conditioner needs. This is a simplified estimate for residential spaces. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                 control={form.control}
@@ -204,7 +210,6 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
             </div>
 
             <div className="flex flex-wrap gap-2">
-                <Button type="submit">Calculate</Button>
                 <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                     {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                     AI Assist

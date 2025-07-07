@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -18,7 +18,6 @@ const formSchema = z.object({
   roomWidth: z.string().min(1, 'Room width is required.'),
   roomLength: z.string().min(1, 'Room length is required.'),
   wasteFactor: z.string().min(1, 'Waste factor is required.'),
-  flooringResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -26,6 +25,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [flooringResult, setFlooringResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -34,25 +34,32 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
       roomWidth: '',
       roomLength: '',
       wasteFactor: '10', // 10% waste is standard
-      flooringResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const width = parseFloat(values.roomWidth);
     const length = parseFloat(values.roomLength);
-    const waste = parseFloat(values.wasteFactor) / 100;
-    const area = width * length;
-    const totalArea = area * (1 + waste);
-    form.setValue('flooringResult', `${totalArea.toFixed(2)} sq ft`);
-  };
+    const waste = parseFloat(values.wasteFactor);
+
+    if (width > 0 && length > 0 && waste >= 0) {
+      const area = width * length;
+      const totalArea = area * (1 + (waste/100));
+      setFlooringResult(`${totalArea.toFixed(2)} sq ft`);
+    } else {
+      setFlooringResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'flooringResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -74,7 +81,7 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.flooringResult) {
+    if (!flooringResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -83,7 +90,7 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
       `Room Length: ${values.roomLength} ft\n` +
       `Waste Factor: ${values.wasteFactor}%\n\n`+
       `--------------------\n` +
-      `Total Flooring Needed: ${values.flooringResult}\n`;
+      `Total Flooring Needed: ${flooringResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -95,19 +102,17 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
     URL.revokeObjectURL(url);
   };
   
-  const flooringResult = form.watch('flooringResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-            Measure your room's width and length to find the total area. Don't forget to add a waste factor (typically 5-15%) to account for cuts and mistakes.
+            Measure your room's width and length to find the total area. Don't forget to add a waste factor (typically 5-15%) to account for cuts and mistakes. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="roomWidth" render={({ field }) => (
                     <FormItem>
@@ -133,7 +138,6 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Area</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

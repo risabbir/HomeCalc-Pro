@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -21,7 +21,6 @@ const formSchema = z.object({
   hoursPerDay: z.string().min(1, 'Hours per day is required.'),
   daysPerYear: z.string().min(1, 'Days per year is required.'),
   costPerKwh: z.string().min(1, 'Cost per kWh is required.'),
-  savingsResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -29,6 +28,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [savingsResult, setSavingsResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -40,24 +40,33 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
       hoursPerDay: '8',
       daysPerYear: '120',
       costPerKwh: '0.15',
-      savingsResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    const btuToKwH = 1000;
-    const oldConsumption = (parseFloat(values.coolingBtu) / parseFloat(values.oldSeer)) / btuToKwH;
-    const newConsumption = (parseFloat(values.coolingBtu) / parseFloat(values.newSeer)) / btuToKwH;
-    
-    const totalHours = parseFloat(values.hoursPerDay) * parseFloat(values.daysPerYear);
-    
-    const oldCost = oldConsumption * totalHours * parseFloat(values.costPerKwh);
-    const newCost = newConsumption * totalHours * parseFloat(values.costPerKwh);
-    
-    const savings = oldCost - newCost;
-    
-    form.setValue('savingsResult', `~$${savings.toFixed(2)} per year`);
-  };
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
+    const oldSeer = parseFloat(values.oldSeer);
+    const newSeer = parseFloat(values.newSeer);
+    const coolingBtu = parseFloat(values.coolingBtu);
+    const hoursPerDay = parseFloat(values.hoursPerDay);
+    const daysPerYear = parseFloat(values.daysPerYear);
+    const costPerKwh = parseFloat(values.costPerKwh);
+
+    if (oldSeer > 0 && newSeer > 0 && coolingBtu > 0 && hoursPerDay > 0 && daysPerYear > 0 && costPerKwh > 0) {
+      const btuToKwH = 1000;
+      const oldConsumption = (coolingBtu / oldSeer) / btuToKwH;
+      const newConsumption = (coolingBtu / newSeer) / btuToKwH;
+      const totalHours = hoursPerDay * daysPerYear;
+      const oldCost = oldConsumption * totalHours * costPerKwh;
+      const newCost = newConsumption * totalHours * costPerKwh;
+      const savings = oldCost - newCost;
+      setSavingsResult(`~$${savings.toFixed(2)} per year`);
+    } else {
+      setSavingsResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
@@ -91,7 +100,7 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.savingsResult) {
+    if (!savingsResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -102,7 +111,7 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
       `Usage: ${values.hoursPerDay} hrs/day, ${values.daysPerYear} days/yr\n` +
       `Electricity Cost: $${values.costPerKwh}/kWh\n\n`+
       `--------------------\n` +
-      `Estimated Annual Savings: ${values.savingsResult}\n`;
+      `Estimated Annual Savings: ${savingsResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -115,19 +124,17 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
     URL.revokeObjectURL(url);
   };
   
-  const savingsResult = form.watch('savingsResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            See how much you could save by upgrading to a more energy-efficient AC unit. A higher SEER (Seasonal Energy Efficiency Ratio) rating means lower energy bills. You can find the SEER rating on your current unit's yellow EnergyGuide label.
+            See how much you could save by upgrading to a more energy-efficient AC unit. A higher SEER (Seasonal Energy Efficiency Ratio) rating means lower energy bills. You can find the SEER rating on your current unit's yellow EnergyGuide label. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="oldSeer" render={({ field }) => (
                     <FormItem>
@@ -174,7 +181,6 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Savings</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -18,7 +18,6 @@ const formSchema = z.object({
   length: z.string().min(1, 'Length is required.'),
   width: z.string().min(1, 'Width is required.'),
   depth: z.string().min(1, 'Depth is required.'),
-  soilResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -26,6 +25,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [soilResult, setSoilResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -34,25 +34,33 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       length: '',
       width: '',
       depth: '6',
-      soilResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const length = parseFloat(values.length);
     const width = parseFloat(values.width);
-    const depth = parseFloat(values.depth) / 12; // convert inches to feet
-    const cubicFeet = length * width * depth;
-    const cubicYards = cubicFeet / 27;
-    form.setValue('soilResult', `${cubicFeet.toFixed(2)} cu ft (or ${cubicYards.toFixed(2)} cu yd)`);
-  };
+    const depth = parseFloat(values.depth);
+
+    if (length > 0 && width > 0 && depth > 0) {
+      const depthInFeet = depth / 12; // convert inches to feet
+      const cubicFeet = length * width * depthInFeet;
+      const cubicYards = cubicFeet / 27;
+      setSoilResult(`${cubicFeet.toFixed(2)} cu ft (or ${cubicYards.toFixed(2)} cu yd)`);
+    } else {
+      setSoilResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'soilResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -74,7 +82,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.soilResult) {
+    if (!soilResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -83,7 +91,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       `Bed Width: ${values.width} ft\n` +
       `Soil Depth: ${values.depth} inches\n\n`+
       `--------------------\n` +
-      `Total Soil Needed: ${values.soilResult}\n`;
+      `Total Soil Needed: ${soilResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -95,19 +103,17 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     URL.revokeObjectURL(url);
   };
   
-  const soilResult = form.watch('soilResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-            Starting a new garden bed or topping up an old one? Calculate the volume of soil you'll need in cubic feet and cubic yards.
+            Starting a new garden bed or topping up an old one? Calculate the volume of soil you'll need in cubic feet and cubic yards. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="length" render={({ field }) => (
                     <FormItem>
@@ -133,7 +139,6 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Soil</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

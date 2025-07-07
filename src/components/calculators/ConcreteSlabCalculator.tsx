@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -18,7 +18,6 @@ const formSchema = z.object({
   length: z.string().min(1, 'Length is required.'),
   width: z.string().min(1, 'Width is required.'),
   thickness: z.string().min(1, 'Thickness is required.'),
-  concreteResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -26,6 +25,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [concreteResult, setConcreteResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -34,25 +34,34 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
       length: '',
       width: '',
       thickness: '4',
-      concreteResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const length = parseFloat(values.length);
     const width = parseFloat(values.width);
-    const thickness = parseFloat(values.thickness) / 12; // inches to feet
-    const cubicFeet = length * width * thickness;
-    const cubicYards = cubicFeet / 27;
-    form.setValue('concreteResult', `${cubicYards.toFixed(2)} cubic yards`);
-  };
+    const thickness = parseFloat(values.thickness);
+    
+    if (length > 0 && width > 0 && thickness > 0) {
+      const thicknessInFeet = thickness / 12; // inches to feet
+      const cubicFeet = length * width * thicknessInFeet;
+      const cubicYards = cubicFeet / 27;
+      setConcreteResult(`${cubicYards.toFixed(2)} cubic yards`);
+    } else {
+      setConcreteResult(null);
+    }
+
+  }, [watchedValues])
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'concreteResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -74,7 +83,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.concreteResult) {
+    if (!concreteResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -83,7 +92,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
       `Slab Width: ${values.width} ft\n` +
       `Slab Thickness: ${values.thickness} in\n\n`+
       `--------------------\n` +
-      `Concrete Needed: ${values.concreteResult}\n`;
+      `Concrete Needed: ${concreteResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -95,19 +104,17 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
     URL.revokeObjectURL(url);
   };
   
-  const concreteResult = form.watch('concreteResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-            Planning a foundation, patio, or sidewalk? Enter the dimensions of your slab to calculate the volume of concrete required in cubic yards.
+            Planning a foundation, patio, or sidewalk? Enter the dimensions of your slab to calculate the volume of concrete required in cubic yards. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="length" render={({ field }) => (
                     <FormItem>
@@ -133,7 +140,6 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Concrete</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

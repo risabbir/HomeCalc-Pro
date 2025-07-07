@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -18,7 +18,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 const formSchema = z.object({
   climateZone: z.string().min(1, 'Climate zone is required.'),
   existingInsulation: z.string().min(1, 'Existing insulation is required.'),
-  insulationResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -30,6 +29,7 @@ const R_VALUES_BY_ZONE: { [key: string]: number } = {
 export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [insulationResult, setInsulationResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -37,30 +37,38 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
     defaultValues: {
       climateZone: '5',
       existingInsulation: '0',
-      insulationResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    const targetRValue = R_VALUES_BY_ZONE[values.climateZone];
-    const existingInches = parseFloat(values.existingInsulation);
-    const existingRValue = existingInches * 3.2; // Approximate R-value per inch for loose-fill fiberglass
+  const watchedValues = form.watch();
 
-    if (targetRValue > existingRValue) {
-      const neededRValue = targetRValue - existingRValue;
-      const neededInches = neededRValue / 3.2;
-      form.setValue('insulationResult', `Add ${neededInches.toFixed(1)} inches (R-${neededRValue.toFixed(0)}) to reach target R-${targetRValue}.`);
+  useEffect(() => {
+    const values = watchedValues;
+    const climateZone = values.climateZone;
+    const existingInsulation = parseFloat(values.existingInsulation);
+
+    if (climateZone && !isNaN(existingInsulation) && existingInsulation >= 0) {
+      const targetRValue = R_VALUES_BY_ZONE[climateZone];
+      const existingRValue = existingInsulation * 3.2; // Approximate R-value per inch for loose-fill fiberglass
+
+      if (targetRValue > existingRValue) {
+        const neededRValue = targetRValue - existingRValue;
+        const neededInches = neededRValue / 3.2;
+        setInsulationResult(`Add ${neededInches.toFixed(1)} inches (R-${neededRValue.toFixed(0)}) to reach target R-${targetRValue}.`);
+      } else {
+        setInsulationResult(`Your current insulation (R-${existingRValue.toFixed(0)}) meets or exceeds the recommended R-${targetRValue}.`);
+      }
     } else {
-      form.setValue('insulationResult', `Your current insulation (R-${existingRValue.toFixed(0)}) meets or exceeds the recommended R-${targetRValue}.`);
+        setInsulationResult(null);
     }
-  };
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'insulationResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -82,7 +90,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.insulationResult) {
+    if (!insulationResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -90,7 +98,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
       `Climate Zone: ${values.climateZone}\n` +
       `Existing Insulation: ${values.existingInsulation} inches\n\n`+
       `--------------------\n` +
-      `Recommendation: ${values.insulationResult}\n`;
+      `Recommendation: ${insulationResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -102,19 +110,17 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
     URL.revokeObjectURL(url);
   };
   
-  const insulationResult = form.watch('insulationResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-            Proper attic insulation is key to energy efficiency. Find your U.S. climate zone and measure your existing insulation to see if you need an upgrade.
+            Proper attic insulation is key to energy efficiency. Find your U.S. climate zone and measure your existing insulation to see if you need an upgrade. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="climateZone" render={({ field }) => (
                     <FormItem>
@@ -140,7 +146,6 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

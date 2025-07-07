@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -18,7 +18,6 @@ const formSchema = z.object({
   annualBill: z.string().min(1, 'Annual bill is required.'),
   setbackDegrees: z.string().min(1, 'Setback degrees is required.'),
   setbackHours: z.string().min(1, 'Setback hours/day is required.'),
-  savingsResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -26,6 +25,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [savingsResult, setSavingsResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -34,28 +34,33 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
       annualBill: '',
       setbackDegrees: '8',
       setbackHours: '8',
-      savingsResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    // Simplified savings calculation (1% per degree for 8 hours)
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const bill = parseFloat(values.annualBill);
     const degrees = parseFloat(values.setbackDegrees);
     const hours = parseFloat(values.setbackHours);
     
-    const savingsPercentage = degrees * (hours / 8) * 0.01;
-    const annualSavings = bill * savingsPercentage;
-
-    form.setValue('savingsResult', `~$${annualSavings.toFixed(2)} per year`);
-  };
+    if (bill > 0 && degrees > 0 && hours > 0) {
+      // Simplified savings calculation (1% per degree for 8 hours)
+      const savingsPercentage = degrees * (hours / 8) * 0.01;
+      const annualSavings = bill * savingsPercentage;
+      setSavingsResult(`~$${annualSavings.toFixed(2)} per year`);
+    } else {
+      setSavingsResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'savingsResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -77,7 +82,7 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.savingsResult) {
+    if (!savingsResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -86,7 +91,7 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
       `Temperature Setback: ${values.setbackDegrees}°F\n` +
       `Setback Duration: ${values.setbackHours} hours/day\n\n`+
       `--------------------\n` +
-      `Estimated Savings: ${values.savingsResult}\n`;
+      `Estimated Savings: ${savingsResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -98,19 +103,17 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
     URL.revokeObjectURL(url);
   };
   
-  const savingsResult = form.watch('savingsResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-            Using a programmable thermostat to set back the temperature while you're away or asleep can lead to significant savings. Estimate how much you could save.
+            Using a programmable thermostat to set back the temperature while you're away or asleep can lead to significant savings. Estimate how much you could save. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="annualBill" render={({ field }) => (
                     <FormItem>
@@ -136,7 +139,6 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Savings</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

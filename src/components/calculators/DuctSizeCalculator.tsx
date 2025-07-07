@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -17,8 +17,6 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 const formSchema = z.object({
   airFlow: z.string().min(1, 'Air Flow (CFM) is required.'),
   frictionLoss: z.string().min(1, 'Friction loss is required.'),
-  ductType: z.string().min(1, 'Duct type is required.'),
-  ductSizeResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -26,6 +24,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [ductSizeResult, setDuctSizeResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -33,25 +32,31 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
     defaultValues: {
       airFlow: '',
       frictionLoss: '0.1',
-      ductType: 'Round Metal',
-      ductSizeResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    // Simplified calculation for demonstration
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const cfm = parseFloat(values.airFlow);
     const friction = parseFloat(values.frictionLoss);
-    const diameter = Math.pow((4 * cfm) / (Math.PI * 100 * friction), 1/2.5) * 12;
-    form.setValue('ductSizeResult', `Recommended: ${diameter.toFixed(1)}-inch round duct`);
-  };
+
+    if (cfm > 0 && friction > 0) {
+      // Simplified calculation for demonstration (Ductulator formula approximation)
+      const diameter = Math.pow((4 * cfm) / (Math.PI * 100 * friction), 1/2.5) * 12;
+      setDuctSizeResult(`Recommended: ${diameter.toFixed(1)}-inch round duct`);
+    } else {
+      setDuctSizeResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'ductSizeResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -73,16 +78,15 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.ductSizeResult) {
+    if (!ductSizeResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
       `Air Flow: ${values.airFlow} CFM\n` +
-      `Friction Loss: ${values.frictionLoss} in. w.g./100 ft\n` +
-      `Duct Type: ${values.ductType}\n\n`+
+      `Friction Loss: ${values.frictionLoss} in. w.g./100 ft\n\n`+
       `--------------------\n` +
-      `Result: ${values.ductSizeResult}\n`;
+      `Result: ${ductSizeResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -94,19 +98,17 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
     URL.revokeObjectURL(url);
   };
   
-  const ductSizeResult = form.watch('ductSizeResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-            Ensure efficient airflow in your HVAC system by calculating the correct duct size. This requires technical inputs like Air Flow (CFM) and Friction Loss Rate.
+            Ensure efficient airflow in your HVAC system by calculating the correct duct size. This requires technical inputs like Air Flow (CFM) and Friction Loss Rate. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="airFlow" render={({ field }) => (
                     <FormItem>
@@ -125,7 +127,6 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Size</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -20,7 +20,6 @@ const formSchema = z.object({
   deckLength: z.string().min(1, 'Deck length is required.'),
   boardWidth: z.string().min(1, 'Board width is required.'),
   joistSpacing: z.string().min(1, 'Joist spacing is required.'),
-  deckingResult: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -28,6 +27,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
+  const [deckingResult, setDeckingResult] = useState<string | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -37,29 +37,34 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
       deckLength: '',
       boardWidth: '5.5',
       joistSpacing: '16',
-      deckingResult: '',
     },
   });
 
-  const onSubmit = (values: FormValues) => {
+  const watchedValues = form.watch();
+
+  useEffect(() => {
+    const values = watchedValues;
     const width = parseFloat(values.deckWidth);
     const length = parseFloat(values.deckLength);
     const boardW = parseFloat(values.boardWidth);
     const joistS = parseFloat(values.joistSpacing);
 
-    const boardGap = 0.125; // 1/8 inch gap
-    const boardsNeeded = Math.ceil( (width * 12) / (boardW + boardGap) );
-    const joistsNeeded = Math.ceil( (length * 12) / joistS ) + 1;
-
-    form.setValue('deckingResult', `${boardsNeeded} deck boards (at ${length} ft length) & ${joistsNeeded} joists (at ${width} ft length)`);
-  };
+    if (width > 0 && length > 0 && boardW > 0 && joistS > 0) {
+      const boardGap = 0.125; // 1/8 inch gap
+      const boardsNeeded = Math.ceil( (width * 12) / (boardW + boardGap) );
+      const joistsNeeded = Math.ceil( (length * 12) / joistS ) + 1;
+      setDeckingResult(`${boardsNeeded} deck boards (at ${length} ft length) & ${joistsNeeded} joists (at ${width} ft length)`);
+    } else {
+      setDeckingResult(null);
+    }
+  }, [watchedValues]);
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined && key !== 'deckingResult')
+      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
     );
     try {
       const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
@@ -81,7 +86,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!values.deckingResult) {
+    if (!deckingResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
@@ -91,7 +96,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
       `Board Width: ${values.boardWidth} in\n`+
       `Joist Spacing: ${values.joistSpacing} in\n\n`+
       `--------------------\n` +
-      `Materials Needed: ${values.deckingResult}\n`;
+      `Materials Needed: ${deckingResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -103,19 +108,17 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
     URL.revokeObjectURL(url);
   };
   
-  const deckingResult = form.watch('deckingResult');
-
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>{calculator.name}</CardTitle>
         <CardDescription>
-          Plan your new deck project by calculating the number of deck boards and joists you'll need based on your deck's dimensions and structure.
+          Plan your new deck project by calculating the number of deck boards and joists you'll need based on your deck's dimensions and structure. Results are calculated automatically.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="deckWidth" render={({ field }) => (
                     <FormItem>
@@ -155,7 +158,6 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button type="submit">Calculate Materials</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
