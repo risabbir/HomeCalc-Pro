@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -46,11 +46,8 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       sunExposure: 'shady',
     },
   });
-
-  const watchedValues = form.watch();
-
-  useEffect(() => {
-    const values = watchedValues;
+  
+  const onSubmit = (values: FormValues) => {
     const area = parseFloat(values.roomArea);
     const height = parseFloat(values.ceilingHeight);
 
@@ -66,7 +63,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     } else {
       setBtuResult(null);
     }
-  }, [watchedValues]);
+  };
 
   const handleAiAssist = async () => {
     setLoading(true);
@@ -135,12 +132,12 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Enter your room's dimensions and environmental factors to get an estimate of the cooling capacity (in British Thermal Units or BTUs) your air conditioner needs. This is a simplified estimate for residential spaces. Results are calculated automatically.
+            Enter your room's dimensions and environmental factors to get an estimate of the cooling capacity (in British Thermal Units or BTUs) your air conditioner needs. This is a simplified estimate for residential spaces. Press calculate to see the result.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                 control={form.control}
@@ -208,12 +205,13 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                   )}
                 />
             </div>
-
-            <div className="flex flex-wrap gap-2">
-                <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
-                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
-                    AI Assist
-                </Button>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button type="submit">Calculate</Button>
+              <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
+                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
+                  AI Assist
+              </Button>
             </div>
           </form>
         </Form>

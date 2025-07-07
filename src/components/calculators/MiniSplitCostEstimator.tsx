@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -37,10 +37,7 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
     },
   });
 
-  const watchedValues = form.watch();
-
-  useEffect(() => {
-    const values = watchedValues;
+  const onSubmit = (values: FormValues) => {
     const zones = parseInt(values.zones);
     const btu = parseInt(values.btuRating);
     const seer = parseInt(values.seerRating);
@@ -54,7 +51,7 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
     } else {
       setCostResult(null);
     }
-  }, [watchedValues]);
+  };
 
   const handleAiAssist = async () => {
     setLoading(true);
@@ -107,14 +104,14 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>{calculator.name}</CardTitle>
+        <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-          Estimate the total cost to purchase and install a ductless mini-split system. Costs can vary based on brand, complexity, and location. Results are calculated automatically.
+          Estimate the total cost to purchase and install a ductless mini-split system. Costs can vary based on brand, complexity, and location. Press calculate to see the result.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="zones" render={({ field }) => (
                     <FormItem>
@@ -138,8 +135,9 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
                     </FormItem>
                 )}/>
             </div>
-
-            <div className="flex flex-wrap gap-2">
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button type="submit">Estimate Cost</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

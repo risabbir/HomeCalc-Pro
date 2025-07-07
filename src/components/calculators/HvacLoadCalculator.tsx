@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -37,10 +37,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
     },
   });
 
-  const watchedValues = form.watch();
-
-  useEffect(() => {
-    const values = watchedValues;
+  const onSubmit = (values: FormValues) => {
     const area = parseFloat(values.totalArea);
     const windows = parseFloat(values.windowsArea);
     const climateZone = parseFloat(values.climateZone);
@@ -54,7 +51,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
     } else {
       setLoadResult(null);
     }
-  }, [watchedValues]);
+  };
 
   const handleAiAssist = async () => {
     setLoading(true);
@@ -107,14 +104,14 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>{calculator.name}</CardTitle>
+        <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            A simplified "Manual J" calculation to determine the heating and cooling load for your entire home, essential for sizing a new HVAC system. Results are calculated automatically.
+            A simplified "Manual J" calculation to determine the heating and cooling load for your entire home, essential for sizing a new HVAC system. Press calculate to see the result.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="totalArea" render={({ field }) => (
                     <FormItem>
@@ -139,7 +136,8 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
                 )}/>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button type="submit">Calculate Load</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

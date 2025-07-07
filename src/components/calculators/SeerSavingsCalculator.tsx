@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -43,10 +43,7 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
     },
   });
 
-  const watchedValues = form.watch();
-
-  useEffect(() => {
-    const values = watchedValues;
+  const onSubmit = (values: FormValues) => {
     const oldSeer = parseFloat(values.oldSeer);
     const newSeer = parseFloat(values.newSeer);
     const coolingBtu = parseFloat(values.coolingBtu);
@@ -66,7 +63,7 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
     } else {
       setSavingsResult(null);
     }
-  }, [watchedValues]);
+  };
 
   const handleAiAssist = async () => {
     setLoading(true);
@@ -129,12 +126,12 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            See how much you could save by upgrading to a more energy-efficient AC unit. A higher SEER (Seasonal Energy Efficiency Ratio) rating means lower energy bills. You can find the SEER rating on your current unit's yellow EnergyGuide label. Results are calculated automatically.
+            See how much you could save by upgrading to a more energy-efficient AC unit. A higher SEER (Seasonal Energy Efficiency Ratio) rating means lower energy bills. You can find the SEER rating on your current unit's yellow EnergyGuide label. Press calculate to see the result.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="oldSeer" render={({ field }) => (
                     <FormItem>
@@ -179,8 +176,9 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
                     </FormItem>
                 )}/>
             </div>
-
-            <div className="flex flex-wrap gap-2">
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button type="submit">Calculate Savings</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

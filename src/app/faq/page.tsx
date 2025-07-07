@@ -1,5 +1,4 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { H2 } from "@/components/ui/typography";
 
 export const metadata = {
   title: "FAQ | HomeCalc Pro",
@@ -36,8 +35,8 @@ export default function FaqPage() {
         <Accordion type="single" collapsible className="w-full">
             {faqs.map((faq, index) => (
                 <AccordionItem key={index} value={`item-${index}`}>
-                    <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
-                    <AccordionContent>
+                    <AccordionTrigger className="text-left text-lg">{faq.question}</AccordionTrigger>
+                    <AccordionContent className="text-base">
                         {faq.answer}
                     </AccordionContent>
                 </AccordionItem>

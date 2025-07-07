@@ -14,17 +14,17 @@ export function Footer() {
             <p className="text-sm text-muted-foreground">Your trusted partner for home project calculations.</p>
           </div>
           <div className="md:col-start-3">
-            <h4 className="font-semibold text-foreground mb-4">Legal</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="#" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary">Terms of Service</Link></li>
-            </ul>
-          </div>
-          <div>
             <h4 className="font-semibold text-foreground mb-4">Resources</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/faq" className="text-muted-foreground hover:text-primary">FAQ</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary">Contact Us</Link></li>
+              <li><Link href="/resources" className="text-muted-foreground hover:text-primary">Helpful Articles</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold text-foreground mb-4">Legal</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/legal" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
+              <li><Link href="/legal" className="text-muted-foreground hover:text-primary">Terms of Service</Link></li>
             </ul>
           </div>
         </div>

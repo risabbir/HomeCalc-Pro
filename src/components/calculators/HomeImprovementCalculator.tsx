@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -31,10 +31,7 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
     defaultValues: { wallArea: '', coats: '2' },
   });
 
-  const watchedValues = form.watch();
-
-  useEffect(() => {
-    const values = watchedValues;
+  const onSubmit = (values: FormValues) => {
     const GALLONS_PER_SQFT = 350;
     const area = parseFloat(values.wallArea);
     const coats = parseInt(values.coats, 10);
@@ -45,7 +42,7 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
     } else {
       setPaintGallons(null);
     }
-  }, [watchedValues]);
+  };
 
   const handleAiAssist = async () => {
     setLoading(true);
@@ -102,12 +99,12 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Figure out how much paint you'll need. Calculate the total area of your walls (length x height) and subtract the area of any doors and windows. A standard gallon of paint covers about 350 sq ft. Two coats are recommended for best coverage. Results are calculated automatically.
+            Figure out how much paint you'll need. Calculate the total area of your walls (length x height) and subtract the area of any doors and windows. A standard gallon of paint covers about 350 sq ft. Two coats are recommended for best coverage. Press calculate to see the result.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField control={form.control} name="wallArea" render={({ field }) => (
                   <FormItem>
@@ -124,7 +121,9 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
                   </FormItem>
               )}/>
             </div>
-            <div className="flex flex-wrap gap-2">
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button type="submit">Calculate</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -37,10 +37,7 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
     },
   });
 
-  const watchedValues = form.watch();
-
-  useEffect(() => {
-    const values = watchedValues;
+  const onSubmit = (values: FormValues) => {
     const bill = parseFloat(values.annualBill);
     const degrees = parseFloat(values.setbackDegrees);
     const hours = parseFloat(values.setbackHours);
@@ -53,7 +50,7 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
     } else {
       setSavingsResult(null);
     }
-  }, [watchedValues]);
+  };
 
   const handleAiAssist = async () => {
     setLoading(true);
@@ -106,14 +103,14 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>{calculator.name}</CardTitle>
+        <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Using a programmable thermostat to set back the temperature while you're away or asleep can lead to significant savings. Estimate how much you could save. Results are calculated automatically.
+            Using a programmable thermostat to set back the temperature while you're away or asleep can lead to significant savings. Estimate how much you could save. Press calculate to see the result.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="annualBill" render={({ field }) => (
                     <FormItem>
@@ -137,8 +134,9 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
                     </FormItem>
                 )}/>
             </div>
-
-            <div className="flex flex-wrap gap-2">
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button type="submit">Calculate Savings</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
