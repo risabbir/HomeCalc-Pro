@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -13,11 +14,15 @@ import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Download, Loader2, Wand2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
-  annualBill: z.string().min(1, 'Annual bill is required.'),
-  setbackDegrees: z.string().min(1, 'Setback degrees is required.'),
-  setbackHours: z.string().min(1, 'Setback hours/day is required.'),
+  annualHeatingCost: z.string().min(1, 'Annual heating cost is required.'),
+  heatingSetbackTemp: z.string().min(1, 'Heating setback is required.'),
+  heatingSetbackHours: z.string().min(1, 'Heating setback hours are required.'),
+  annualCoolingCost: z.string().min(1, 'Annual cooling cost is required.'),
+  coolingSetupTemp: z.string().min(1, 'Cooling setup is required.'),
+  coolingSetupHours: z.string().min(1, 'Cooling setup hours are required.'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -31,22 +36,34 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      annualBill: '',
-      setbackDegrees: '8',
-      setbackHours: '8',
+      annualHeatingCost: '1000',
+      heatingSetbackTemp: '7',
+      heatingSetbackHours: '8',
+      annualCoolingCost: '500',
+      coolingSetupTemp: '4',
+      coolingSetupHours: '8',
     },
   });
 
   const onSubmit = (values: FormValues) => {
-    const bill = parseFloat(values.annualBill);
-    const degrees = parseFloat(values.setbackDegrees);
-    const hours = parseFloat(values.setbackHours);
-    
-    if (bill > 0 && degrees > 0 && hours > 0) {
-      // Simplified savings calculation (1% per degree for 8 hours)
-      const savingsPercentage = degrees * (hours / 8) * 0.01;
-      const annualSavings = bill * savingsPercentage;
-      setSavingsResult(`~$${annualSavings.toFixed(2)} per year`);
+    const heatingCost = parseFloat(values.annualHeatingCost);
+    const coolingCost = parseFloat(values.annualCoolingCost);
+    const heatingDegrees = parseFloat(values.heatingSetbackTemp);
+    const heatingHours = parseFloat(values.heatingSetbackHours);
+    const coolingDegrees = parseFloat(values.coolingSetupTemp);
+    const coolingHours = parseFloat(values.coolingSetupHours);
+
+    // Rule of thumb: 1% savings per degree for an 8-hour period.
+    const heatingSavingsFactor = (heatingDegrees * (heatingHours / 8)) / 100;
+    const coolingSavingsFactor = (coolingDegrees * (coolingHours / 8)) / 100;
+
+    const heatingSavings = heatingCost * heatingSavingsFactor;
+    const coolingSavings = coolingCost * coolingSavingsFactor;
+
+    const totalSavings = heatingSavings + coolingSavings;
+
+    if (!isNaN(totalSavings) && totalSavings >= 0) {
+      setSavingsResult(`~$${totalSavings.toFixed(2)} per year`);
     } else {
       setSavingsResult(null);
     }
@@ -84,11 +101,16 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
       return;
     }
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Annual Heating/Cooling Bill: $${values.annualBill}\n` +
-      `Temperature Setback: ${values.setbackDegrees}°F\n` +
-      `Setback Duration: ${values.setbackHours} hours/day\n\n`+
+      `--- HEATING ---\n` +
+      `Annual Heating Bill: $${values.annualHeatingCost}\n` +
+      `Temperature Setback: ${values.heatingSetbackTemp}°F\n` +
+      `Setback Duration: ${values.heatingSetbackHours} hours/day\n\n`+
+      `--- COOLING ---\n` +
+      `Annual Cooling Bill: $${values.annualCoolingCost}\n` +
+      `Temperature Setup: ${values.coolingSetupTemp}°F\n` +
+      `Setup Duration: ${values.coolingSetupHours} hours/day\n\n`+
       `--------------------\n` +
-      `Estimated Savings: ${savingsResult}\n`;
+      `Total Estimated Savings: ${savingsResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -101,39 +123,68 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
   };
   
   return (
-    <Card className="max-w-2xl mx-auto">
+    <Card className="max-w-4xl mx-auto">
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Using a programmable thermostat to set back the temperature while you're away or asleep can lead to significant savings. Estimate how much you could save. Press calculate to see the result.
+            A smart or programmable thermostat is a great way to save on energy costs. By setting back the temperature when you're asleep or away, you can reduce your heating and cooling usage. This calculator estimates your potential annual savings based on the U.S. Department of Energy's formula (approximately 1% savings for each degree of setback over an 8-hour period). Enter your costs and setback settings for both heating and cooling seasons to see your combined potential savings.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <FormField control={form.control} name="annualBill" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Annual Heating/Cooling Bill ($)</FormLabel>
-                        <FormControl><Input type="number" placeholder="e.g., 1500" {...field} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}/>
-                <FormField control={form.control} name="setbackDegrees" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Temp. Setback (°F)</FormLabel>
-                        <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}/>
-                <FormField control={form.control} name="setbackHours" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Setback Hours/Day</FormLabel>
-                        <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}/>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                <div className="space-y-6">
+                    <h4 className="text-lg font-semibold border-b pb-2">Heating Savings (Winter)</h4>
+                    <FormField control={form.control} name="annualHeatingCost" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Annual Heating Bill ($)</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 1000" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                    <FormField control={form.control} name="heatingSetbackTemp" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Temp. Setback (How many degrees lower)</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 7" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                    <FormField control={form.control} name="heatingSetbackHours" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Setback Duration (Hours/Day)</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                </div>
+                 <div className="space-y-6">
+                    <h4 className="text-lg font-semibold border-b pb-2">Cooling Savings (Summer)</h4>
+                    <FormField control={form.control} name="annualCoolingCost" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Annual Cooling Bill ($)</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 500" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                    <FormField control={form.control} name="coolingSetupTemp" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Temp. Setup (How many degrees higher)</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 4" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                    <FormField control={form.control} name="coolingSetupHours" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Setup Duration (Hours/Day)</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                </div>
             </div>
+            
+            <Separator />
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Button type="submit">Calculate Savings</Button>
