@@ -15,6 +15,14 @@ const faqs = [
         answer: "The AI Assistant uses a powerful language model to help you fill in the blanks. When you're missing a value, it provides a reasonable estimate based on common scenarios and the information you've already provided. It also offers helpful hints to guide you in finding the exact information yourself."
     },
     {
+        question: "How are the cost estimates (e.g., kitchen remodel, furnace installation) calculated?",
+        answer: "Our cost estimators use industry-standard averages for materials and labor based on the inputs you provide, like square footage and quality level. These are intended for budget planning and are not a formal quote. Local prices, specific material choices, and project complexity will affect the final cost, so we always recommend getting quotes from local professionals."
+    },
+    {
+        question: "What's the difference between the 'SEER Savings' and 'Energy Savings' calculators?",
+        answer: "The SEER Savings Calculator is specifically for comparing the efficiency of two air conditioning units using their SEER/SEER2 ratings. The general Energy Savings Calculator is more versatile; you can use it to compare any two electrical appliances (like an old fridge vs. a new one, or incandescent vs. LED bulbs) based on their wattage and daily usage."
+    },
+    {
         question: "Can I save my calculation results?",
         answer: "Yes! Each calculator has a 'Download Results' button that appears after you perform a calculation. This will download a simple text file with your inputs and the calculated result for your records."
     },
@@ -36,7 +44,7 @@ export default function FaqPage() {
             {faqs.map((faq, index) => (
                 <AccordionItem key={index} value={`item-${index}`}>
                     <AccordionTrigger className="text-left text-lg">{faq.question}</AccordionTrigger>
-                    <AccordionContent className="text-base">
+                    <AccordionContent className="text-base text-muted-foreground">
                         {faq.answer}
                     </AccordionContent>
                 </AccordionItem>
