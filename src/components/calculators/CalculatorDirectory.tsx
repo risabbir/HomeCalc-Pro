@@ -38,26 +38,26 @@ export function CalculatorDirectory() {
 
   return (
     <div id="calculators">
-       <div className="flex flex-col items-center gap-6 mb-16 max-w-3xl mx-auto">
-        <div className="relative w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+       <div className="flex flex-col md:flex-row items-center gap-4 mb-16 max-w-4xl mx-auto">
+        <div className="relative flex-grow w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search for a calculator by name or keyword..."
-            className="w-full pl-12 h-12 text-base rounded-lg shadow-sm border-border focus:ring-primary"
+            placeholder="Search for a calculator..."
+            className="w-full pl-10 h-11 text-base rounded-md shadow-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             aria-label="Search for a calculator"
           />
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-2 flex-wrap">
           {categories.map(cat => (
             <Button
               key={cat}
-              variant={selectedCategory === cat ? 'default' : 'outline'}
+              variant={selectedCategory === cat ? 'default' : 'ghost'}
               onClick={() => setSelectedCategory(cat)}
-              className="rounded-full px-4 py-1 h-auto text-sm"
+              className="rounded-md px-3 h-11"
             >
               {cat}
             </Button>
