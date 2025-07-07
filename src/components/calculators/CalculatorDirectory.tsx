@@ -6,13 +6,7 @@ import { CalculatorCard } from './CalculatorCard';
 import { calculators } from '@/lib/calculators';
 import { Search } from 'lucide-react';
 import { H2 } from '@/components/ui/typography';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button } from '@/components/ui/button';
 
 const categories = ['All', 'HVAC', 'Home Improvement', 'Gardening', 'Other'];
 
@@ -44,28 +38,30 @@ export function CalculatorDirectory() {
 
   return (
     <div id="calculators">
-      <div className="max-w-3xl mx-auto mb-16">
-        <div className="relative flex items-center w-full bg-card border-2 border-border rounded-full shadow-sm focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/50 focus-within:ring-offset-background transition-all">
-          <Search className="absolute left-5 h-5 w-5 text-muted-foreground pointer-events-none" />
+       <div className="flex flex-col items-center gap-6 mb-16 max-w-3xl mx-auto">
+        <div className="relative w-full">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search calculators..."
-            className="w-full flex-grow pl-14 pr-4 py-3 text-base h-14 rounded-full border-none bg-transparent focus:ring-0"
+            placeholder="Search for a calculator by name or keyword..."
+            className="w-full pl-12 h-12 text-base rounded-lg shadow-sm border-border focus:ring-primary"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             aria-label="Search for a calculator"
           />
-          <div className="h-8 border-l border-border mx-2"></div>
-          <Select onValueChange={setSelectedCategory} defaultValue={selectedCategory}>
-            <SelectTrigger className="w-auto flex-shrink-0 pr-6 pl-2 h-full rounded-full border-none bg-transparent text-base focus:ring-0 focus:bg-accent text-muted-foreground">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map(cat => (
-                <SelectItem key={cat} value={cat} className="text-base">{cat}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {categories.map(cat => (
+            <Button
+              key={cat}
+              variant={selectedCategory === cat ? 'default' : 'outline'}
+              onClick={() => setSelectedCategory(cat)}
+              className="rounded-full px-4 py-1 h-auto text-sm"
+            >
+              {cat}
+            </Button>
+          ))}
         </div>
       </div>
 
