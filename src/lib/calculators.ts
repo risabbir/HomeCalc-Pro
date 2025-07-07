@@ -2,7 +2,7 @@ import type { LucideIcon } from 'lucide-react';
 import { 
   ThermometerSun, Wrench, Sprout, Home, Wind, PlugZap, Building2, AirVent, 
   Heater, Snowflake, Gauge, Square, Wallpaper as WallpaperIcon, Shovel,
-  CookingPot, Construction, Layers, Warehouse, Fan
+  CookingPot, Construction, Layers, Warehouse, Fan, TrendingUp
 } from 'lucide-react';
 
 export interface Calculator {
@@ -37,10 +37,10 @@ export const calculators: Calculator[] = [
     category: 'HVAC',
   },
   {
-    slug: 'seer-savings',
-    name: 'SEER Energy Savings',
-    description: 'Estimate savings from upgrading to a higher SEER-rated AC unit.',
-    Icon: Wind,
+    slug: 'energy-savings-calculator',
+    name: 'Energy Savings Calculator',
+    description: 'Estimate savings and payback period by upgrading to a more energy-efficient AC unit (SEER2 compatible).',
+    Icon: TrendingUp,
     category: 'HVAC',
   },
    {
