@@ -10,6 +10,7 @@ export function Logo({ className }: { className?: string }) {
       height={27}
       className={cn(className)}
       priority
+      unoptimized
     />
   );
 }
