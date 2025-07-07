@@ -35,7 +35,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
+export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const [savingsResult, setSavingsResult] = useState<{ annualSavings: number; paybackPeriod: string | null; oldCost: number; newCost: number; } | null>(null);

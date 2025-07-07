@@ -2,7 +2,8 @@ import { calculators } from '@/lib/calculators';
 import { notFound } from 'next/navigation';
 
 import { HvacCalculator } from '@/components/calculators/HvacCalculator';
-import { EnergySavingsCalculator } from '@/components/calculators/SeerSavingsCalculator';
+import { SeerSavingsCalculator } from '@/components/calculators/SeerSavingsCalculator';
+import { EnergySavingsCalculator } from '@/components/calculators/EnergySavingsCalculator';
 import { ApplianceEnergyCostCalculator } from '@/components/calculators/ApplianceEnergyCostCalculator';
 import { HomeImprovementCalculator } from '@/components/calculators/HomeImprovementCalculator';
 import { GardeningCalculator } from '@/components/calculators/GardeningCalculator';
@@ -49,8 +50,8 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
       // HVAC
       case 'btu-calculator':
         return <HvacCalculator calculator={calculatorData} />;
-      case 'energy-savings-calculator':
-        return <EnergySavingsCalculator calculator={calculatorData} />;
+      case 'seer-savings-calculator':
+        return <SeerSavingsCalculator calculator={calculatorData} />;
       case 'hvac-load':
         return <HvacLoadCalculator calculator={calculatorData} />;
       case 'duct-size':
@@ -91,6 +92,9 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
         return <ApplianceEnergyCostCalculator calculator={calculatorData} />;
       case 'mortgage-calculator':
         return <GeneralHomeCalculator calculator={calculatorData} />;
+      case 'energy-savings-calculator':
+        return <EnergySavingsCalculator calculator={calculatorData} />;
+
 
       default:
         return null;

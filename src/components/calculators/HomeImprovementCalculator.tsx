@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
@@ -15,8 +15,12 @@ import { Download, Loader2, Wand2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const formSchema = z.object({
-  wallArea: z.string().min(1, 'Wall area is required.'),
+  roomLength: z.string().min(1, 'Room length is required.'),
+  roomWidth: z.string().min(1, 'Room width is required.'),
+  wallHeight: z.string().min(1, 'Wall height is required.'),
   coats: z.string().min(1, 'Number of coats is required.'),
+  numWindows: z.string().optional(),
+  numDoors: z.string().optional(),
 });
 type FormValues = z.infer<typeof formSchema>;
 
@@ -28,16 +32,30 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: { wallArea: '', coats: '2' },
+    defaultValues: { 
+        roomLength: '',
+        roomWidth: '',
+        wallHeight: '8',
+        coats: '2',
+        numWindows: '0',
+        numDoors: '0',
+    },
   });
 
   const onSubmit = (values: FormValues) => {
     const GALLONS_PER_SQFT = 350;
-    const area = parseFloat(values.wallArea);
+    const length = parseFloat(values.roomLength);
+    const width = parseFloat(values.roomWidth);
+    const height = parseFloat(values.wallHeight);
     const coats = parseInt(values.coats, 10);
+    const windows = parseInt(values.numWindows || '0', 10);
+    const doors = parseInt(values.numDoors || '0', 10);
 
-    if (area > 0 && coats > 0) {
-      const gallonsNeeded = (area * coats) / GALLONS_PER_SQFT;
+    if (length > 0 && width > 0 && height > 0 && coats > 0) {
+      const totalWallArea = 2 * (length + width) * height;
+      const areaToSubtract = (windows * 15) + (doors * 21); // Standard area for windows and doors
+      const paintableArea = totalWallArea - areaToSubtract;
+      const gallonsNeeded = (paintableArea * coats) / GALLONS_PER_SQFT;
       setPaintGallons(`${gallonsNeeded.toFixed(2)} gallons`);
     } else {
       setPaintGallons(null);
@@ -48,13 +66,8 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = {
-        wallArea: values.wallArea,
-        coats: values.coats,
-    };
-
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -77,9 +90,11 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} (Paint Estimation)\n\n` +
-      `Total Wall Area: ${values.wallArea} sq ft\n` +
-      `Number of Coats: ${values.coats}\n\n` +
+    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
+      `Room Dimensions (LxWxH): ${values.roomLength} ft x ${values.roomWidth} ft x ${values.wallHeight} ft\n` +
+      `Number of Coats: ${values.coats}\n` +
+      `Number of Windows: ${values.numWindows || '0'}\n` +
+      `Number of Doors: ${values.numDoors || '0'}\n\n` +
       `--------------------\n` +
       `Paint Needed: ${paintGallons}\n`;
     
@@ -87,7 +102,7 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'paint-estimation-results.txt';
+    a.download = `${calculator.slug}-results.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -99,27 +114,61 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Figure out how much paint you'll need. Calculate the total area of your walls (length x height) and subtract the area of any doors and windows. A standard gallon of paint covers about 350 sq ft. Two coats are recommended for best coverage. Press calculate to see the result.
+            Figure out how much paint you'll need. Enter your room's dimensions and the number of coats. We'll automatically subtract standard-sized areas for doors and windows. A standard gallon of paint covers about 350 sq ft.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField control={form.control} name="wallArea" render={({ field }) => (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <FormField control={form.control} name="roomLength" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Total Wall Area (sq ft)</FormLabel>
-                    <FormControl><Input type="number" placeholder="e.g., 400" {...field} /></FormControl>
+                    <FormLabel>Room Length (ft)</FormLabel>
+                    <FormControl><Input type="number" placeholder="e.g., 12" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
-              <FormField control={form.control} name="coats" render={({ field }) => (
+              <FormField control={form.control} name="roomWidth" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Number of Coats</FormLabel>
-                    <FormControl><Input type="number" placeholder="e.g., 2" {...field} /></FormControl>
+                    <FormLabel>Room Width (ft)</FormLabel>
+                    <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
+              <FormField control={form.control} name="wallHeight" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Wall Height (ft)</FormLabel>
+                    <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+              )}/>
+            </div>
+             <div className="space-y-2">
+                <FormLabel>Doors &amp; Windows</FormLabel>
+                <FormDescription>Enter the number of doors and windows to exclude from the total area.</FormDescription>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 rounded-md border p-4">
+                    <FormField control={form.control} name="numDoors" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Number of Doors</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                    <FormField control={form.control} name="numWindows" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Number of Windows</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 2" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                    <FormField control={form.control} name="coats" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Number of Coats</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 2" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                </div>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">

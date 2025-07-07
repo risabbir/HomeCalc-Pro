@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: 'HomeCalc Pro | Precision Calculators for Every Project',
     template: '%s | HomeCalc Pro',
   },
-  description: 'Your one-stop destination for all home-related calculations. From renovation projects to garden planning, we have the tools to help you plan with confidence.',
+  description: 'Your one-stop destination for a wide range of home-related calculators. From home improvement and energy savings to gardening and financial planning, we provide the tools to help you plan with confidence.',
 };
 
 export default function RootLayout({

@@ -2,7 +2,7 @@ import type { LucideIcon } from 'lucide-react';
 import { 
   ThermometerSun, Wrench, Sprout, Home, Wind, PlugZap, Building2, AirVent, 
   Heater, Snowflake, Gauge, Square, Wallpaper as WallpaperIcon, Shovel,
-  CookingPot, Construction, Layers, Warehouse, Fan, TrendingUp
+  CookingPot, Construction, Layers, Warehouse, Fan, TrendingUp, Lightbulb
 } from 'lucide-react';
 
 export interface Calculator {
@@ -37,9 +37,9 @@ export const calculators: Calculator[] = [
     category: 'HVAC',
   },
   {
-    slug: 'energy-savings-calculator',
-    name: 'Energy Savings Calculator',
-    description: 'Estimate savings and payback period by upgrading to a more energy-efficient AC unit (SEER2 compatible).',
+    slug: 'seer-savings-calculator',
+    name: 'SEER Savings Calculator',
+    description: 'Estimate savings and payback period by upgrading to a more efficient AC unit.',
     Icon: TrendingUp,
     category: 'HVAC',
   },
@@ -143,15 +143,22 @@ export const calculators: Calculator[] = [
   {
     slug: 'mortgage-calculator',
     name: 'Mortgage Calculator',
-    description: 'Estimate your monthly mortgage payments.',
+    description: 'Estimate your monthly mortgage payments including taxes and insurance.',
     Icon: Home,
     category: 'Other',
   },
   {
     slug: 'energy-consumption',
     name: 'Appliance Energy Cost',
-    description: 'Calculate the energy usage and cost of your appliances.',
+    description: 'Calculate the energy usage and cost of a single appliance.',
     Icon: PlugZap,
+    category: 'Other',
+  },
+  {
+    slug: 'energy-savings-calculator',
+    name: 'Energy Savings Calculator',
+    description: 'Compare annual costs of two appliances to see potential savings from an upgrade.',
+    Icon: Lightbulb,
     category: 'Other',
   },
 ];
