@@ -1,22 +1,19 @@
+"use client";
+
 import { Logo } from '@/components/layout/Logo';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './ThemeToggle';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator
-} from "@/components/ui/dropdown-menu"
 import { calculators } from '@/lib/calculators';
 import { ChevronDown, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import * as React from 'react';
+import { useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 export function Header() {
+  const [isMegaMenuOpen, setMegaMenuOpen] = useState(false);
+  
   const categories = ['HVAC', 'Home Improvement', 'Gardening', 'Other'];
   const calculatorsByCategory = categories.map(category => ({
     name: category,
@@ -34,27 +31,44 @@ export function Header() {
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-2 text-base font-medium">
              <Button variant="ghost" asChild><Link href="/">Home</Link></Button>
-             <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost">
-                        Calculators
-                        <ChevronDown className="h-4 w-4 ml-1" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-64" align="center">
-                    {calculatorsByCategory.map((category, index) => (
-                        <React.Fragment key={category.name}>
-                            <DropdownMenuLabel>{category.name}</DropdownMenuLabel>
-                            {category.calculators.map(calc => (
-                                <Link href={`/calculators/${calc.slug}`} key={calc.slug} passHref>
-                                    <DropdownMenuItem>{calc.name}</DropdownMenuItem>
-                                </Link>
-                            ))}
-                            {index < calculatorsByCategory.length - 1 && <DropdownMenuSeparator />}
-                        </React.Fragment>
+             
+             <div 
+               onMouseEnter={() => setMegaMenuOpen(true)}
+               onMouseLeave={() => setMegaMenuOpen(false)}
+               className="relative"
+             >
+                <Button variant="ghost">
+                    Calculators
+                    <ChevronDown className="h-4 w-4 ml-1 transition-transform" />
+                </Button>
+                <div 
+                  data-state={isMegaMenuOpen ? 'open' : 'closed'}
+                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max max-w-4xl origin-top transition-opacity duration-200 data-[state=closed]:opacity-0 data-[state=open]:opacity-100 data-[state=closed]:pointer-events-none"
+                >
+                  <div className="bg-popover text-popover-foreground rounded-lg border shadow-lg p-6 grid grid-cols-4 gap-x-12 gap-y-6 animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95">
+                    {calculatorsByCategory.map((category) => (
+                      <div key={category.name}>
+                        <h3 className="font-semibold text-foreground mb-4">{category.name}</h3>
+                        <ul className="space-y-3">
+                          {category.calculators.map(calc => (
+                            <li key={calc.slug}>
+                              <Link 
+                                href={`/calculators/${calc.slug}`} 
+                                className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
+                                onClick={() => setMegaMenuOpen(false)}
+                              >
+                                <calc.Icon className="h-4 w-4 shrink-0 text-primary/80" />
+                                <span>{calc.name}</span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
+                  </div>
+                </div>
+             </div>
+
             <Button variant="ghost" asChild><Link href="/faq">FAQ</Link></Button>
           </nav>
 
