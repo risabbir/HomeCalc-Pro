@@ -22,6 +22,8 @@ import { KitchenRemodelEstimator } from '@/components/calculators/KitchenRemodel
 import { DeckingCalculator } from '@/components/calculators/DeckingCalculator';
 import { ConcreteSlabCalculator } from '@/components/calculators/ConcreteSlabCalculator';
 import { MiniSplitCostEstimator } from '@/components/calculators/MiniSplitCostEstimator';
+import { SavingsCalculator } from '@/components/calculators/SavingsCalculator';
+import { CarLoanCalculator } from '@/components/calculators/CarLoanCalculator';
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const calculator = calculators.find((c) => c.slug === params.slug);
@@ -94,6 +96,10 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
         return <GeneralHomeCalculator calculator={calculatorData} />;
       case 'energy-savings-calculator':
         return <EnergySavingsCalculator calculator={calculatorData} />;
+      case 'savings-calculator':
+        return <SavingsCalculator calculator={calculatorData} />;
+      case 'car-loan-calculator':
+        return <CarLoanCalculator calculator={calculatorData} />;
 
 
       default:

@@ -2,7 +2,8 @@ import type { LucideIcon } from 'lucide-react';
 import { 
   ThermometerSun, Wrench, Sprout, Home, Wind, PlugZap, Building2, AirVent, 
   Heater, Snowflake, Gauge, Square, Wallpaper as WallpaperIcon, Shovel,
-  CookingPot, Construction, Layers, Warehouse, Fan, TrendingUp, Lightbulb
+  CookingPot, Construction, Layers, Warehouse, Fan, TrendingUp, Lightbulb,
+  PiggyBank, Car
 } from 'lucide-react';
 
 export interface Calculator {
@@ -159,6 +160,20 @@ export const calculators: Calculator[] = [
     name: 'Energy Savings Calculator',
     description: 'Compare annual costs of two appliances to see potential savings from an upgrade.',
     Icon: Lightbulb,
+    category: 'Other',
+  },
+  {
+    slug: 'savings-calculator',
+    name: 'Savings Calculator',
+    description: 'Estimate the future value of your savings or investments.',
+    Icon: PiggyBank,
+    category: 'Other',
+  },
+  {
+    slug: 'car-loan-calculator',
+    name: 'Car Loan Calculator',
+    description: 'Calculate your monthly car loan payment.',
+    Icon: Car,
     category: 'Other',
   },
 ];
