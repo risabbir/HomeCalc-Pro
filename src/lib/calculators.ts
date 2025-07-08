@@ -12,6 +12,8 @@ export interface Calculator {
   description: string;
   Icon: LucideIcon;
   category: 'HVAC' | 'Home Improvement' | 'Gardening' | 'Other';
+  image: string;
+  imageHint: string;
 }
 
 export const calculators: Calculator[] = [
@@ -22,6 +24,8 @@ export const calculators: Calculator[] = [
     description: 'Determine the total heating and cooling load for a building (Manual J).',
     Icon: Building2,
     category: 'HVAC',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'hvac system',
   },
   {
     slug: 'btu-calculator',
@@ -29,6 +33,8 @@ export const calculators: Calculator[] = [
     description: 'Estimate the required BTU for cooling a room.',
     Icon: ThermometerSun,
     category: 'HVAC',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'air conditioner',
   },
   {
     slug: 'duct-size',
@@ -36,6 +42,8 @@ export const calculators: Calculator[] = [
     description: 'Calculate the appropriate size for residential HVAC ductwork.',
     Icon: AirVent,
     category: 'HVAC',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'air duct',
   },
   {
     slug: 'seer-savings-calculator',
@@ -43,6 +51,8 @@ export const calculators: Calculator[] = [
     description: 'Estimate savings and payback period by upgrading to a more efficient AC unit.',
     Icon: TrendingUp,
     category: 'HVAC',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'energy savings',
   },
    {
     slug: 'mini-split-cost',
@@ -50,6 +60,8 @@ export const calculators: Calculator[] = [
     description: 'Estimate the cost to install a ductless mini-split system.',
     Icon: Fan,
     category: 'HVAC',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'mini split',
   },
   {
     slug: 'furnace-cost',
@@ -57,6 +69,8 @@ export const calculators: Calculator[] = [
     description: 'Estimate the cost of installing a new furnace.',
     Icon: Heater,
     category: 'HVAC',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'furnace installation',
   },
   {
     slug: 'heat-pump-cost',
@@ -64,6 +78,8 @@ export const calculators: Calculator[] = [
     description: 'Estimate the cost of installing a new heat pump.',
     Icon: Snowflake,
     category: 'HVAC',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'heat pump',
   },
   {
     slug: 'thermostat-savings',
@@ -71,6 +87,8 @@ export const calculators: Calculator[] = [
     description: 'Estimate savings from setting back your programmable thermostat.',
     Icon: Gauge,
     category: 'HVAC',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'smart thermostat',
   },
   {
     slug: 'attic-insulation',
@@ -78,6 +96,8 @@ export const calculators: Calculator[] = [
     description: 'Determine the R-value and amount of insulation needed for your attic.',
     Icon: Warehouse,
     category: 'HVAC',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'attic insulation',
   },
 
   // Home Improvement
@@ -87,6 +107,8 @@ export const calculators: Calculator[] = [
     description: 'Calculate how many gallons of paint you need for your project.',
     Icon: Wrench,
     category: 'Home Improvement',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'painting room',
   },
   {
     slug: 'flooring-area',
@@ -94,6 +116,8 @@ export const calculators: Calculator[] = [
     description: 'Calculate the square footage and waste for your flooring project.',
     Icon: Square,
     category: 'Home Improvement',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'wood flooring',
   },
   {
     slug: 'wallpaper',
@@ -101,6 +125,8 @@ export const calculators: Calculator[] = [
     description: 'Estimate the number of wallpaper rolls needed for a room.',
     Icon: WallpaperIcon,
     category: 'Home Improvement',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'interior design',
   },
   {
     slug: 'kitchen-remodel-cost',
@@ -108,6 +134,8 @@ export const calculators: Calculator[] = [
     description: 'Get a ballpark estimate for your kitchen renovation project.',
     Icon: CookingPot,
     category: 'Home Improvement',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'kitchen remodel',
   },
   {
     slug: 'decking-calculator',
@@ -115,6 +143,8 @@ export const calculators: Calculator[] = [
     description: 'Calculate materials needed for building a deck.',
     Icon: Construction,
     category: 'Home Improvement',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'deck building',
   },
   {
     slug: 'concrete-slab-calculator',
@@ -122,6 +152,8 @@ export const calculators: Calculator[] = [
     description: 'Estimate the amount of concrete needed for a slab.',
     Icon: Layers,
     category: 'Home Improvement',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'concrete patio',
   },
 
   // Gardening
@@ -131,6 +163,8 @@ export const calculators: Calculator[] = [
     description: 'Calculate the volume of soil needed for a garden bed.',
     Icon: Shovel,
     category: 'Gardening',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'raised garden',
   },
   {
     slug: 'fertilizer-needs',
@@ -138,6 +172,8 @@ export const calculators: Calculator[] = [
     description: 'Determine the amount of fertilizer for your garden area.',
     Icon: Sprout,
     category: 'Gardening',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'gardening',
   },
 
   // Other
@@ -147,6 +183,8 @@ export const calculators: Calculator[] = [
     description: 'Estimate your monthly mortgage payments including taxes and insurance.',
     Icon: Home,
     category: 'Other',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'house property',
   },
   {
     slug: 'energy-consumption',
@@ -154,6 +192,8 @@ export const calculators: Calculator[] = [
     description: 'Calculate the energy usage and cost of a single appliance.',
     Icon: PlugZap,
     category: 'Other',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'home appliance',
   },
   {
     slug: 'energy-savings-calculator',
@@ -161,6 +201,8 @@ export const calculators: Calculator[] = [
     description: 'Compare annual costs of two appliances to see potential savings from an upgrade.',
     Icon: Lightbulb,
     category: 'Other',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'lightbulb savings',
   },
   {
     slug: 'savings-calculator',
@@ -168,6 +210,8 @@ export const calculators: Calculator[] = [
     description: 'Estimate the future value of your savings or investments.',
     Icon: PiggyBank,
     category: 'Other',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'investment growth',
   },
   {
     slug: 'car-loan-calculator',
@@ -175,5 +219,7 @@ export const calculators: Calculator[] = [
     description: 'Calculate your monthly car loan payment.',
     Icon: Car,
     category: 'Other',
+    image: 'https://placehold.co/1200x400.png',
+    imageHint: 'new car',
   },
 ];

@@ -47,7 +47,7 @@ export function Header() {
                 >
                   <div
                     className="bg-popover text-popover-foreground rounded-lg border p-6 grid grid-cols-4 gap-x-12 gap-y-6"
-                    style={{ boxShadow: 'rgba(0, 0, 0, 0.04) 0px 3px 5px' }}
+                    style={{boxShadow: 'rgba(0, 0, 0, 0.04) 0px 3px 5px'}}
                   >
                     {calculatorsByCategory.map((category) => (
                       <div key={category.name}>
@@ -71,7 +71,7 @@ export function Header() {
                   </div>
                 </div>
              </div>
-
+            <Button variant="ghost" asChild><Link href="/resources">Resources</Link></Button>
             <Button variant="ghost" asChild><Link href="/faq">FAQ</Link></Button>
           </nav>
 
@@ -116,6 +116,7 @@ export function Header() {
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
+                        <SheetClose asChild><Link href="/resources" className="text-lg font-medium">Resources</Link></SheetClose>
                         <SheetClose asChild><Link href="/faq" className="text-lg font-medium">FAQ</Link></SheetClose>
                     </div>
                 </SheetContent>
