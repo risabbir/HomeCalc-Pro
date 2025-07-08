@@ -48,10 +48,10 @@ export default function ClimateZoneMapPage() {
                     <Card className="overflow-hidden border-2">
                          <CardContent className="p-0 bg-white">
                             <Image 
-                                src="https://www.energy.gov/sites/default/files/2023-11/ba-climate-zone-map.png"
+                                src="https://building-performance.org/wp-content/uploads/2021/10/IECC-climate-zone-map-1-1024x791.png"
                                 alt="A map of the United States showing the Building America climate zones, including Subarctic, Cold, Hot-Humid, Hot-Dry, Mixed-Dry, Marine, Very Cold, and Mixed-Humid regions."
-                                width={748}
-                                height={620}
+                                width={1024}
+                                height={791}
                                 className="w-full h-auto object-contain"
                                 priority
                             />
