@@ -7,8 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Checkbox } from "@/components/ui/checkbox";
 import Image from 'next/image';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, ListChecks } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import React from "react";
 
 export const metadata: Metadata = {
     title: 'The Ultimate Deck Building Checklist | HomeCalc Pro',
@@ -28,7 +29,7 @@ const checklistItems = [
             { id: "p1_2", text: "Establish a Comprehensive Budget:", details: "Account for all materials, permits, tool rentals, and a 10-15% contingency fund for unexpected costs." },
             { id: "p1_3", text: "Research Local Building Codes:", details: "Contact your local building department for permit requirements, setback rules, frost line depth, required footing sizes, and railing specifications." },
             { id: "p1_4", text: "Create a Detailed Deck Plan:", details: "Draft a to-scale plan showing dimensions, shape, height, ledger board placement, footing locations, beam and joist layout, and features like stairs and landings." },
-            { id: "p1_5", text: "Select Materials:", details: "Choose decking (wood, composite, PVC), railing systems, and ensure all structural lumber (posts, beams, joists) is pressure-treated for ground contact." },
+            { id: "p1_5", text: "Select Materials:", details: "Choose decking (wood, composite, PVC), and ensure all structural lumber (posts, beams, joists) is pressure-treated for ground contact." },
         ]
     },
     { 
@@ -77,7 +78,6 @@ export default function DeckChecklistPage() {
         <div className="container mx-auto px-4 py-16">
             <div className="max-w-4xl mx-auto">
                  <div className="text-center mb-12">
-                    <ListChecks className="h-16 w-16 mx-auto text-primary mb-4" />
                     <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">The Ultimate Deck Building Checklist</h1>
                     <p className="text-lg text-muted-foreground">
                         Building a deck is a major undertaking. Follow this detailed, phase-by-phase checklist to ensure a safe, professional, and successful build from start to finish.

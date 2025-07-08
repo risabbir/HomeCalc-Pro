@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Ruler, Lightbulb } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import React from "react";
 
 export const metadata: Metadata = {
     title: 'How to Measure a Room Accurately For Any Project | HomeCalc Pro',
@@ -25,7 +26,6 @@ export default function HowToMeasurePage() {
         <div className="container mx-auto px-4 py-16">
             <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-12">
-                    <Ruler className="h-16 w-16 mx-auto text-primary mb-4" />
                     <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">How to Measure a Room Like a Pro</h1>
                     <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                         Accurate measurements are the foundation of any successful home improvement project. This guide will help you measure correctly, saving you time, money, and headaches.
