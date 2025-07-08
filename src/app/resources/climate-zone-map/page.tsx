@@ -3,7 +3,7 @@ import { calculators } from "@/lib/calculators";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from "next/image";
 import { Heater, Layers3, Building } from 'lucide-react';
@@ -46,16 +46,19 @@ export default function ClimateZoneMapPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12 lg:gap-y-0">
                 <main className="lg:col-span-2 space-y-12">
                     <Card className="overflow-hidden border-2">
-                         <CardContent className="p-0">
+                         <CardContent className="p-0 bg-white">
                             <Image 
-                                src="https://building-performance.org/wp-content/uploads/2022/11/IECC-Climate-Zone-Map_Nov-2022_1250x850-1.png"
-                                alt="A map of the United States showing the 8 distinct climate zones as defined by the Department of Energy."
-                                width={1250}
-                                height={850}
-                                className="w-full h-auto object-cover"
+                                src="https://www.energy.gov/sites/default/files/2023-11/ba-climate-zone-map.png"
+                                alt="A map of the United States showing the Building America climate zones, including Subarctic, Cold, Hot-Humid, Hot-Dry, Mixed-Dry, Marine, Very Cold, and Mixed-Humid regions."
+                                width={748}
+                                height={620}
+                                className="w-full h-auto object-contain"
                                 priority
                             />
                         </CardContent>
+                        <CardFooter className="bg-muted/50 p-3 text-xs text-muted-foreground">
+                            <p>Map courtesy of the U.S. Department of Energy – Building America Climate Zone Map.</p>
+                        </CardFooter>
                     </Card>
 
                     <Card>
