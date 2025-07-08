@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -6,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
@@ -19,15 +20,22 @@ const formSchema = z.object({
   deckWidth: z.string().min(1, 'Deck width is required.'),
   deckLength: z.string().min(1, 'Deck length is required.'),
   boardWidth: z.string().min(1, 'Board width is required.'),
+  boardLength: z.string().min(1, 'Board length is required.'),
   joistSpacing: z.string().min(1, 'Joist spacing is required.'),
+  wasteFactor: z.string().min(1, 'Waste factor is required.'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface Result {
+    boardsToBuy: number;
+    joistsNeeded: number;
+}
+
 export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
-  const [deckingResult, setDeckingResult] = useState<string | null>(null);
+  const [deckingResult, setDeckingResult] = useState<Result | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -36,7 +44,9 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
       deckWidth: '',
       deckLength: '',
       boardWidth: '5.5',
+      boardLength: '12',
       joistSpacing: '16',
+      wasteFactor: '10',
     },
   });
 
@@ -44,13 +54,22 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
     const width = parseFloat(values.deckWidth);
     const length = parseFloat(values.deckLength);
     const boardW = parseFloat(values.boardWidth);
+    const boardL = parseFloat(values.boardLength);
     const joistS = parseFloat(values.joistSpacing);
+    const waste = parseFloat(values.wasteFactor);
 
-    if (width > 0 && length > 0 && boardW > 0 && joistS > 0) {
+    if (width > 0 && length > 0 && boardW > 0 && boardL > 0 && joistS > 0 && waste >= 0) {
       const boardGap = 0.125; // 1/8 inch gap
-      const boardsNeeded = Math.ceil( (width * 12) / (boardW + boardGap) );
-      const joistsNeeded = Math.ceil( (length * 12) / joistS ) + 1;
-      setDeckingResult(`${boardsNeeded} deck boards (at ${length} ft length) & ${joistsNeeded} joists (at ${width} ft length)`);
+      const widthInInches = width * 12;
+      const effectiveBoardWidth = boardW + boardGap;
+      const rowsNeeded = Math.ceil(widthInInches / effectiveBoardWidth);
+      const totalLinearFeet = rowsNeeded * length;
+      const totalLinearFeetWithWaste = totalLinearFeet * (1 + waste / 100);
+      const boardsToBuy = Math.ceil(totalLinearFeetWithWaste / boardL);
+      
+      const joistsNeeded = Math.ceil((length * 12) / joistS) + 1;
+
+      setDeckingResult({ boardsToBuy, joistsNeeded });
     } else {
       setDeckingResult(null);
     }
@@ -60,11 +79,8 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
-    );
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -91,9 +107,12 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
       `Deck Width: ${values.deckWidth} ft\n` +
       `Deck Length: ${values.deckLength} ft\n` +
       `Board Width: ${values.boardWidth} in\n`+
-      `Joist Spacing: ${values.joistSpacing} in\n\n`+
+      `Board Length: ${values.boardLength} ft\n`+
+      `Joist Spacing: ${values.joistSpacing} in\n`+
+      `Waste Factor: ${values.wasteFactor}%\n\n`+
       `--------------------\n` +
-      `Materials Needed: ${deckingResult}\n`;
+      `Deck Boards Needed: ~${deckingResult.boardsToBuy} boards (${values.boardLength}ft length)\n`+
+      `Joists Needed: ~${deckingResult.joistsNeeded} joists (${values.deckWidth}ft length)\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -121,6 +140,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
                     <FormItem>
                         <FormLabel>Deck Width (ft)</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 12" {...field} /></FormControl>
+                        <FormDescription>Dimension perpendicular to deck boards.</FormDescription>
                         <FormMessage />
                     </FormItem>
                 )}/>
@@ -128,6 +148,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
                     <FormItem>
                         <FormLabel>Deck Length (ft)</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 16" {...field} /></FormControl>
+                        <FormDescription>Dimension parallel to deck boards.</FormDescription>
                         <FormMessage />
                     </FormItem>
                 )}/>
@@ -135,21 +156,45 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
                      <FormItem>
                         <FormLabel>Deck Board Width (in)</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 5.5" {...field} /></FormControl>
+                        <FormDescription>Actual width of the board (e.g., 5.5" for a 1x6).</FormDescription>
                         <FormMessage />
                     </FormItem>
                 )}/>
-                <FormField control={form.control} name="joistSpacing" render={({ field }) => (
+                <FormField control={form.control} name="boardLength" render={({ field }) => (
+                     <FormItem>
+                        <FormLabel>Deck Board Length (ft)</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                            <SelectContent>
+                                <SelectItem value="8">8 ft</SelectItem>
+                                <SelectItem value="12">12 ft</SelectItem>
+                                <SelectItem value="16">16 ft</SelectItem>
+                                <SelectItem value="20">20 ft</SelectItem>
+                            </SelectContent>
+                      </Select>
+                      <FormDescription>Length of boards you plan to buy.</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                )}/>
+                 <FormField control={form.control} name="joistSpacing" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Joist Spacing (in)</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                             <SelectContent>
-                                <SelectItem value="12">12"</SelectItem>
-                                <SelectItem value="16">16"</SelectItem>
-                                <SelectItem value="24">24"</SelectItem>
+                                <SelectItem value="12">12" on-center</SelectItem>
+                                <SelectItem value="16">16" on-center</SelectItem>
+                                <SelectItem value="24">24" on-center</SelectItem>
                             </SelectContent>
                       </Select>
                       <FormMessage />
+                    </FormItem>
+                )}/>
+                <FormField control={form.control} name="wasteFactor" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Waste Factor (%)</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
+                        <FormMessage />
                     </FormItem>
                 )}/>
             </div>
@@ -170,7 +215,10 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
           <Card className="mt-6 bg-accent">
             <CardHeader><CardTitle>Estimated Materials</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
-              <p className="text-xl font-bold">{deckingResult}</p>
+              <div className="text-lg font-bold">
+                <p>~{deckingResult.boardsToBuy} deck boards</p>
+                <p>~{deckingResult.joistsNeeded} joists</p>
+              </div>
               <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
             </CardContent>
           </Card>

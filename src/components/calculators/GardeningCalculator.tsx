@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -16,6 +17,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const formSchema = z.object({
   gardenArea: z.string().min(1, 'Garden area is required.'),
+  applicationRate: z.string().min(1, 'Application rate is required.'),
   nitrogenRatio: z.string().min(1, 'Required.'),
   phosphorusRatio: z.string().min(1, 'Required.'),
   potassiumRatio: z.string().min(1, 'Required.'),
@@ -33,6 +35,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
     resolver: zodResolver(formSchema),
     defaultValues: {
       gardenArea: '',
+      applicationRate: '1',
       nitrogenRatio: '10',
       phosphorusRatio: '10',
       potassiumRatio: '10',
@@ -41,11 +44,13 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
 
   const onSubmit = (values: FormValues) => {
     const area = parseFloat(values.gardenArea);
+    const appRate = parseFloat(values.applicationRate);
     const n = parseFloat(values.nitrogenRatio);
 
     if (area > 0 && n > 0 && values.phosphorusRatio && values.potassiumRatio) {
-      // Assuming 1 pound of Nitrogen per 1000 sq ft is a common recommendation
-      const nitrogenNeeded = (area / 1000) * 1; 
+      // Amount of N needed = (Area / 1000) * Application Rate
+      const nitrogenNeeded = (area / 1000) * appRate; 
+      // Total fertilizer = N needed / (%N in bag)
       const fertilizerAmount = (nitrogenNeeded / (n / 100));
       setFertilizerResult(`${fertilizerAmount.toFixed(2)} lbs of ${values.nitrogenRatio}-${values.phosphorusRatio}-${values.potassiumRatio} fertilizer`);
     } else {
@@ -57,14 +62,8 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = {
-        gardenArea: values.gardenArea,
-        nitrogenRatio: values.nitrogenRatio,
-        phosphorusRatio: values.phosphorusRatio,
-        potassiumRatio: values.potassiumRatio,
-    };
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -89,6 +88,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
     }
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
       `Garden Area: ${values.gardenArea} sq ft\n` +
+      `Application Rate: ${values.applicationRate} lbs of Nitrogen per 1000 sq ft\n` +
       `Fertilizer Ratio (N-P-K): ${values.nitrogenRatio}-${values.phosphorusRatio}-${values.potassiumRatio}\n\n`+
       `--------------------\n` +
       `Amount Needed: ${fertilizerResult}\n`;
@@ -109,19 +109,29 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Give your garden the right amount of nutrients. Enter your garden's area and the N-P-K (Nitrogen-Phosphorus-Potassium) ratio from the fertilizer bag to calculate how much to apply. A common starting point for lawns is 1 pound of Nitrogen per 1,000 sq ft. Press calculate to see the result.
+            Give your garden the right amount of nutrients. Enter your garden's area, your desired application rate, and the N-P-K (Nitrogen-Phosphorus-Potassium) ratio from the fertilizer bag to calculate how much to apply.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField control={form.control} name="gardenArea" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Garden Area (sq ft)</FormLabel>
-                  <FormControl><Input type="number" placeholder="e.g., 500" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-            )}/>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField control={form.control} name="gardenArea" render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Garden Area (sq ft)</FormLabel>
+                    <FormControl><Input type="number" placeholder="e.g., 500" {...field} /></FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}/>
+                <FormField control={form.control} name="applicationRate" render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Application Rate</FormLabel>
+                    <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
+                     <FormDescription>Lbs of Nitrogen per 1000 sq ft.</FormDescription>
+                    <FormMessage />
+                    </FormItem>
+                )}/>
+            </div>
             <div>
               <FormLabel>Fertilizer Ratio (N-P-K)</FormLabel>
               <FormDescription>Enter the N-P-K ratio from the fertilizer bag.</FormDescription>

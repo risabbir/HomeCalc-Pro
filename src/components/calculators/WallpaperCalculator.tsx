@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -19,6 +20,7 @@ const formSchema = z.object({
   wallHeight: z.string().min(1, 'Wall height is required.'),
   rollWidth: z.string().min(1, 'Roll width is required.'),
   rollLength: z.string().min(1, 'Roll length is required.'),
+  wasteFactor: z.string().min(1, 'Waste factor is required.'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -36,6 +38,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
       wallHeight: '8',
       rollWidth: '20.5',
       rollLength: '33',
+      wasteFactor: '15',
     },
   });
 
@@ -44,12 +47,13 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
     const height = parseFloat(values.wallHeight);
     const rWidth = parseFloat(values.rollWidth);
     const rLength = parseFloat(values.rollLength);
+    const waste = parseFloat(values.wasteFactor);
 
-    if (perimeter > 0 && height > 0 && rWidth > 0 && rLength > 0) {
+    if (perimeter > 0 && height > 0 && rWidth > 0 && rLength > 0 && waste >= 0) {
       const wallArea = perimeter * height;
       const rollWidthInFt = rWidth / 12; // in to ft
       const rollArea = rollWidthInFt * rLength;
-      const rollsNeeded = Math.ceil(wallArea / rollArea * 1.1); // 10% waste
+      const rollsNeeded = Math.ceil(wallArea / rollArea * (1 + waste / 100)); // Add waste
       setWallpaperResult(`${rollsNeeded} rolls`);
     } else {
       setWallpaperResult(null);
@@ -60,11 +64,8 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
-    );
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -91,7 +92,8 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
       `Room Perimeter: ${values.roomPerimeter} ft\n` +
       `Wall Height: ${values.wallHeight} ft\n` +
       `Roll Width: ${values.rollWidth} in\n` +
-      `Roll Length: ${values.rollLength} ft\n\n`+
+      `Roll Length: ${values.rollLength} ft\n`+
+      `Waste Factor: ${values.wasteFactor}%\n\n`+
       `--------------------\n` +
       `Rolls Needed: ${wallpaperResult}\n`;
     
@@ -110,7 +112,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-          Buy the right amount of wallpaper. Calculate the total wall area (perimeter times height) and use your wallpaper roll's dimensions to find how many rolls you need. Press calculate to see the result.
+          Buy the right amount of wallpaper. Calculate the total wall area (perimeter times height) and use your wallpaper roll's dimensions to find how many rolls you need. Remember a higher waste factor for patterns with large repeats.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -142,6 +144,13 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
                     <FormItem>
                         <FormLabel>Roll Length (ft)</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 33" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                 <FormField control={form.control} name="wasteFactor" render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                        <FormLabel>Waste Factor (%)</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 15" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>

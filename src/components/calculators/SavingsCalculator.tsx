@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -120,7 +121,7 @@ export function SavingsCalculator({ calculator }: { calculator: Omit<Calculator,
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-          Plan for your future by estimating the growth of your investments over time. Enter your initial deposit, how much you plan to contribute monthly, your expected annual return, and the number of years you'll be investing.
+          Plan for your future by estimating the growth of your investments over time. This calculation assumes interest is compounded monthly. Enter your initial deposit, how much you plan to contribute monthly, your expected annual return, and the number of years you'll be investing.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">

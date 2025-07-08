@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -6,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
@@ -18,14 +19,20 @@ const formSchema = z.object({
   roomWidth: z.string().min(1, 'Room width is required.'),
   roomLength: z.string().min(1, 'Room length is required.'),
   wasteFactor: z.string().min(1, 'Waste factor is required.'),
+  boxCoverage: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface Result {
+    totalArea: number;
+    boxesNeeded: number | null;
+}
+
 export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
-  const [flooringResult, setFlooringResult] = useState<string | null>(null);
+  const [flooringResult, setFlooringResult] = useState<Result | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -34,6 +41,7 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
       roomWidth: '',
       roomLength: '',
       wasteFactor: '10', // 10% waste is standard
+      boxCoverage: '',
     },
   });
 
@@ -41,11 +49,13 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
     const width = parseFloat(values.roomWidth);
     const length = parseFloat(values.roomLength);
     const waste = parseFloat(values.wasteFactor);
+    const coverage = parseFloat(values.boxCoverage || '0');
 
     if (width > 0 && length > 0 && waste >= 0) {
       const area = width * length;
       const totalArea = area * (1 + (waste/100));
-      setFlooringResult(`${totalArea.toFixed(2)} sq ft`);
+      const boxesNeeded = coverage > 0 ? Math.ceil(totalArea / coverage) : null;
+      setFlooringResult({ totalArea, boxesNeeded });
     } else {
       setFlooringResult(null);
     }
@@ -55,11 +65,8 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
-    );
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -82,12 +89,21 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
+    let content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
       `Room Width: ${values.roomWidth} ft\n` +
       `Room Length: ${values.roomLength} ft\n` +
-      `Waste Factor: ${values.wasteFactor}%\n\n`+
-      `--------------------\n` +
-      `Total Flooring Needed: ${flooringResult}\n`;
+      `Waste Factor: ${values.wasteFactor}%\n`;
+
+    if (values.boxCoverage) {
+        content += `Coverage per Box: ${values.boxCoverage} sq ft\n`;
+    }
+
+    content += `\n--------------------\n` +
+      `Total Flooring Needed: ${flooringResult.totalArea.toFixed(2)} sq ft\n`;
+    
+    if(flooringResult.boxesNeeded) {
+        content += `Estimated Boxes to Buy: ${flooringResult.boxesNeeded} boxes\n`;
+    }
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -133,6 +149,14 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
                     </FormItem>
                 )}/>
             </div>
+             <FormField control={form.control} name="boxCoverage" render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Box Coverage (Optional)</FormLabel>
+                    <FormControl><Input type="number" placeholder="e.g., 22.5" {...field} /></FormControl>
+                    <FormDescription>Enter the sq ft coverage per box to calculate how many boxes to buy.</FormDescription>
+                    <FormMessage />
+                </FormItem>
+            )}/>
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Button type="submit">Calculate</Button>
@@ -150,7 +174,10 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
           <Card className="mt-6 bg-accent">
             <CardHeader><CardTitle>Total Flooring Required</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
-              <p className="text-2xl font-bold">{flooringResult}</p>
+              <p className="text-2xl font-bold">
+                {flooringResult.totalArea.toFixed(2)} sq ft
+                {flooringResult.boxesNeeded && <span className="text-lg text-muted-foreground ml-2"> (~{flooringResult.boxesNeeded} boxes)</span>}
+              </p>
               <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
             </CardContent>
           </Card>

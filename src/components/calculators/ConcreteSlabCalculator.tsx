@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -18,14 +19,20 @@ const formSchema = z.object({
   length: z.string().min(1, 'Length is required.'),
   width: z.string().min(1, 'Width is required.'),
   thickness: z.string().min(1, 'Thickness is required.'),
+  wasteFactor: z.string().min(1, 'Waste factor is required.'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface Result {
+    cubicYards: number;
+    bagsNeeded: number;
+}
+
 export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
-  const [concreteResult, setConcreteResult] = useState<string | null>(null);
+  const [concreteResult, setConcreteResult] = useState<Result | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -34,6 +41,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
       length: '',
       width: '',
       thickness: '4',
+      wasteFactor: '10',
     },
   });
 
@@ -41,12 +49,18 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
     const length = parseFloat(values.length);
     const width = parseFloat(values.width);
     const thickness = parseFloat(values.thickness);
+    const waste = parseFloat(values.wasteFactor);
     
-    if (length > 0 && width > 0 && thickness > 0) {
+    if (length > 0 && width > 0 && thickness > 0 && waste >= 0) {
       const thicknessInFeet = thickness / 12; // inches to feet
       const cubicFeet = length * width * thicknessInFeet;
-      const cubicYards = cubicFeet / 27;
-      setConcreteResult(`${cubicYards.toFixed(2)} cubic yards`);
+      const cubicFeetWithWaste = cubicFeet * (1 + waste / 100);
+      const cubicYards = cubicFeetWithWaste / 27;
+
+      // Assuming an 80lb bag yields ~0.6 cubic feet
+      const bagsNeeded = Math.ceil(cubicFeetWithWaste / 0.6);
+
+      setConcreteResult({ cubicYards, bagsNeeded });
     } else {
       setConcreteResult(null);
     }
@@ -56,11 +70,8 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
-    );
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -86,9 +97,11 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
       `Slab Length: ${values.length} ft\n` +
       `Slab Width: ${values.width} ft\n` +
-      `Slab Thickness: ${values.thickness} in\n\n`+
+      `Slab Thickness: ${values.thickness} in\n` +
+      `Waste Factor: ${values.wasteFactor}%\n\n`+
       `--------------------\n` +
-      `Concrete Needed: ${concreteResult}\n`;
+      `Concrete Needed (for delivery): ${concreteResult.cubicYards.toFixed(2)} cubic yards\n` +
+      `Concrete Needed (for bags): ~${concreteResult.bagsNeeded} (80lb) bags\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -111,7 +124,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="length" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Slab Length (ft)</FormLabel>
@@ -133,6 +146,13 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
                         <FormMessage />
                     </FormItem>
                 )}/>
+                <FormField control={form.control} name="wasteFactor" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Waste Factor (%)</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
@@ -151,7 +171,10 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
           <Card className="mt-6 bg-accent">
             <CardHeader><CardTitle>Concrete Needed</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
-              <p className="text-2xl font-bold">{concreteResult}</p>
+              <div>
+                <p className="text-2xl font-bold">{concreteResult.cubicYards.toFixed(2)} cubic yards</p>
+                <p className="text-muted-foreground">or ~{concreteResult.bagsNeeded} (80lb) bags</p>
+              </div>
               <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
             </CardContent>
           </Card>

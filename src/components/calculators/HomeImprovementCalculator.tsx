@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -13,6 +14,7 @@ import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Download, Loader2, Wand2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const formSchema = z.object({
   roomLength: z.string().min(1, 'Room length is required.'),
@@ -21,6 +23,7 @@ const formSchema = z.object({
   coats: z.string().min(1, 'Number of coats is required.'),
   numWindows: z.string().optional(),
   numDoors: z.string().optional(),
+  includeCeiling: z.boolean().optional(),
 });
 type FormValues = z.infer<typeof formSchema>;
 
@@ -39,6 +42,7 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
         coats: '2',
         numWindows: '0',
         numDoors: '0',
+        includeCeiling: false,
     },
   });
 
@@ -52,9 +56,15 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
     const doors = parseInt(values.numDoors || '0', 10);
 
     if (length > 0 && width > 0 && height > 0 && coats > 0) {
-      const totalWallArea = 2 * (length + width) * height;
+      const wallArea = 2 * (length + width) * height;
       const areaToSubtract = (windows * 15) + (doors * 21); // Standard area for windows and doors
-      const paintableArea = totalWallArea - areaToSubtract;
+      let paintableArea = wallArea - areaToSubtract;
+
+      if(values.includeCeiling) {
+        const ceilingArea = length * width;
+        paintableArea += ceilingArea;
+      }
+      
       const gallonsNeeded = (paintableArea * coats) / GALLONS_PER_SQFT;
       setPaintGallons(`${gallonsNeeded.toFixed(2)} gallons`);
     } else {
@@ -94,7 +104,8 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
       `Room Dimensions (LxWxH): ${values.roomLength} ft x ${values.roomWidth} ft x ${values.wallHeight} ft\n` +
       `Number of Coats: ${values.coats}\n` +
       `Number of Windows: ${values.numWindows || '0'}\n` +
-      `Number of Doors: ${values.numDoors || '0'}\n\n` +
+      `Number of Doors: ${values.numDoors || '0'}\n` +
+      `Paint Ceiling: ${values.includeCeiling ? 'Yes' : 'No'}\n\n` +
       `--------------------\n` +
       `Paint Needed: ${paintGallons}\n`;
     
@@ -144,8 +155,8 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
               )}/>
             </div>
              <div className="space-y-2">
-                <FormLabel>Doors &amp; Windows</FormLabel>
-                <FormDescription>Enter the number of doors and windows to exclude from the total area.</FormDescription>
+                <FormLabel>Doors, Windows, and Ceiling</FormLabel>
+                <FormDescription>Enter details to exclude from the total area or add the ceiling.</FormDescription>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 rounded-md border p-4">
                     <FormField control={form.control} name="numDoors" render={({ field }) => (
                         <FormItem>
@@ -168,6 +179,30 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
                             <FormMessage />
                         </FormItem>
                     )}/>
+                </div>
+                 <div className="pt-2">
+                    <FormField
+                        control={form.control}
+                        name="includeCeiling"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                                <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                                <FormLabel>
+                                Also paint the ceiling?
+                                </FormLabel>
+                                <FormDescription>
+                                Check this box to include the ceiling area in the calculation.
+                                </FormDescription>
+                            </div>
+                            </FormItem>
+                        )}
+                        />
                 </div>
             </div>
             

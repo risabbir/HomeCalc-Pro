@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -6,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
@@ -20,6 +21,8 @@ const formSchema = z.object({
   tradeInValue: z.string().optional(),
   interestRate: z.string().min(1, 'Interest rate is required.'),
   loanTerm: z.string().min(1, 'Loan term is required.'),
+  salesTaxRate: z.string().optional(),
+  otherFees: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -45,6 +48,8 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
       tradeInValue: '0',
       interestRate: '7.5',
       loanTerm: '5',
+      salesTaxRate: '',
+      otherFees: '',
     },
   });
 
@@ -55,14 +60,17 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
     const annualRate = parseFloat(values.interestRate);
     const monthlyRate = annualRate / 100 / 12;
     const termInMonths = parseFloat(values.loanTerm) * 12;
+    const taxRate = parseFloat(values.salesTaxRate || '0') / 100;
+    const fees = parseFloat(values.otherFees || '0');
     
-    const P = price - downPayment - tradeIn; // Principal Loan Amount
+    const totalVehicleCost = price * (1 + taxRate) + fees;
+    const P = totalVehicleCost - downPayment - tradeIn; // Principal Loan Amount
 
     if (P > 0 && annualRate > 0 && termInMonths > 0) {
         const monthlyPayment = (P * monthlyRate * Math.pow(1 + monthlyRate, termInMonths)) / (Math.pow(1 + monthlyRate, termInMonths) - 1);
         const totalPayments = monthlyPayment * termInMonths;
         const totalInterest = totalPayments - P;
-        const totalCost = price + totalInterest;
+        const totalCost = totalVehicleCost + totalInterest;
 
         setResult({
             monthlyPayment,
@@ -107,6 +115,8 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
       `Vehicle Price: $${values.vehiclePrice}\n` +
       `Down Payment: $${values.downPayment || '0'}\n` +
       `Trade-in Value: $${values.tradeInValue || '0'}\n` +
+      `Sales Tax Rate: ${values.salesTaxRate || '0'}%\n` +
+      `Other Fees: $${values.otherFees || '0'}\n` +
       `Annual Interest Rate: ${values.interestRate}%\n` +
       `Loan Term: ${values.loanTerm} years\n\n` +
       `--------------------\n` +
@@ -173,6 +183,26 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
                   </FormItem>
               )}/>
             </div>
+             <div className="space-y-2">
+                <h4 className="font-medium">Taxes & Fees (Optional)</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 rounded-md border p-4">
+                    <FormField control={form.control} name="salesTaxRate" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Sales Tax Rate (%)</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 6.25" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                    <FormField control={form.control} name="otherFees" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Other Fees ($)</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 500" {...field} /></FormControl>
+                            <FormDescription>Title, registration, etc.</FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                </div>
+            </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Button type="submit">Calculate Payment</Button>
@@ -196,6 +226,7 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
               <ul className='text-sm space-y-1 w-full'>
                 <li className='flex justify-between'><span>Total Loan Amount</span> <strong>${result.totalLoanAmount.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong></li>
                 <li className='flex justify-between'><span>Total Interest Paid</span> <strong>${result.totalInterest.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong></li>
+                 <li className='flex justify-between font-medium'><span>Total Cost of Car</span> <strong>${result.totalCost.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong></li>
               </ul>
               <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results" className='shrink-0'><Download className="h-6 w-6" /></Button>
             </CardContent>

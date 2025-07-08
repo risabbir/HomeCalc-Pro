@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -13,11 +14,14 @@ import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Download, Loader2, Wand2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const formSchema = z.object({
   totalArea: z.string().min(1, 'Total area is required.'),
   climateZone: z.string().min(1, 'Climate zone is required.'),
   windowsArea: z.string().min(1, 'Windows area is required.'),
+  numberOfOccupants: z.string().min(1, 'Required.'),
+  insulationQuality: z.enum(['good', 'average', 'poor']),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -34,6 +38,8 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
       totalArea: '',
       climateZone: '5',
       windowsArea: '',
+      numberOfOccupants: '2',
+      insulationQuality: 'average',
     },
   });
 
@@ -41,13 +47,24 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
     const area = parseFloat(values.totalArea);
     const windows = parseFloat(values.windowsArea);
     const climateZone = parseFloat(values.climateZone);
+    const occupants = parseInt(values.numberOfOccupants);
 
-    if (area > 0 && windows >= 0 && climateZone >= 1 && climateZone <= 7) {
+    if (area > 0 && windows >= 0 && climateZone >= 1 && climateZone <= 8 && occupants > 0) {
       // Simplified Manual J calculation for demonstration
       const climateFactor = 30 - (climateZone * 2);
-      const coolingLoad = (area * climateFactor) + (windows * 100);
-      const heatingLoad = (area * (50 - climateFactor));
-      setLoadResult(`Cooling: ${coolingLoad.toFixed(0)} BTU/hr | Heating: ${heatingLoad.toFixed(0)} BTU/hr`);
+      
+      let insulationMultiplier = 1;
+      if (values.insulationQuality === 'poor') insulationMultiplier = 1.2;
+      if (values.insulationQuality === 'good') insulationMultiplier = 0.8;
+      
+      const occupantLoad = occupants * 400; // Cooling load per person
+      
+      const coolingLoad = ((area * climateFactor) + (windows * 100)) * insulationMultiplier + occupantLoad;
+      const heatingLoad = (area * (50 - climateFactor)) * insulationMultiplier;
+      
+      const coolingTons = (coolingLoad / 12000).toFixed(1);
+
+      setLoadResult(`Cooling: ${coolingLoad.toFixed(0)} BTU/hr (${coolingTons} tons) | Heating: ${heatingLoad.toFixed(0)} BTU/hr`);
     } else {
       setLoadResult(null);
     }
@@ -57,11 +74,8 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
-    );
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -87,7 +101,9 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
       `Total Area: ${values.totalArea} sq ft\n` +
       `Climate Zone: ${values.climateZone}\n` +
-      `Windows Area: ${values.windowsArea} sq ft\n\n`+
+      `Windows Area: ${values.windowsArea} sq ft\n` +
+      `Number of Occupants: ${values.numberOfOccupants}\n` +
+      `Insulation Quality: ${values.insulationQuality}\n\n`+
       `--------------------\n` +
       `Estimated Load: ${loadResult}\n`;
     
@@ -112,7 +128,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="totalArea" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Total Area (sq ft)</FormLabel>
@@ -120,7 +136,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
                         <FormMessage />
                     </FormItem>
                 )}/>
-                <FormField control={form.control} name="windowsArea" render={({ field }) => (
+                 <FormField control={form.control} name="windowsArea" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Windows Area (sq ft)</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 150" {...field} /></FormControl>
@@ -129,11 +145,38 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
                 )}/>
                 <FormField control={form.control} name="climateZone" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Climate Zone (1-7)</FormLabel>
+                        <FormLabel>Climate Zone (US)</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 5" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
+                <FormField control={form.control} name="numberOfOccupants" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Number of Occupants</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 4" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                 <FormField
+                  control={form.control}
+                  name="insulationQuality"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Insulation Quality</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger><SelectValue placeholder="Select insulation quality" /></SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="good">Good</SelectItem>
+                          <SelectItem value="average">Average</SelectItem>
+                          <SelectItem value="poor">Poor</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">

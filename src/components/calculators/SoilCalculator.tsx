@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -6,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
@@ -18,14 +19,21 @@ const formSchema = z.object({
   length: z.string().min(1, 'Length is required.'),
   width: z.string().min(1, 'Width is required.'),
   depth: z.string().min(1, 'Depth is required.'),
+  bagSize: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface Result {
+    cubicFeet: number;
+    cubicYards: number;
+    bagsNeeded: number | null;
+}
+
 export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
-  const [soilResult, setSoilResult] = useState<string | null>(null);
+  const [soilResult, setSoilResult] = useState<Result | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -34,6 +42,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       length: '',
       width: '',
       depth: '6',
+      bagSize: ''
     },
   });
 
@@ -41,12 +50,14 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     const length = parseFloat(values.length);
     const width = parseFloat(values.width);
     const depth = parseFloat(values.depth);
+    const bagSize = parseFloat(values.bagSize || '0');
 
     if (length > 0 && width > 0 && depth > 0) {
       const depthInFeet = depth / 12; // convert inches to feet
       const cubicFeet = length * width * depthInFeet;
       const cubicYards = cubicFeet / 27;
-      setSoilResult(`${cubicFeet.toFixed(2)} cu ft (or ${cubicYards.toFixed(2)} cu yd)`);
+      const bagsNeeded = bagSize > 0 ? Math.ceil(cubicFeet / bagSize) : null;
+      setSoilResult({cubicFeet, cubicYards, bagsNeeded});
     } else {
       setSoilResult(null);
     }
@@ -56,11 +67,8 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
-    );
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -83,12 +91,21 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
+    let content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
       `Bed Length: ${values.length} ft\n` +
       `Bed Width: ${values.width} ft\n` +
-      `Soil Depth: ${values.depth} inches\n\n`+
-      `--------------------\n` +
-      `Total Soil Needed: ${soilResult}\n`;
+      `Soil Depth: ${values.depth} inches\n`;
+
+    if (values.bagSize) {
+        content += `Bag Size: ${values.bagSize} cu ft\n`;
+    }
+
+    content += `\n--------------------\n` +
+      `Total Soil Needed: ${soilResult.cubicFeet.toFixed(2)} cu ft (or ${soilResult.cubicYards.toFixed(2)} cu yd)\n`;
+
+    if (soilResult.bagsNeeded) {
+        content += `Estimated Bags Needed: ${soilResult.bagsNeeded} bags\n`;
+    }
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -135,6 +152,15 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                 )}/>
             </div>
 
+            <FormField control={form.control} name="bagSize" render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Bag Size (cu ft) (Optional)</FormLabel>
+                    <FormControl><Input type="number" placeholder="e.g., 1.5" {...field} /></FormControl>
+                    <FormDescription>Enter the size of the bags you plan to buy to estimate quantity.</FormDescription>
+                    <FormMessage />
+                </FormItem>
+            )}/>
+
             <div className="flex flex-col sm:flex-row gap-4">
               <Button type="submit">Calculate</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
@@ -151,7 +177,11 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
           <Card className="mt-6 bg-accent">
             <CardHeader><CardTitle>Soil Volume Needed</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
-              <p className="text-2xl font-bold">{soilResult}</p>
+              <p className="text-2xl font-bold">
+                {soilResult.cubicFeet.toFixed(2)} cu ft
+                <span className="text-lg text-muted-foreground ml-2">({soilResult.cubicYards.toFixed(2)} cu yd)</span>
+                {soilResult.bagsNeeded && <span className="block text-base font-normal text-muted-foreground">Approx. {soilResult.bagsNeeded} bags</span>}
+              </p>
               <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
             </CardContent>
           </Card>
