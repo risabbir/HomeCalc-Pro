@@ -7,7 +7,7 @@ export function Logo({ className }: { className?: string }) {
         HomeCalc
       </span>
       <span
-        className="inline-block rounded-md bg-primary px-2 py-1 text-lg font-bold leading-none text-primary-foreground font-headline"
+        className="inline-block rounded-md bg-primary px-2 py-1 text-lg font-bold leading-none text-primary-foreground font-headline shadow-none"
       >
         Pro
       </span>

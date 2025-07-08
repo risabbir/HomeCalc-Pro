@@ -83,9 +83,9 @@ export function Chatbot() {
       )}>
         {/* Callout */}
         {showCallout && (
-          <div className="bg-card text-card-foreground rounded-lg p-4 shadow-lg w-64 relative animate-in fade-in-50 slide-in-from-bottom-10">
+          <div className="bg-card text-card-foreground rounded-lg p-4 border w-64 relative animate-in fade-in-50 slide-in-from-bottom-10">
             <p className="text-sm">
-              Have a question about home calculations? Ask our AI assistant for help! 👇
+              Stuck on a calculation? Ask me anything! 👇
             </p>
             <Button 
                 variant="ghost"
@@ -102,10 +102,10 @@ export function Chatbot() {
         {/* FAB */}
         <Button
             onClick={handleOpenChat}
-            className="h-16 w-16 rounded-full shadow-lg bg-primary hover:bg-primary/90 flex items-center justify-center p-0 shrink-0"
+            className="h-16 w-16 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0 shrink-0"
             aria-label="Open chatbot"
         >
-            <MessageCircle className="h-9 w-9 text-primary-foreground" />
+            <MessageCircle className="h-10 w-10 text-primary-foreground" />
         </Button>
       </div>
 
