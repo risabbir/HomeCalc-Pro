@@ -18,7 +18,7 @@ export default {
     },
     extend: {
       boxShadow: {
-        'glow-primary': '0 0 20px 5px hsl(var(--primary) / 0.6)',
+        'glow-primary': '0 0 30px 8px hsl(var(--primary) / 0.7)',
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
