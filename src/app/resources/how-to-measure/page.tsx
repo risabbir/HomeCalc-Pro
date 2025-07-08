@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import Image from 'next/image';
 import { Ruler, Lightbulb } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -66,14 +65,19 @@ export default function HowToMeasurePage() {
                                 <strong>Handling Irregular Shapes:</strong> For L-shaped rooms or rooms with alcoves, break the space down into smaller, separate rectangles. Calculate the area of each individual rectangle, then add all the areas together to get your total square footage.
                             </li>
                         </ol>
-                        <Image 
-                            src="https://placehold.co/800x400.png"
-                            alt="A clear diagram showing how to break down an L-shaped room into two separate rectangular sections for accurate measurement."
-                            width={800}
-                            height={400}
-                            className="rounded-lg my-8 mx-auto object-contain bg-secondary/50 p-4 border"
-                            data-ai-hint="L-shaped room diagram"
-                        />
+                         <div className="my-8 p-8 bg-secondary/30 border rounded-lg">
+                            <p className="text-center text-muted-foreground mb-4">For irregular shapes, divide the room into separate rectangles:</p>
+                            <div className="flex justify-center items-center gap-4">
+                                <div className="w-32 h-20 bg-background border-2 border-dashed rounded flex items-center justify-center">
+                                    <span className="font-semibold">Area A</span>
+                                </div>
+                                <span className="text-2xl font-bold text-muted-foreground">+</span>
+                                <div className="w-24 h-32 bg-background border-2 border-dashed rounded flex items-center justify-center">
+                                    <span className="font-semibold">Area B</span>
+                                </div>
+                            </div>
+                            <p className="text-center font-semibold mt-4">Total Area = Area A + Area B</p>
+                        </div>
                     </CardContent>
                 </Card>
 
