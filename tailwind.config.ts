@@ -17,6 +17,9 @@ export default {
       },
     },
     extend: {
+      boxShadow: {
+        lg: '0 10px 15px -3px hsl(var(--primary) / 0.4), 0 4px 6px -4px hsl(var(--primary) / 0.2)',
+      },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
         headline: ["var(--font-sans)", ...fontFamily.sans],
