@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Image from "next/image";
-import { Paintbrush, Lightbulb } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
@@ -63,7 +63,6 @@ export default function PaintFinishGuidePage() {
         <div className="container mx-auto px-4 py-16">
             <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-12">
-                    <Paintbrush className="h-16 w-16 mx-auto text-primary mb-4" />
                     <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Choosing the Right Paint Finish</h1>
                     <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                         The finish, or sheen, you choose is as important as the color. It affects the final look, durability, and cleanability of your walls. Use this guide to make the perfect choice for every surface.
