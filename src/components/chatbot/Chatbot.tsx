@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -76,7 +75,7 @@ export function Chatbot() {
         )}
         aria-label="Open chatbot"
       >
-        <MessageCircle className="h-12 w-12" />
+        <MessageCircle className="h-14 w-14" />
       </Button>
 
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
