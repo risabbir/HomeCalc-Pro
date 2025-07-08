@@ -44,11 +44,18 @@ const prompt = ai.definePrompt({
   prompt: `You are a helpful assistant that recommends calculators to users based on their past activity.
 
   Given the following user activity:
-  {{pastActivity}}
+  "{{{pastActivity}}}"
 
-  Recommend a list of calculators that the user might find helpful. Only return the names of the calculators.
   The available calculators are: ${availableCalculators}
-  Format your response as a JSON array of strings.
+
+  Recommend a list of calculators that the user might find helpful. Only return the exact names of the calculators from the list provided.
+  
+  Your response MUST be a valid JSON object that conforms to the specified output schema.
+  Do not include any explanatory text, markdown formatting, or anything else outside of the JSON structure.
+  
+  Specifically, you must return a JSON object with a single key "recommendations" which is an array of strings.
+  For example: {"recommendations": ["Paint Coverage Calculator", "Flooring Calculator"]}
+  If no calculators are relevant, return an empty array: {"recommendations": []}
   `,
 });
 

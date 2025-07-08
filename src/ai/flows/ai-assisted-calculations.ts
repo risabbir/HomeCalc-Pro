@@ -52,11 +52,12 @@ These are the parameters they have left blank:
 {{/each}}
 
 Your task is to analyze the provided parameters and suggest reasonable, common-sense estimates for the blank fields.
+- Your response MUST be a valid JSON object that conforms to the specified output schema. Do not include any explanatory text, markdown formatting, or anything else outside of the JSON structure.
 - Base your suggestions on the calculator type and the data the user has already provided.
 - Populate the 'autoCalculatedValues' field with your suggested estimates. Use the exact parameter keys for the fields you are suggesting values for.
 - If you cannot provide a reasonable estimate for a field, provide a helpful hint in the 'hintsAndNextSteps' field. For example, for 'Appliance Wattage', you could suggest "Check the label on the back of the appliance for the wattage. A typical refrigerator uses 150-200 watts."
 - DO NOT perform the final calculation. Only suggest values for the blank input fields.
-- If all required fields are filled, respond with an empty object. Your role is to help fill in blanks, not to confirm their inputs.
+- If all required fields are filled or you have no suggestions, respond with an empty JSON object: {}. Your role is to help fill in blanks, not to confirm their inputs.
 `,
 });
 
