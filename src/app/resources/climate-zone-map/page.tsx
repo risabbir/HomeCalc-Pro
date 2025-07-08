@@ -47,8 +47,7 @@ export default function ClimateZoneMapPage() {
                     <Card className="overflow-hidden border-2">
                              <CardContent className="p-0 bg-white">
                                 <Image
-                                    src="https://placehold.co/732x554.png"
-                                    data-ai-hint="climate zone map"
+                                    src="https://www.researchgate.net/profile/Dazhi-Yang-3/publication/359387671/figure/fig2/AS:1139834437545984@1648769115133/The-climate-zone-designations-used-by-the-US-Department-of-Energy-Building-America.png"
                                     alt="U.S. IECC Climate Zone Map showing 8 distinct climate zones across the United States."
                                     width={732}
                                     height={554}
