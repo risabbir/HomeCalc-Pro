@@ -5,9 +5,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Layers, Lightbulb, ThermometerSnowflake } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export const metadata: Metadata = {
     title: 'A Homeowner\'s Guide to Insulation Types | HomeCalc Pro',
@@ -67,71 +66,76 @@ export default function InsulationGuidePage() {
 
     return (
         <div className="container mx-auto px-4 py-16">
-            <div className="max-w-4xl mx-auto">
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">A Homeowner's Guide to Insulation</h1>
-                    <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                        Choosing the right insulation is crucial for your home's comfort and energy efficiency. This guide breaks down the most common types available.
-                    </p>
-                </div>
+            <div className="text-center mb-12">
+                <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">A Homeowner's Guide to Insulation</h1>
+                <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                    Choosing the right insulation is crucial for your home's comfort and energy efficiency. This guide breaks down the most common types available.
+                </p>
+            </div>
 
-                <Alert className="mb-12">
-                    <Lightbulb className="h-4 w-4" />
-                    <AlertTitle>What is R-Value?</AlertTitle>
-                    <AlertDescription>
-                        <p>R-Value measures an insulation's ability to resist heat flow. **The higher the R-value, the better its insulating performance.** Your required R-value depends on your climate zone and where you're insulating (attic, walls, etc.).</p>
-                    </AlertDescription>
-                </Alert>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12">
+                <main className="lg:col-span-2">
+                    <Alert className="mb-12">
+                        <Lightbulb className="h-4 w-4" />
+                        <AlertTitle>What is R-Value?</AlertTitle>
+                        <AlertDescription>
+                            <p>R-Value measures an insulation's ability to resist heat flow. **The higher the R-value, the better its insulating performance.** Your required R-value depends on your climate zone and where you're insulating (attic, walls, etc.).</p>
+                        </AlertDescription>
+                    </Alert>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {insulationTypes.map((insulation) => (
-                        <Card key={insulation.name} className="flex flex-col border-2">
-                            <CardHeader>
-                                <CardTitle>{insulation.name}</CardTitle>
-                                <CardDescription>R-Value/inch: <span className="font-bold text-foreground">{insulation.rValue}</span></CardDescription>
-                            </CardHeader>
-                            <CardContent className="flex-grow space-y-4">
-                                <p className="text-muted-foreground text-sm">{insulation.description}</p>
-                                <div>
-                                    <h4 className="font-semibold text-sm mb-2">Pros:</h4>
-                                    <ul className="list-disc pl-5 text-sm text-muted-foreground">
-                                        {insulation.pros.map(pro => <li key={pro}>{pro}</li>)}
-                                    </ul>
-                                </div>
-                                 <div>
-                                    <h4 className="font-semibold text-sm mb-2">Cons:</h4>
-                                    <ul className="list-disc pl-5 text-sm text-muted-foreground">
-                                        {insulation.cons.map(con => <li key={con}>{con}</li>)}
-                                    </ul>
-                                </div>
-                            </CardContent>
-                            <CardFooter className="flex-wrap gap-2">
-                                <p className="text-xs font-semibold mr-2">Best For:</p>
-                                {insulation.bestFor.map(use => (
-                                    <Badge key={use} variant="secondary">{use}</Badge>
-                                ))}
-                            </CardFooter>
-                        </Card>
-                    ))}
-                </div>
-
-
-                 <Card className="mt-16 bg-secondary">
-                    <CardHeader>
-                        <CardTitle>Calculate Your Insulation Needs</CardTitle>
-                         <CardDescription>Now that you know the types, find out how much insulation you need for your project.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {relatedCalculators.map(calc => (
-                            <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
-                                <Link href={`/calculators/${calc.slug}`}>
-                                    <calc.Icon className="h-5 w-5 text-primary" />
-                                    {calc.name}
-                                </Link>
-                            </Button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {insulationTypes.map((insulation) => (
+                            <Card key={insulation.name} className="flex flex-col border-2">
+                                <CardHeader>
+                                    <CardTitle>{insulation.name}</CardTitle>
+                                    <CardDescription>R-Value/inch: <span className="font-bold text-foreground">{insulation.rValue}</span></CardDescription>
+                                </CardHeader>
+                                <CardContent className="flex-grow space-y-4">
+                                    <p className="text-muted-foreground text-sm">{insulation.description}</p>
+                                    <div>
+                                        <h4 className="font-semibold text-sm mb-2">Pros:</h4>
+                                        <ul className="list-disc pl-5 text-sm text-muted-foreground">
+                                            {insulation.pros.map(pro => <li key={pro}>{pro}</li>)}
+                                        </ul>
+                                    </div>
+                                     <div>
+                                        <h4 className="font-semibold text-sm mb-2">Cons:</h4>
+                                        <ul className="list-disc pl-5 text-sm text-muted-foreground">
+                                            {insulation.cons.map(con => <li key={con}>{con}</li>)}
+                                        </ul>
+                                    </div>
+                                </CardContent>
+                                <CardFooter className="flex-wrap gap-2">
+                                    <p className="text-xs font-semibold mr-2">Best For:</p>
+                                    {insulation.bestFor.map(use => (
+                                        <Badge key={use} variant="secondary">{use}</Badge>
+                                    ))}
+                                </CardFooter>
+                            </Card>
                         ))}
-                    </CardContent>
-                </Card>
+                    </div>
+                </main>
+
+                 <aside className="lg:col-span-1">
+                    <div className="sticky top-28">
+                         <Card className="bg-secondary">
+                            <CardHeader>
+                                <CardTitle>Calculate Your Insulation Needs</CardTitle>
+                                 <CardDescription>Now that you know the types, find out how much insulation you need for your project.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="grid grid-cols-1 gap-4">
+                                {relatedCalculators.map(calc => (
+                                    <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
+                                        <Link href={`/calculators/${calc.slug}`}>
+                                            <calc.Icon className="h-5 w-5 text-primary" />
+                                            {calc.name}
+                                        </Link>
+                                    </Button>
+                                ))}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </aside>
             </div>
         </div>
     )

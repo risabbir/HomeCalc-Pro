@@ -74,23 +74,23 @@ export default function DeckChecklistPage() {
 
     return (
         <div className="container mx-auto px-4 py-16">
-            <div className="max-w-4xl mx-auto">
-                 <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">The Ultimate Deck Building Checklist</h1>
-                    <p className="text-lg text-muted-foreground">
-                        Building a deck is a major structural project. This detailed checklist provides a general framework, but is not a substitute for official plans or local building codes.
-                    </p>
-                </div>
-
-                <Alert className="mb-12 border-l-4 border-primary bg-primary/5">
-                     <FileWarning className="h-4 w-4 text-primary" />
-                     <AlertTitle className="text-primary">Always Start with Your Local Building Department</AlertTitle>
-                     <AlertDescription>
-                         This checklist is for informational purposes only. Before purchasing materials or starting any work, you must consult your local building authority to understand the specific permit and code requirements in your area.
-                     </AlertDescription>
-                </Alert>
-
-                <div className="space-y-8">
+             <div className="text-center mb-12">
+                <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">The Ultimate Deck Building Checklist</h1>
+                <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                    Building a deck is a major structural project. This detailed checklist provides a general framework, but is not a substitute for official plans or local building codes.
+                </p>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12">
+                <main className="lg:col-span-2 space-y-8">
+                    <Alert className="mb-12 border-l-4 border-primary bg-primary/5">
+                         <FileWarning className="h-4 w-4 text-primary" />
+                         <AlertTitle className="text-primary">Always Start with Your Local Building Department</AlertTitle>
+                         <AlertDescription>
+                             This checklist is for informational purposes only. Before purchasing materials or starting any work, you must consult your local building authority to understand the specific permit and code requirements in your area.
+                         </AlertDescription>
+                    </Alert>
+                    
                     {checklistItems.map((section) => (
                         <Card key={section.category}>
                             <CardHeader>
@@ -112,37 +112,41 @@ export default function DeckChecklistPage() {
                             </CardContent>
                         </Card>
                     ))}
-                </div>
 
-                <Alert variant="destructive" className="mt-16">
-                     <AlertTriangle className="h-4 w-4" />
-                     <AlertTitle>Critical Safety & Durability Pitfalls to Avoid</AlertTitle>
-                     <AlertDescription>
-                         <ul className="list-disc pl-5 mt-2 space-y-2">
-                            <li><strong>Improper Ledger Board Attachment & Flashing:</strong> This is the #1 cause of catastrophic deck collapse and severe water damage to your home. It must be bolted and flashed perfectly to code.</li>
-                            <li><strong>Inadequate Footings:</strong> Footings that are too shallow (above the frost line) or too small will cause your deck to heave, sink, and become dangerously unstable. Do not cut corners here.</li>
-                            <li><strong>Incorrect Joist Spacing or Spans:</strong> Using undersized lumber or spacing joists too far apart will result in a bouncy, unsafe deck surface that can sag or fail under load. Follow span tables.</li>
-                            <li><strong>Ignoring the Permit Process:</strong> Building without a permit is illegal and unsafe. It can lead to fines, tear-down orders, denial of insurance claims, and major liability issues.</li>
-                         </ul>
-                     </AlertDescription>
-                </Alert>
+                    <Alert variant="destructive" className="mt-16">
+                         <AlertTriangle className="h-4 w-4" />
+                         <AlertTitle>Critical Safety & Durability Pitfalls to Avoid</AlertTitle>
+                         <AlertDescription>
+                             <ul className="list-disc pl-5 mt-2 space-y-2">
+                                <li><strong>Improper Ledger Board Attachment & Flashing:</strong> This is the #1 cause of catastrophic deck collapse and severe water damage to your home. It must be bolted and flashed perfectly to code.</li>
+                                <li><strong>Inadequate Footings:</strong> Footings that are too shallow (above the frost line) or too small will cause your deck to heave, sink, and become dangerously unstable. Do not cut corners here.</li>
+                                <li><strong>Incorrect Joist Spacing or Spans:</strong> Using undersized lumber or spacing joists too far apart will result in a bouncy, unsafe deck surface that can sag or fail under load. Follow span tables.</li>
+                                <li><strong>Ignoring the Permit Process:</strong> Building without a permit is illegal and unsafe. It can lead to fines, tear-down orders, denial of insurance claims, and major liability issues.</li>
+                             </ul>
+                         </AlertDescription>
+                    </Alert>
+                </main>
 
-                 <Card className="mt-16 bg-secondary">
-                    <CardHeader>
-                        <CardTitle>Calculate Your Deck Materials</CardTitle>
-                        <CardDescription>Get a head start on your shopping list with these essential calculators for your deck project.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {relatedCalculators.map(calc => (
-                            <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
-                                <Link href={`/calculators/${calc.slug}`}>
-                                    <calc.Icon className="h-5 w-5 text-primary" />
-                                    {calc.name}
-                                </Link>
-                            </Button>
-                        ))}
-                    </CardContent>
-                </Card>
+                <aside className="lg:col-span-1">
+                    <div className="sticky top-28">
+                        <Card className="bg-secondary">
+                            <CardHeader>
+                                <CardTitle>Calculate Your Deck Materials</CardTitle>
+                                <CardDescription>Get a head start on your shopping list with these essential calculators for your deck project.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="grid grid-cols-1 gap-4">
+                                {relatedCalculators.map(calc => (
+                                    <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
+                                        <Link href={`/calculators/${calc.slug}`}>
+                                            <calc.Icon className="h-5 w-5 text-primary" />
+                                            {calc.name}
+                                        </Link>
+                                    </Button>
+                                ))}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </aside>
             </div>
         </div>
     )

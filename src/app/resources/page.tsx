@@ -57,31 +57,30 @@ const resources = [
 export default function ResourcesPage() {
   return (
     <div className="container mx-auto px-4 py-16">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold font-headline text-center mb-4">Helpful Resources</h1>
-        <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
+      <div className="text-center mb-12 max-w-3xl mx-auto">
+        <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Helpful Resources</h1>
+        <p className="text-muted-foreground text-lg">
           Planning is the key to a successful project. Use these guides, checklists, and expert tips to help you get started right.
         </p>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {resources.map((resource) => (
-                <Link href={resource.href} key={resource.title} className="group flex">
-                    <Card className="h-full w-full bg-card transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 border-2 border-transparent hover:border-primary/50 flex flex-col justify-between">
-                        <CardHeader>
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="bg-secondary p-3 rounded-lg">
-                                    <resource.Icon className="h-8 w-8 text-primary" />
-                                </div>
-                                <ArrowRight className="h-6 w-6 text-muted-foreground transition-transform group-hover:translate-x-1" />
-                            </div>
-                            <CardTitle className="font-headline text-xl">{resource.title}</CardTitle>
-                            <CardDescription className="pt-2">{resource.description}</CardDescription>
-                        </CardHeader>
-                    </Card>
-                </Link>
-            ))}
-        </div>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {resources.map((resource) => (
+              <Link href={resource.href} key={resource.title} className="group flex">
+                  <Card className="h-full w-full bg-card transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 border-2 border-transparent hover:border-primary/50 flex flex-col justify-between">
+                      <CardHeader>
+                          <div className="flex justify-between items-start mb-4">
+                              <div className="bg-secondary p-3 rounded-lg">
+                                  <resource.Icon className="h-8 w-8 text-primary" />
+                              </div>
+                              <ArrowRight className="h-6 w-6 text-muted-foreground transition-transform group-hover:translate-x-1" />
+                          </div>
+                          <CardTitle className="font-headline text-xl">{resource.title}</CardTitle>
+                          <CardDescription className="pt-2">{resource.description}</CardDescription>
+                      </CardHeader>
+                  </Card>
+              </Link>
+          ))}
       </div>
     </div>
   );

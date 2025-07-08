@@ -60,60 +60,65 @@ export default function PaintFinishGuidePage() {
 
     return (
         <div className="container mx-auto px-4 py-16">
-            <div className="max-w-4xl mx-auto">
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Choosing the Right Paint Finish</h1>
-                    <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                        The finish, or sheen, you choose is as important as the color. It affects the final look, durability, and cleanability of your walls. Use this guide to make the perfect choice for every surface.
-                    </p>
-                </div>
+            <div className="text-center mb-12">
+                <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Choosing the Right Paint Finish</h1>
+                <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                    The finish, or sheen, you choose is as important as the color. It affects the final look, durability, and cleanability of your walls. Use this guide to make the perfect choice for every surface.
+                </p>
+            </div>
 
-                <Alert className="mb-12">
-                    <Lightbulb className="h-4 w-4" />
-                    <AlertTitle>The Golden Rule of Paint Sheen</AlertTitle>
-                    <AlertDescription className="space-y-1">
-                        <p><strong>Higher Sheen = Higher Durability & Shine.</strong> This makes it easy to clean, perfect for high-traffic or high-moisture areas like kitchens, bathrooms, and trim.</p>
-                        <p><strong>Lower Sheen = Better at Hiding Imperfections.</strong> Its non-reflective nature conceals minor flaws in walls, making it ideal for living areas and ceilings.</p>
-                    </AlertDescription>
-                </Alert>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12">
+                <main className="lg:col-span-2">
+                    <Alert className="mb-12">
+                        <Lightbulb className="h-4 w-4" />
+                        <AlertTitle>The Golden Rule of Paint Sheen</AlertTitle>
+                        <AlertDescription className="space-y-1">
+                            <p><strong>Higher Sheen = Higher Durability & Shine.</strong> This makes it easy to clean, perfect for high-traffic or high-moisture areas like kitchens, bathrooms, and trim.</p>
+                            <p><strong>Lower Sheen = Better at Hiding Imperfections.</strong> Its non-reflective nature conceals minor flaws in walls, making it ideal for living areas and ceilings.</p>
+                        </AlertDescription>
+                    </Alert>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {finishes.map((finish) => (
-                        <Card key={finish.name} className="flex flex-col border-2">
-                            <CardHeader>
-                                <CardTitle>{finish.name}</CardTitle>
-                                <CardDescription>{finish.sheen} | {finish.durability} Durability</CardDescription>
-                            </CardHeader>
-                            <CardContent className="flex-grow">
-                                <p className="text-muted-foreground text-sm">{finish.description}</p>
-                            </CardContent>
-                            <CardFooter className="flex-wrap gap-2">
-                                <p className="text-xs font-semibold mr-2">Best For:</p>
-                                {finish.uses.map(use => (
-                                    <Badge key={use} variant="secondary">{use}</Badge>
-                                ))}
-                            </CardFooter>
-                        </Card>
-                    ))}
-                </div>
-
-
-                 <Card className="mt-16 bg-secondary">
-                    <CardHeader>
-                        <CardTitle>Ready to Start Painting?</CardTitle>
-                         <CardDescription>Now that you've chosen your finish, use our calculator to determine exactly how much paint you'll need for your project.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        {relatedCalculators.map(calc => (
-                            <Button asChild key={calc.slug}>
-                                <Link href={`/calculators/${calc.slug}`}>
-                                    <calc.Icon className="h-5 w-5 mr-2" />
-                                    {calc.name}
-                                </Link>
-                            </Button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {finishes.map((finish) => (
+                            <Card key={finish.name} className="flex flex-col border-2">
+                                <CardHeader>
+                                    <CardTitle>{finish.name}</CardTitle>
+                                    <CardDescription>{finish.sheen} | {finish.durability} Durability</CardDescription>
+                                </CardHeader>
+                                <CardContent className="flex-grow">
+                                    <p className="text-muted-foreground text-sm">{finish.description}</p>
+                                </CardContent>
+                                <CardFooter className="flex-wrap gap-2">
+                                    <p className="text-xs font-semibold mr-2">Best For:</p>
+                                    {finish.uses.map(use => (
+                                        <Badge key={use} variant="secondary">{use}</Badge>
+                                    ))}
+                                </CardFooter>
+                            </Card>
                         ))}
-                    </CardContent>
-                </Card>
+                    </div>
+                </main>
+
+                 <aside className="lg:col-span-1">
+                    <div className="sticky top-28">
+                        <Card className="bg-secondary">
+                            <CardHeader>
+                                <CardTitle>Ready to Start Painting?</CardTitle>
+                                 <CardDescription>Now that you've chosen your finish, use our calculator to determine exactly how much paint you'll need for your project.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="grid grid-cols-1 gap-4">
+                                {relatedCalculators.map(calc => (
+                                    <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
+                                        <Link href={`/calculators/${calc.slug}`}>
+                                            <calc.Icon className="h-5 w-5 text-primary" />
+                                            {calc.name}
+                                        </Link>
+                                    </Button>
+                                ))}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </aside>
             </div>
         </div>
     )

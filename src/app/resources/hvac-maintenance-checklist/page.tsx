@@ -5,7 +5,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, CheckSquare, Wrench } from "lucide-react";
+import { AlertTriangle, CheckSquare } from "lucide-react";
 import React from "react";
 import { Separator } from "@/components/ui/separator";
 
@@ -42,15 +42,15 @@ export default function HvacMaintenancePage() {
 
     return (
         <div className="container mx-auto px-4 py-16">
-            <div className="max-w-4xl mx-auto">
-                 <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Seasonal HVAC Maintenance Checklist</h1>
-                    <p className="text-lg text-muted-foreground">
-                        Regular maintenance keeps your heating and cooling system running efficiently, extends its lifespan, and can prevent expensive emergency repairs.
-                    </p>
-                </div>
+            <div className="text-center mb-12">
+                <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Seasonal HVAC Maintenance Checklist</h1>
+                <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                    Regular maintenance keeps your heating and cooling system running efficiently, extends its lifespan, and can prevent expensive emergency repairs.
+                </p>
+            </div>
 
-                <div className="space-y-8 mb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12">
+                <main className="lg:col-span-2 space-y-8">
                     <Card>
                         <CardHeader>
                             <CardTitle>Spring & Summer (Cooling Season)</CardTitle>
@@ -91,32 +91,36 @@ export default function HvacMaintenancePage() {
                             ))}
                         </CardContent>
                     </Card>
-                </div>
 
-                <Alert variant="destructive" className="mb-16">
-                     <AlertTriangle className="h-4 w-4" />
-                     <AlertTitle>When to Call a Professional</AlertTitle>
-                     <AlertDescription>
-                         This DIY checklist is for basic maintenance. You should schedule a professional tune-up annually. A qualified technician will check refrigerant levels, inspect electrical components, clean internal parts, and ensure your system is operating safely and at peak performance.
-                     </AlertDescription>
-                </Alert>
+                    <Alert variant="destructive">
+                         <AlertTriangle className="h-4 w-4" />
+                         <AlertTitle>When to Call a Professional</AlertTitle>
+                         <AlertDescription>
+                             This DIY checklist is for basic maintenance. You should schedule a professional tune-up annually. A qualified technician will check refrigerant levels, inspect electrical components, clean internal parts, and ensure your system is operating safely and at peak performance.
+                         </AlertDescription>
+                    </Alert>
+                </main>
 
-                 <Card className="bg-secondary">
-                    <CardHeader>
-                        <CardTitle>Plan Your HVAC Projects</CardTitle>
-                        <CardDescription>Use our calculators to make informed decisions about your HVAC system.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {relatedCalculators.map(calc => (
-                            <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
-                                <Link href={`/calculators/${calc.slug}`}>
-                                    <calc.Icon className="h-5 w-5 text-primary" />
-                                    {calc.name}
-                                </Link>
-                            </Button>
-                        ))}
-                    </CardContent>
-                </Card>
+                <aside className="lg:col-span-1">
+                    <div className="sticky top-28">
+                        <Card className="bg-secondary">
+                            <CardHeader>
+                                <CardTitle>Plan Your HVAC Projects</CardTitle>
+                                <CardDescription>Use our calculators to make informed decisions about your HVAC system.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="grid grid-cols-1 gap-4">
+                                {relatedCalculators.map(calc => (
+                                    <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
+                                        <Link href={`/calculators/${calc.slug}`}>
+                                            <calc.Icon className="h-5 w-5 text-primary" />
+                                            {calc.name}
+                                        </Link>
+                                    </Button>
+                                ))}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </aside>
             </div>
         </div>
     )

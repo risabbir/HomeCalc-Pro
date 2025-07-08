@@ -36,106 +36,112 @@ export default function ClimateZoneMapPage() {
 
     return (
         <div className="container mx-auto px-4 py-16">
-            <div className="max-w-4xl mx-auto">
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Understanding U.S. Climate Zones</h1>
-                    <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                        The U.S. Department of Energy (DOE), following the International Energy Conservation Code (IECC), divides the country into eight climate zones. Identifying your specific zone is the critical first step for any energy-efficient home project.
-                    </p>
-                </div>
+            <div className="text-center mb-12">
+                <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Understanding U.S. Climate Zones</h1>
+                <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                    The U.S. Department of Energy (DOE), following the International Energy Conservation Code (IECC), divides the country into eight climate zones. Identifying your specific zone is the critical first step for any energy-efficient home project.
+                </p>
+            </div>
 
-                <Card className="overflow-hidden mb-12 border-2">
-                     <CardContent className="p-0">
-                        <Image 
-                            src="https://storage.googleapis.com/fs-apps-production.appspot.com/1-1181283350/2024-07-16/climatemap.png"
-                            alt="A map of the United States showing the 8 distinct climate zones as defined by the Department of Energy."
-                            width={1200}
-                            height={675}
-                            className="w-full h-auto object-cover"
-                            priority
-                        />
-                    </CardContent>
-                </Card>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12">
+                <main className="lg:col-span-2 space-y-12">
+                    <Card className="overflow-hidden border-2">
+                         <CardContent className="p-0">
+                            <Image 
+                                src="https://storage.googleapis.com/fs-apps-production.appspot.com/1-1181283350/2024-07-16/climatemap.png"
+                                alt="A map of the United States showing the 8 distinct climate zones as defined by the Department of Energy."
+                                width={1200}
+                                height={675}
+                                className="w-full h-auto object-cover"
+                                priority
+                            />
+                        </CardContent>
+                    </Card>
 
-                <Card className="mb-12">
-                    <CardHeader>
-                        <CardTitle>Why Your Climate Zone is Critical</CardTitle>
-                        <CardDescription>Using the correct zone is essential for getting accurate calculations, saving money, and ensuring your home is comfortable.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="flex items-start gap-4">
-                            <div className="bg-primary/10 p-3 rounded-full">
-                                <Heater className="h-6 w-6 text-primary" />
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Why Your Climate Zone is Critical</CardTitle>
+                            <CardDescription>Using the correct zone is essential for getting accurate calculations, saving money, and ensuring your home is comfortable.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="flex items-start gap-4">
+                                <div className="bg-primary/10 p-3 rounded-full">
+                                    <Heater className="h-6 w-6 text-primary" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold">Accurate HVAC Sizing</h3>
+                                    <p className="text-muted-foreground">Your zone determines the precise heating and cooling capacity (size) your HVAC system needs. An undersized system won't keep up on extreme days, while an oversized system will cycle inefficiently, fail to dehumidify properly, and increase energy bills.</p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 className="font-semibold">Accurate HVAC Sizing</h3>
-                                <p className="text-muted-foreground">Your zone determines the precise heating and cooling capacity (size) your HVAC system needs. An undersized system won't keep up on extreme days, while an oversized system will cycle inefficiently, fail to dehumidify properly, and increase energy bills.</p>
+                            <div className="flex items-start gap-4">
+                                <div className="bg-primary/10 p-3 rounded-full">
+                                    <Layers3 className="h-6 w-6 text-primary" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold">Proper Insulation (R-Value)</h3>
+                                    <p className="text-muted-foreground">Colder zones require much higher insulation R-values in walls, attics, and floors to prevent heat loss. In hot climates, insulation is just as crucial for keeping cool, conditioned air inside. Using the wrong R-value leads to significant energy waste and discomfort.</p>
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex items-start gap-4">
-                            <div className="bg-primary/10 p-3 rounded-full">
-                                <Layers3 className="h-6 w-6 text-primary" />
+                            <div className="flex items-start gap-4">
+                                <div className="bg-primary/10 p-3 rounded-full">
+                                    <Building className="h-6 w-6 text-primary" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold">Informed Building Material Choices</h3>
+                                    <p className="text-muted-foreground">Your choice of windows (e.g., U-factor and SHGC ratings), siding, and roofing should be directly influenced by your climate zone to maximize energy efficiency and long-term durability against the elements.</p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 className="font-semibold">Proper Insulation (R-Value)</h3>
-                                <p className="text-muted-foreground">Colder zones require much higher insulation R-values in walls, attics, and floors to prevent heat loss. In hot climates, insulation is just as crucial for keeping cool, conditioned air inside. Using the wrong R-value leads to significant energy waste and discomfort.</p>
-                            </div>
-                        </div>
-                        <div className="flex items-start gap-4">
-                            <div className="bg-primary/10 p-3 rounded-full">
-                                <Building className="h-6 w-6 text-primary" />
-                            </div>
-                            <div>
-                                <h3 className="font-semibold">Informed Building Material Choices</h3>
-                                <p className="text-muted-foreground">Your choice of windows (e.g., U-factor and SHGC ratings), siding, and roofing should be directly influenced by your climate zone to maximize energy efficiency and long-term durability against the elements.</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
 
-                <Card className="mb-12">
-                    <CardHeader>
-                        <CardTitle>Climate Zone Breakdown</CardTitle>
-                        <CardDescription>To determine your zone with certainty, use the county-by-county lookup tools on the official U.S. Department of Energy or ENERGY STAR websites. A search for "DOE climate zone by county" will provide the most accurate results. Use the table below to understand your zone's general characteristics.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-1/6">Zone</TableHead>
-                                    <TableHead>Climate Type</TableHead>
-                                    <TableHead>General Locations</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {climateZoneData.map((zone) => (
-                                    <TableRow key={zone.zone}>
-                                        <TableCell className="font-medium">Zone {zone.zone}</TableCell>
-                                        <TableCell>{zone.type}</TableCell>
-                                        <TableCell>{zone.states}</TableCell>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Climate Zone Breakdown</CardTitle>
+                            <CardDescription>To determine your zone with certainty, use the county-by-county lookup tools on the official U.S. Department of Energy or ENERGY STAR websites. A search for "DOE climate zone by county" will provide the most accurate results. Use the table below to understand your zone's general characteristics.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-1/6">Zone</TableHead>
+                                        <TableHead>Climate Type</TableHead>
+                                        <TableHead>General Locations</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
+                                </TableHeader>
+                                <TableBody>
+                                    {climateZoneData.map((zone) => (
+                                        <TableRow key={zone.zone}>
+                                            <TableCell className="font-medium">Zone {zone.zone}</TableCell>
+                                            <TableCell>{zone.type}</TableCell>
+                                            <TableCell>{zone.states}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </main>
 
-                <Card className="bg-secondary">
-                    <CardHeader>
-                        <CardTitle>Apply Your Knowledge</CardTitle>
-                        <CardDescription>Now that you know your zone, use these calculators for precise, location-aware results.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {relatedCalculators.map(calc => (
-                            <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
-                                <Link href={`/calculators/${calc.slug}`}>
-                                    <calc.Icon className="h-5 w-5 text-primary" />
-                                    {calc.name}
-                                </Link>
-                            </Button>
-                        ))}
-                    </CardContent>
-                </Card>
+                <aside className="lg:col-span-1">
+                    <div className="sticky top-28">
+                         <Card className="bg-secondary">
+                            <CardHeader>
+                                <CardTitle>Related Calculators</CardTitle>
+                                <CardDescription>Apply your knowledge with these tools.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="grid grid-cols-1 gap-4">
+                                {relatedCalculators.map(calc => (
+                                    <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
+                                        <Link href={`/calculators/${calc.slug}`}>
+                                            <calc.Icon className="h-5 w-5 text-primary" />
+                                            {calc.name}
+                                        </Link>
+                                    </Button>
+                                ))}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </aside>
             </div>
         </div>
     )
