@@ -108,12 +108,11 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-                <Icon className="h-16 w-16 mx-auto text-primary mb-4" />
-                <h1 className="text-4xl font-bold font-headline">{calculator.name}</h1>
-                <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">{calculator.description}</p>
+                <h1 className="text-4xl md:text-5xl font-bold font-headline">{calculator.name}</h1>
+                <p className="text-muted-foreground mt-4 text-lg max-w-2xl mx-auto">{calculator.description}</p>
             </div>
         </div>
         {renderCalculator()}
