@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -37,21 +38,12 @@ const prompt = ai.definePrompt({
 
 The user is currently using the '{{{calculatorType}}}'. They are working in the {{#if units}}{{{units}}}{{else}}imperial{{/if}} unit system.
 
-These are the parameters they have already filled in:
+Here are all the parameters provided by the user. Note that an empty string for a value means the user has left that field blank.
 {{#each parameters}}
-  {{#if this}}
-    - {{@key}}: {{this}}
-  {{/if}}
+  - {{@key}}: {{this}}
 {{/each}}
 
-These are the parameters they have left blank:
-{{#each parameters}}
-  {{#unless this}}
-    - {{@key}}
-  {{/unless}}
-{{/each}}
-
-Your task is to analyze the provided parameters and suggest reasonable, common-sense estimates for the blank fields.
+Your task is to analyze the provided parameters and suggest reasonable, common-sense estimates for the blank fields (those with empty string values).
 - Your response MUST be a valid JSON object that conforms to the specified output schema. Do not include any explanatory text, markdown formatting, or anything else outside of the JSON structure.
 - Base your suggestions on the calculator type and the data the user has already provided.
 - Populate the 'autoCalculatedValues' field with your suggested estimates. Use the exact parameter keys for the fields you are suggesting values for.
