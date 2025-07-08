@@ -47,11 +47,12 @@ export default function ClimateZoneMapPage() {
                     <Card className="overflow-hidden border-2">
                              <CardContent className="p-0 bg-white">
                                 <Image 
-                                    src="https://building-performance.org/wp-content/uploads/2020/12/IECC-Climate-Zone-Map.png"
+                                    src="https://placehold.co/982x759.png"
+                                    data-ai-hint="climate zone map"
                                     alt="U.S. IECC Climate Zone Map showing 8 distinct climate zones across the United States."
                                     width={982}
                                     height={759}
-                                    className="w-full h-auto object-contain"
+                                    className="w-full h-auto object-contain bg-muted"
                                     priority
                                 />
                         </CardContent>
