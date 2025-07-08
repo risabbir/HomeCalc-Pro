@@ -12,7 +12,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { calculators } from '@/lib/calculators';
 
-export const ChatbotInputSchema = z.object({
+const ChatbotInputSchema = z.object({
   query: z.string().describe('The user\'s question or message.'),
   history: z.array(z.object({
     role: z.enum(['user', 'model']),
@@ -21,7 +21,7 @@ export const ChatbotInputSchema = z.object({
 });
 export type ChatbotInput = z.infer<typeof ChatbotInputSchema>;
 
-export const ChatbotOutputSchema = z.object({
+const ChatbotOutputSchema = z.object({
   answer: z.string().describe("The chatbot's response to the user."),
   link: z.string().optional().describe('The URL slug of a relevant calculator, if any. e.g., "paint-coverage"'),
 });
