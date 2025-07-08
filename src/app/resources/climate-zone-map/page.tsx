@@ -46,15 +46,15 @@ export default function ClimateZoneMapPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12 lg:gap-y-0">
                 <main className="lg:col-span-2 space-y-12">
                     <Card className="overflow-hidden border-2">
-                         <CardContent className="p-0 bg-white">
-                            <Image 
-                                src="https://www.energy.gov/sites/default/files/2023-11/BASC-Thermal-Climate-Zone-Map-112023.jpg"
-                                alt="A map of the United States showing the Building America climate zones, including Subarctic, Cold, Hot-Humid, Hot-Dry, Mixed-Dry, Marine, Very Cold, and Mixed-Humid regions."
-                                width={1200}
-                                height={825}
-                                className="w-full h-auto object-contain"
-                                priority
-                            />
+                             <CardContent className="p-0 bg-white">
+                                <Image 
+                                    src="https://www.researchgate.net/profile/Dazhi-Yang-3/publication/359387671/figure/fig2/AS:1139834437545984@1648769115133/The-climate-zone-designations-used-by-the-US-Department-of-Energy-Building-America.png"
+                                    alt="The climate zone designations used by the US Department of Energy Building America."
+                                    width={1200}
+                                    height={825}
+                                    className="w-full h-auto object-contain"
+                                    priority
+                                />
                         </CardContent>
                         <CardFooter className="bg-muted/50 p-3 text-xs text-muted-foreground">
                             <p>Map courtesy of the U.S. Department of Energy – Building America Climate Zone Map.</p>
@@ -127,22 +127,22 @@ export default function ClimateZoneMapPage() {
 
                 <aside className="lg:col-span-1">
                     <div className="sticky top-28">
-                         <Card className="bg-secondary">
-                            <CardHeader>
-                                <CardTitle>Related Calculators</CardTitle>
-                                <CardDescription>Apply your knowledge with these tools.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="grid grid-cols-1 gap-4">
-                                {relatedCalculators.map(calc => (
-                                    <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
-                                        <Link href={`/calculators/${calc.slug}`}>
-                                            <calc.Icon className="h-5 w-5 text-primary" />
-                                            {calc.name}
-                                        </Link>
-                                    </Button>
-                                ))}
-                            </CardContent>
-                        </Card>
+                             <Card className="bg-secondary">
+                                <CardHeader>
+                                    <CardTitle>Related Calculators</CardTitle>
+                                    <CardDescription>Apply your knowledge with these tools.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="grid grid-cols-1 gap-4">
+                                    {relatedCalculators.map(calc => (
+                                        <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
+                                            <Link href={`/calculators/${calc.slug}`}>
+                                                <calc.Icon className="h-5 w-5 text-primary" />
+                                                {calc.name}
+                                            </Link>
+                                        </Button>
+                                    ))}
+                                </CardContent>
+                            </Card>
                     </div>
                 </aside>
             </div>
