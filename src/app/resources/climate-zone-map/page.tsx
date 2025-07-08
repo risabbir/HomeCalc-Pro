@@ -1,3 +1,4 @@
+
 import { calculators } from "@/lib/calculators";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -8,8 +9,8 @@ import Image from "next/image";
 import { Heater, Layers3, Building } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'U.S. Climate Zone Map | HomeCalc Pro',
-    description: 'Find your U.S. climate zone to accurately size your HVAC system and determine insulation needs.',
+    title: 'U.S. Climate Zone Map for HVAC & Insulation | HomeCalc Pro',
+    description: 'Find your U.S. climate zone using our accurate map. Essential for correctly sizing your HVAC system, choosing insulation, and planning energy-efficient home projects.',
 };
 
 const relevantCalculators = [
@@ -22,9 +23,9 @@ const relevantCalculators = [
 const climateZoneData = [
   { zone: "1", type: "Hot-Humid", states: "South Florida, Hawaii, Guam, Puerto Rico, Virgin Islands" },
   { zone: "2", type: "Hot-Dry / Mixed-Humid", states: "Most of Florida, south Texas, southern Louisiana, southern Arizona" },
-  { zone: "3", type: "Warm-Humid / Warm-Dry", states: "Southeast US, coastal California, most of Texas and Arizona" },
-  { zone: "4", type: "Mixed-Humid / Mixed-Dry", states: "Mid-Atlantic, Pacific Northwest, parts of California and the Midwest" },
-  { zone: "5", type: "Cool-Humid / Cool-Dry", states: "Northeast, Midwest, and Rocky Mountains" },
+  { zone: "3", type: "Warm-Humid / Warm-Dry", states: "The Southeast, coastal California, most of Texas and Arizona" },
+  { zone: "4", type: "Mixed-Humid / Mixed-Dry", states: "Mid-Atlantic, Pacific Northwest, parts of California, the Midwest" },
+  { zone: "5", type: "Cool-Humid / Cool-Dry", states: "The Northeast, Midwest, and the Rocky Mountains" },
   { zone: "6", type: "Cold-Humid / Cold-Dry", states: "Northern Midwest, New England, northern Rockies" },
   { zone: "7", type: "Very-Cold", states: "Northern Minnesota, Wisconsin, North Dakota, Maine, high elevations" },
   { zone: "8", type: "Subarctic", states: "Most of Alaska" },
@@ -39,26 +40,27 @@ export default function ClimateZoneMapPage() {
                 <div className="text-center mb-12">
                     <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Understanding U.S. Climate Zones</h1>
                     <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                        The U.S. Department of Energy divides the country into eight zones. Knowing your zone is the key to energy-efficient home projects.
+                        The U.S. Department of Energy divides the country into eight distinct climate zones. Knowing your zone is the single most important step for energy-efficient home projects.
                     </p>
                 </div>
 
-                <Card className="overflow-hidden mb-12">
+                <Card className="overflow-hidden mb-12 border-2">
                      <CardContent className="p-0">
                         <Image 
                             src="https://storage.googleapis.com/fs-apps-production.appspot.com/1-1181283350/2024-07-16/climatemap.png"
-                            alt="Map of U.S. Climate Zones"
+                            alt="A map of the United States showing the 8 distinct climate zones as defined by the Department of Energy."
                             width={1200}
                             height={675}
                             className="w-full h-auto object-cover"
+                            priority
                         />
                     </CardContent>
                 </Card>
 
                 <Card className="mb-12">
                     <CardHeader>
-                        <CardTitle>Why Your Climate Zone Matters</CardTitle>
-                        <CardDescription>Using the correct climate zone is essential for getting accurate calculations and achieving the best results for your home.</CardDescription>
+                        <CardTitle>Why Your Climate Zone is Critical</CardTitle>
+                        <CardDescription>Using the correct zone is essential for getting accurate calculations, saving money, and ensuring your home is comfortable.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className="flex items-start gap-4">
@@ -66,8 +68,8 @@ export default function ClimateZoneMapPage() {
                                 <Heater className="h-6 w-6 text-primary" />
                             </div>
                             <div>
-                                <h3 className="font-semibold">Heating & Cooling (HVAC)</h3>
-                                <p className="text-muted-foreground">A home in a cold zone needs a powerful furnace, while one in a hot zone needs a robust AC. An incorrectly sized system leads to inefficiency, discomfort, and high energy bills.</p>
+                                <h3 className="font-semibold">Accurate HVAC Sizing</h3>
+                                <p className="text-muted-foreground">Your zone dictates how powerful your heating and cooling system needs to be. A system that's too small won't keep you comfortable, while one that's too large will cycle inefficiently, waste energy, and increase your bills. Our calculators use your zone to recommend the right size.</p>
                             </div>
                         </div>
                         <div className="flex items-start gap-4">
@@ -75,8 +77,8 @@ export default function ClimateZoneMapPage() {
                                 <Layers3 className="h-6 w-6 text-primary" />
                             </div>
                             <div>
-                                <h3 className="font-semibold">Insulation (R-Value)</h3>
-                                <p className="text-muted-foreground">Colder zones require higher R-value insulation in walls, attics, and floors to prevent heat loss. In hot climates, insulation is key to keeping cool air in. Our calculators use these zones for accurate recommendations.</p>
+                                <h3 className="font-semibold">Proper Insulation (R-Value)</h3>
+                                <p className="text-muted-foreground">Colder zones require much higher R-value insulation in walls, attics, and floors to prevent heat loss. In hot climates, insulation is key to keeping cool air in and reducing AC costs. Using the wrong R-value leads to significant energy waste.</p>
                             </div>
                         </div>
                         <div className="flex items-start gap-4">
@@ -84,8 +86,8 @@ export default function ClimateZoneMapPage() {
                                 <Building className="h-6 w-6 text-primary" />
                             </div>
                             <div>
-                                <h3 className="font-semibold">Building Materials</h3>
-                                <p className="text-muted-foreground">Your choice of windows, siding, and roofing should be influenced by your climate zone to maximize energy efficiency and durability against the elements.</p>
+                                <h3 className="font-semibold">Informed Building Material Choices</h3>
+                                <p className="text-muted-foreground">Your choice of windows (e.g., double vs. triple-pane), siding, and roofing should be influenced by your climate zone to maximize energy efficiency and long-term durability against the elements.</p>
                             </div>
                         </div>
                     </CardContent>
@@ -94,15 +96,15 @@ export default function ClimateZoneMapPage() {
                 <Card className="mb-12">
                     <CardHeader>
                         <CardTitle>Climate Zone Breakdown</CardTitle>
-                        <CardDescription>Find your zone by searching online for "US DOE climate zone for [your county, state]". Then, use the table below to understand its characteristics.</CardDescription>
+                        <CardDescription>To find your zone, perform an online search for "US DOE climate zone for [your county, state]". Then, use the table below to understand its characteristics.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Zone</TableHead>
+                                    <TableHead className="w-1/6">Zone</TableHead>
                                     <TableHead>Climate Type</TableHead>
-                                    <TableHead>Example Locations</TableHead>
+                                    <TableHead>General Locations</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -120,8 +122,8 @@ export default function ClimateZoneMapPage() {
 
                 <Card className="bg-secondary">
                     <CardHeader>
-                        <CardTitle>Use Your Zone in These Calculators</CardTitle>
-                        <CardDescription>Now that you know your zone, apply it in these relevant calculators for precise results.</CardDescription>
+                        <CardTitle>Apply Your Knowledge</CardTitle>
+                        <CardDescription>Now that you know your zone, use these calculators for precise, location-aware results.</CardDescription>
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {relatedCalculators.map(calc => (

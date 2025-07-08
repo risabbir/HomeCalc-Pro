@@ -1,16 +1,18 @@
+
 import { calculators } from "@/lib/calculators";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import Image from 'next/image';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle, ListChecks } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 export const metadata: Metadata = {
-    title: 'Ultimate Deck Building Checklist | HomeCalc Pro',
-    description: 'A comprehensive checklist for planning and building your new deck, from foundation to finishing touches.',
+    title: 'The Ultimate Deck Building Checklist | HomeCalc Pro',
+    description: 'A comprehensive, step-by-step checklist for planning and building your new deck, covering design, permits, materials, construction, and safety.',
 };
 
 const relevantCalculators = [
@@ -19,42 +21,52 @@ const relevantCalculators = [
 ];
 
 const checklistItems = [
-    { category: "Planning & Design", items: [
-        "Define deck purpose (e.g., dining, lounging, hot tub support) to determine size and feature requirements.",
-        "Establish a comprehensive budget, including materials, permits, tool rentals, and a 10-15% contingency fund.",
-        "Contact your local building department for permit requirements, setback rules, frost line depth, and code specifics.",
-        "Draft a detailed design plan: Sketch dimensions, shape, height, and features like stairs, railings, and lighting.",
-        "Select materials: Choose decking (wood, composite, PVC), railings, and pressure-treated lumber for the substructure.",
-    ]},
-    { category: "Material Estimation & Ordering", items: [
-        "Use our calculators for precise estimates of decking, joists, beams, and concrete for footings.",
-        "Compile a complete shopping list: include all hardware (joist hangers, screws, bolts) and protective flashing.",
-        "Place material orders from your supplier and coordinate a delivery date and location.",
-    ]},
-    { category: "Site Prep & Foundation", items: [
-        "Call 811 (or your local service) at least a few days before digging to have all underground utility lines marked.",
-        "Clear the construction area of all vegetation, rocks, and debris. Grade the area for proper drainage.",
-        "Lay out the deck perimeter and footing locations using stakes, string lines, and marking paint. Check for square.",
-        "Dig footing holes to the depth and width required by your local building code, ensuring they are below the frost line.",
-        "Pour concrete footings and set post anchors while wet. Use a level to ensure they are perfectly plumb and aligned.",
-    ]},
-    { category: "Framing & Construction", items: [
-        "Attach the ledger board to the house securely with appropriate lag screws or bolts, and install proper flashing to prevent water damage.",
-        "Cut and install support posts onto the anchors. Attach beams securely to the posts using post caps or notches.",
-        "Install rim joists and then the inner joists, typically spaced 16 inches on center. Use joist hangers for all connections.",
-        "Continuously check that the frame is square, level, and securely fastened.",
-    ]},
-    { category: "Decking & Finishing", items: [
-        "Install the deck boards perpendicular to the joists, maintaining a consistent gap (e.g., 1/8 inch) for drainage and expansion.",
-        "Construct and install stairs, ensuring they meet code for riser height and tread depth for safety.",
-        "Install railing posts, rails, and balusters according to code for height and spacing.",
-        "Add finishing touches like fascia boards, skirting to hide the under-deck, or built-in benches and planters.",
-        "If using wood, clean and apply a protective stain or sealer after the wood has had time to dry out.",
-    ]},
-    { category: "Final Inspection", items: [
-        "Schedule required inspections (footing, framing, final) with your building department at the appropriate stages.",
-        "Promptly address any issues raised by the inspector before proceeding to the next step or finalizing the project.",
-    ]}
+    { 
+        category: "Phase 1: Planning & Design", 
+        items: [
+            { id: "p1_1", text: "Define Deck Purpose & Size:", details: "Determine primary use (dining, lounging, hot tub support) to establish size, shape, and feature requirements." },
+            { id: "p1_2", text: "Establish a Comprehensive Budget:", details: "Account for all materials, permits, tool rentals, and a 10-15% contingency fund for unexpected costs." },
+            { id: "p1_3", text: "Research Local Building Codes:", details: "Contact your local building department for permit requirements, setback rules, frost line depth, required footing sizes, and railing specifications." },
+            { id: "p1_4", text: "Create a Detailed Deck Plan:", details: "Draft a to-scale plan showing dimensions, shape, height, ledger board placement, footing locations, beam and joist layout, and features like stairs and landings." },
+            { id: "p1_5", text: "Select Materials:", details: "Choose decking (wood, composite, PVC), railing systems, and ensure all structural lumber (posts, beams, joists) is pressure-treated for ground contact." },
+        ]
+    },
+    { 
+        category: "Phase 2: Site Preparation & Foundation", 
+        items: [
+            { id: "p2_1", text: "Call 811 Before You Dig:", details: "Contact your local utility locating service at least 3-4 days before digging to have all underground gas, water, and electric lines marked. This is a critical safety step." },
+            { id: "p2_2", text: "Clear and Grade the Area:", details: "Remove all vegetation, rocks, and debris. Grade the soil to slope away from your house foundation for proper water drainage." },
+            { id: "p2_3", text: "Lay Out Footing Locations:", details: "Use your plan, stakes, and string lines to precisely mark the center of each footing hole. Measure diagonally between corners to ensure the layout is perfectly square." },
+            { id: "p2_4", text: "Dig Footing Holes:", details: "Dig holes to the depth and width required by your local code, ensuring they extend below the frost line to prevent heaving." },
+            { id: "p2_5", text: "Pour Concrete Footings:", details: "Pour concrete and set post anchors into the wet concrete. Use a level to ensure anchors are perfectly plumb and aligned with your string lines." },
+        ]
+    },
+    { 
+        category: "Phase 3: Framing & Construction", 
+        items: [
+            { id: "p3_1", text: "Install Ledger Board & Flashing:", details: "Securely attach the ledger board to the house rim joist using appropriate lag screws or structural bolts. Install proper flashing above and behind the ledger to prevent water intrusion and rot." },
+            { id: "p3_2", text: "Install Posts and Beams:", details: "Cut support posts to height and attach them to the post anchors. Securely fasten beams to the posts using post-to-beam connectors or by notching the posts." },
+            { id: "p3_3", text: "Install Joists:", details: "Install the outer rim joists first, then fill in the field joists, typically spaced 16 inches on-center. Use joist hangers for all connections to the ledger and beams." },
+            { id: "p3_4", text: "Verify Frame Integrity:", details: "Continuously check that the frame is square, level, and all connections are secure as you build." },
+        ]
+    },
+    { 
+        category: "Phase 4: Decking & Finishing Touches", 
+        items: [
+            { id: "p4_1", text: "Install Deck Boards:", details: "Lay the decking perpendicular to the joists. Start at the house and work outwards, maintaining a consistent gap (e.g., 1/8 inch) for drainage and expansion." },
+            { id: "p4_2", text: "Build and Install Stairs:", details: "Construct stairs ensuring they meet code for riser height and tread depth. Securely attach the stair stringers to the deck frame." },
+            { id: "p4_3", text: "Install Railing System:", details: "Securely bolt railing posts to the deck frame. Install rails and balusters according to code for height and spacing to ensure safety." },
+            { id: "p4_4", text: "Add Fascia and Skirting:", details: "Install fascia boards to cover rim joists for a finished look. Consider adding skirting to hide the under-deck area." },
+            { id: "p4_5", text: "Apply Protective Finish:", details: "If using wood decking, clean the surface and apply a quality stain or sealer after allowing the wood to properly dry out (check manufacturer recommendations)." },
+        ]
+    },
+    { 
+        category: "Phase 5: Final Inspection", 
+        items: [
+            { id: "p5_1", text: "Schedule Required Inspections:", details: "Call your building department to schedule required inspections (e.g., footing, framing, final) at the appropriate stages of the project." },
+            { id: "p5_2", text: "Address Inspector Feedback:", details: "Promptly address any issues or corrections required by the inspector before considering the project complete." },
+        ]
+    }
 ];
 
 
@@ -68,7 +80,7 @@ export default function DeckChecklistPage() {
                     <ListChecks className="h-16 w-16 mx-auto text-primary mb-4" />
                     <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">The Ultimate Deck Building Checklist</h1>
                     <p className="text-lg text-muted-foreground">
-                        Building a deck is a major project. This detailed checklist helps you stay organized and ensures a safe, successful build from planning to completion.
+                        Building a deck is a major undertaking. Follow this detailed, phase-by-phase checklist to ensure a safe, professional, and successful build from start to finish.
                     </p>
                 </div>
 
@@ -76,27 +88,34 @@ export default function DeckChecklistPage() {
                      <CardContent className="p-0 overflow-hidden rounded-lg">
                         <Image 
                             src="https://placehold.co/1200x500.png"
-                            alt="A beautiful, newly built wooden deck with outdoor furniture"
+                            alt="A beautiful, newly built wooden deck with comfortable outdoor furniture, ready for relaxation."
                             width={1200}
                             height={500}
                             className="w-full h-auto object-cover"
-                            data-ai-hint="deck furniture"
+                            data-ai-hint="deck furniture relax"
+                            priority
                         />
                      </CardContent>
                  </Card>
 
                 <div className="space-y-8">
-                    {checklistItems.map((section, sectionIndex) => (
-                        <Card key={sectionIndex}>
+                    {checklistItems.map((section) => (
+                        <Card key={section.category}>
                             <CardHeader>
                                 <CardTitle>{section.category}</CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-4">
+                            <CardContent className="space-y-1">
                                 {section.items.map((item, itemIndex) => (
-                                    <div key={itemIndex} className="flex items-start space-x-3">
-                                       <Checkbox id={`item-${sectionIndex}-${itemIndex}`} aria-label={item} className="mt-1" />
-                                       <label htmlFor={`item-${sectionIndex}-${itemIndex}`} className="text-base flex-1 text-muted-foreground">{item}</label>
-                                    </div>
+                                    <React.Fragment key={item.id}>
+                                        {itemIndex > 0 && <Separator className="my-4" />}
+                                        <div className="flex items-start space-x-4 p-2">
+                                            <Checkbox id={item.id} aria-label={item.text} className="mt-1" />
+                                            <div className="flex-1">
+                                                <label htmlFor={item.id} className="font-medium text-base cursor-pointer">{item.text}</label>
+                                                <p className="text-sm text-muted-foreground">{item.details}</p>
+                                            </div>
+                                        </div>
+                                    </React.Fragment>
                                 ))}
                             </CardContent>
                         </Card>
@@ -105,23 +124,23 @@ export default function DeckChecklistPage() {
 
                 <Alert variant="destructive" className="mt-16">
                      <AlertTriangle className="h-4 w-4" />
-                     <AlertTitle>Common Pitfalls to Avoid</AlertTitle>
+                     <AlertTitle>Critical Safety &amp; Durability Pitfalls to Avoid</AlertTitle>
                      <AlertDescription>
-                         <ul className="list-disc pl-5 mt-2 space-y-1">
-                            <li><strong>Improper Ledger Board Flashing:</strong> This is a primary cause of water damage, rot, and structural failure. Ensure it's done correctly.</li>
-                            <li><strong>Inadequate Footings:</strong> Footings that are too shallow or small can lead to a sinking or unstable deck. Always dig below the frost line for your area.</li>
-                            <li><strong>Incorrect Joist Spacing:</strong> Spacing joists too far apart can result in a bouncy, unsafe deck surface. Stick to your plans and code requirements.</li>
-                            <li><strong>Ignoring the Permit Process:</strong> Building without a permit can lead to fines, tear-down orders, and major issues when selling your home.</li>
+                         <ul className="list-disc pl-5 mt-2 space-y-2">
+                            <li><strong>Improper Ledger Board Attachment & Flashing:</strong> This is the #1 cause of catastrophic deck collapse and house rot. Ensure it is securely bolted and flashed correctly to prevent water damage.</li>
+                            <li><strong>Inadequate Footings:</strong> Footings that are too shallow (above the frost line) or too small will cause your deck to heave, sink, and become unstable. Do not cut corners here.</li>
+                            <li><strong>Incorrect Joist Spacing or Spans:</strong> Spacing joists too far apart or using undersized lumber for the span will result in a bouncy, unsafe deck surface that can fail over time.</li>
+                            <li><strong>Ignoring the Permit Process:</strong> Building without a permit is illegal and unsafe. It can lead to fines, tear-down orders, and major liability issues.</li>
                          </ul>
                          <p className="font-bold mt-4">Disclaimer:</p>
-                         <p className="text-sm">This checklist is for informational purposes only and is not a substitute for professional building plans or advice. Always adhere to local building codes and safety regulations. Consult a professional contractor or engineer for complex projects.</p>
+                         <p className="text-sm">This checklist is for informational purposes only and is not a substitute for professional building plans, engineering, or advice. Always adhere strictly to your local building codes and safety regulations. When in doubt, consult a qualified professional contractor or engineer.</p>
                      </AlertDescription>
                 </Alert>
 
                  <Card className="mt-16 bg-secondary">
                     <CardHeader>
-                        <CardTitle>Calculators for Your Deck Project</CardTitle>
-                        <CardDescription>Get started with the right numbers for your materials.</CardDescription>
+                        <CardTitle>Calculate Your Deck Materials</CardTitle>
+                        <CardDescription>Get a head start on your shopping list with these essential calculators for your deck project.</CardDescription>
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {relatedCalculators.map(calc => (

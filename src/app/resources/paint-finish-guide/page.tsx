@@ -1,3 +1,4 @@
+
 import { calculators } from "@/lib/calculators";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -9,8 +10,8 @@ import { Paintbrush, Lightbulb } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
-    title: 'Paint Finish Guide | HomeCalc Pro',
-    description: 'Learn the difference between paint finishes like matte, eggshell, and semi-gloss to choose the right one for your project.',
+    title: 'A Homeowner\'s Guide to Paint Finishes | HomeCalc Pro',
+    description: 'Learn the difference between paint finishes like matte, eggshell, satin, and semi-gloss to choose the perfect one for any room and surface in your home.',
 };
 
 const relevantCalculators = [
@@ -19,39 +20,39 @@ const relevantCalculators = [
 
 const finishes = [
     {
-        name: "Matte (or Flat)",
+        name: "Matte (Flat)",
         sheen: "No Shine",
         durability: "Low",
-        description: "Hides imperfections on walls beautifully, making it ideal for low-traffic areas like adult bedrooms and formal dining rooms. Not easily cleanable.",
-        uses: ["Ceilings", "Adult Bedrooms", "Low-Traffic Areas"]
+        description: "Has a non-reflective, velvety texture that excels at hiding surface imperfections like bumps or patches. Its sophisticated look is perfect for low-traffic areas.",
+        uses: ["Ceilings", "Adult Bedrooms", "Formal Dining Rooms"]
     },
     {
         name: "Eggshell",
         sheen: "Low Sheen",
         durability: "Medium",
-        description: "Offers a soft, low-sheen finish that's more durable and washable than matte. A great middle-ground for most rooms in the house.",
-        uses: ["Living Rooms", "Hallways", "Dining Rooms"]
+        description: "Provides a soft glow, reminiscent of an eggshell. It's more washable and durable than matte, making it a popular, versatile choice for most living spaces.",
+        uses: ["Living Rooms", "Hallways", "Entryways"]
     },
     {
         name: "Satin",
         sheen: "Soft Glow",
         durability: "Medium-High",
-        description: "The most popular choice for its balance of a soft sheen and good durability. It stands up to cleaning and light scrubbing.",
-        uses: ["Kitchens", "Bathrooms", "Kids' Rooms", "High-Traffic Areas"]
+        description: "Often considered the best all-around finish. It offers a beautiful, pearl-like sheen and stands up well to cleaning and light scrubbing in moderately busy areas.",
+        uses: ["Kitchens", "Family Rooms", "Kids' Rooms", "High-Traffic Areas"]
     },
     {
         name: "Semi-Gloss",
         sheen: "Noticeable Shine",
         durability: "High",
-        description: "Sleek and durable, this finish is highly resistant to moisture and stains, making it perfect for hardworking surfaces. Its shine will highlight imperfections.",
+        description: "Sleek, radiant, and highly durable, this finish is moisture and stain-resistant, making it perfect for hardworking surfaces. Its shine will highlight any wall imperfections, so prep work is key.",
         uses: ["Trim & Molding", "Doors", "Cabinets", "Bathrooms"]
     },
     {
         name: "High-Gloss",
         sheen: "Very Shiny",
         durability: "Very High",
-        description: "Creates a hard, ultra-shiny, light-reflecting surface. It's the most durable and easiest to clean, but requires meticulous surface prep.",
-        uses: ["Front Doors", "Furniture", "Accent Trim"]
+        description: "Creates a hard, ultra-shiny, light-reflecting surface like glass. It's the most durable and easiest to clean, but requires flawless surface preparation as it shows every flaw.",
+        uses: ["Front Doors", "Furniture", "Accent Trim", "Architectural Details"]
     },
 ];
 
@@ -65,7 +66,7 @@ export default function PaintFinishGuidePage() {
                     <Paintbrush className="h-16 w-16 mx-auto text-primary mb-4" />
                     <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Choosing the Right Paint Finish</h1>
                     <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                        The finish, or sheen, you choose is as important as the color. It affects durability, cleanability, and the final look of your room. Use this guide to make the perfect choice.
+                        The finish, or sheen, you choose is as important as the color. It affects the final look, durability, and cleanability of your walls. Use this guide to make the perfect choice for every surface.
                     </p>
                 </div>
                 
@@ -73,26 +74,29 @@ export default function PaintFinishGuidePage() {
                     <CardContent className="p-0 overflow-hidden rounded-lg">
                         <Image 
                             src="https://placehold.co/1200x500.png"
-                            alt="A wall with paint swatches of different finishes, from matte to high-gloss"
+                            alt="A wall with paint swatches showing the gradient of different finishes, from non-reflective matte to shiny high-gloss."
                             width={1200}
                             height={500}
                             className="w-full h-auto object-cover"
                             data-ai-hint="paint swatches wall"
+                            priority
                         />
                     </CardContent>
                  </Card>
 
                 <Alert className="mb-12">
                     <Lightbulb className="h-4 w-4" />
-                    <AlertTitle>The Basic Rule of Thumb</AlertTitle>
+                    <AlertTitle>The Golden Rule of Paint Sheen</AlertTitle>
                     <AlertDescription>
-                        Higher Sheen = Higher Durability & Shine. Lower Sheen = Better at Hiding Imperfections.
+                        <strong>Higher Sheen = Higher Durability & Shine.</strong> Best for trim, doors, and high-moisture areas like bathrooms.
+                        <br/>
+                        <strong>Lower Sheen = Better at Hiding Imperfections.</strong> Ideal for walls and ceilings that aren't perfectly smooth.
                     </AlertDescription>
                 </Alert>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {finishes.map((finish) => (
-                        <Card key={finish.name} className="flex flex-col">
+                        <Card key={finish.name} className="flex flex-col border-2">
                             <CardHeader>
                                 <CardTitle>{finish.name}</CardTitle>
                                 <CardDescription>{finish.sheen} | {finish.durability} Durability</CardDescription>
@@ -101,6 +105,7 @@ export default function PaintFinishGuidePage() {
                                 <p className="text-muted-foreground text-sm">{finish.description}</p>
                             </CardContent>
                             <CardFooter className="flex-wrap gap-2">
+                                <p className="text-xs font-semibold mr-2">Best For:</p>
                                 {finish.uses.map(use => (
                                     <Badge key={use} variant="secondary">{use}</Badge>
                                 ))}
@@ -117,7 +122,7 @@ export default function PaintFinishGuidePage() {
                     </CardHeader>
                     <CardFooter>
                         {relatedCalculators.map(calc => (
-                            <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
+                            <Button asChild variant="default" className="bg-background text-foreground border-input border hover:bg-accent" key={calc.slug}>
                                 <Link href={`/calculators/${calc.slug}`}>
                                     <calc.Icon className="h-5 w-5 text-primary" />
                                     {calc.name}
