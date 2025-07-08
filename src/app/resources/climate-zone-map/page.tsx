@@ -46,18 +46,18 @@ export default function ClimateZoneMapPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12 lg:gap-y-0">
                 <main className="lg:col-span-2 space-y-12">
                     <Card className="overflow-hidden border-2">
-                             <CardContent className="p-0">
+                             <CardContent className="p-0 bg-white">
                                 <Image
-                                    src="https://6000-firebase-studio-1751870790151.cluster-ys234awlzbhwoxmkkse6qo3fz6.cloudworkstations.dev/capra/attachedImages/64d6697e-ee29-40b0-adaf-390271442b96/image_8bd810b9-5e3a-489b-b6f9-880eef524fa7.png"
-                                    alt="A map of the United States showing the updated building climate zones as defined by the U.S. Department of Energy."
-                                    width={1920}
-                                    height={1080}
-                                    className="w-full h-auto object-contain bg-white"
+                                    src="https://www.energy.gov/sites/default/files/2023-11/BASC_Climate_Zone_Map_Nov2023.png"
+                                    alt="A map of the United States showing the 8 building climate zones as defined by the U.S. Department of Energy."
+                                    width={1200}
+                                    height={927}
+                                    className="w-full h-auto object-contain"
                                     priority
                                 />
                         </CardContent>
                         <CardFooter className="bg-muted/50 p-3 text-xs text-muted-foreground">
-                            <p>Map courtesy of the U.S. Department of Energy – Building America Climate Zone Map.</p>
+                            <p>Map courtesy of the U.S. Department of Energy.</p>
                         </CardFooter>
                     </Card>
 
