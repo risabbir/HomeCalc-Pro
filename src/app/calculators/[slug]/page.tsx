@@ -1,6 +1,5 @@
 import { calculators } from '@/lib/calculators';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 
 import { HvacCalculator } from '@/components/calculators/HvacCalculator';
 import { SeerSavingsCalculator } from '@/components/calculators/SeerSavingsCalculator';
@@ -111,19 +110,6 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
   return (
     <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-            {calculator.image && (
-                <div className="mb-8 overflow-hidden rounded-lg shadow-xl border">
-                    <Image
-                        src={calculator.image}
-                        alt={calculator.name}
-                        width={1200}
-                        height={400}
-                        className="w-full h-auto object-cover"
-                        data-ai-hint={calculator.imageHint}
-                        priority
-                    />
-                </div>
-            )}
             <div className="text-center mb-12">
                 <Icon className="h-16 w-16 mx-auto text-primary mb-4" />
                 <h1 className="text-4xl font-bold font-headline">{calculator.name}</h1>

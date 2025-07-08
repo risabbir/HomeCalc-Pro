@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { calculators } from "@/lib/calculators";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -24,20 +23,9 @@ export default function HowToMeasurePage() {
             <div className="max-w-4xl mx-auto">
                 <article className="prose dark:prose-invert max-w-none">
                     <h1 className="text-4xl font-bold font-headline mb-4">How to Accurately Measure a Room</h1>
-                    <p className="text-lg text-muted-foreground">
+                    <p className="text-lg text-muted-foreground mb-12">
                         Getting accurate measurements is the first and most important step for many home improvement projects. Whether you're painting, installing new flooring, or putting up wallpaper, precise numbers will save you time, money, and headaches.
                     </p>
-                    
-                    <div className="my-12">
-                        <Image 
-                            src="https://placehold.co/1200x600.png"
-                            alt="Diagram of a room with length and width measurements"
-                            width={1200}
-                            height={600}
-                            className="rounded-lg shadow-lg border w-full"
-                            data-ai-hint="room measurement"
-                        />
-                    </div>
 
                     <h2>Step 1: Gather Your Tools</h2>
                     <p>You don't need much, but having the right tools helps. You'll want:</p>
