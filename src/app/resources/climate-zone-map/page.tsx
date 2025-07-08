@@ -48,7 +48,7 @@ export default function ClimateZoneMapPage() {
                     <Card className="overflow-hidden border-2">
                              <CardContent className="p-0">
                                 <Image
-                                    src="https://www.energy.gov/sites/default/files/2023-11/better-buildings-climate-map-november-2023.png"
+                                    src="https://6000-firebase-studio-1751870790151.cluster-ys234awlzbhwoxmkkse6qo3fz6.cloudworkstations.dev/capra/attachedImages/64d6697e-ee29-40b0-adaf-390271442b96/image_8bd810b9-5e3a-489b-b6f9-880eef524fa7.png"
                                     alt="A map of the United States showing the updated building climate zones as defined by the U.S. Department of Energy."
                                     width={1920}
                                     height={1080}
