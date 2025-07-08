@@ -71,12 +71,12 @@ export function Chatbot() {
       <Button
         onClick={() => setIsOpen(true)}
         className={cn(
-          "fixed bottom-6 right-6 z-50 h-20 w-20 rounded-full shadow-lg transition-transform duration-300 ease-in-out",
+          "fixed bottom-6 right-6 z-50 h-24 w-24 rounded-full shadow-lg transition-transform duration-300 ease-in-out",
           isOpen ? 'scale-0' : 'scale-100'
         )}
         aria-label="Open chatbot"
       >
-        <MessageCircle className="h-10 w-10" />
+        <MessageCircle className="h-12 w-12" />
       </Button>
 
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
