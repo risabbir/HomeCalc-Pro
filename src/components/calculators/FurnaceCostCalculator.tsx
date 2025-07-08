@@ -159,7 +159,7 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>U.S. Climate Zone</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Colder zones require more powerful (and expensive) furnaces. See our <Link href="/resources/climate-zone-map" className="text-primary underline">map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Colder zones require more powerful (and expensive) furnaces. See our <Link href="/resources/climate-zone-map" className="text-primary underline">map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -190,7 +190,7 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
                     <FormItem>
                       <div className="flex items-center gap-1.5">
                         <FormLabel>Efficiency (AFUE)</FormLabel>
-                        <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Annual Fuel Utilization Efficiency. High-efficiency (95%+) units cost more upfront but save money on fuel over time.</p></TooltipContent></Tooltip></TooltipProvider>
+                        <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Annual Fuel Utilization Efficiency. High-efficiency (95%+) units cost more upfront but save money on fuel over time.</p></TooltipContent></Tooltip></TooltipProvider>
                       </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -212,8 +212,8 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
               </Button>
               {costResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear
                   <X className="h-4 w-4" />
+                  Clear
                 </Button>
               )}
             </div>

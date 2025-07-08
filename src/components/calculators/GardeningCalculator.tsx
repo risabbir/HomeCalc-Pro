@@ -153,7 +153,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>Application Rate</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The amount of actual nitrogen to apply. A soil test will give you a precise recommendation. 1 lb/1000 sq ft is a common rate for lawns.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The amount of actual nitrogen to apply. A soil test will give you a precise recommendation. 1 lb/1000 sq ft is a common rate for lawns.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
                         <FormDescription>{units === 'imperial' ? 'Lbs of Nitrogen per 1000 sq ft.' : 'Kg of N per 100 sq m.'}</FormDescription>
@@ -164,7 +164,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
             <div>
                  <div className="flex items-center gap-1.5">
                     <FormLabel>Fertilizer Ratio (N-P-K)</FormLabel>
-                    <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The three numbers on the fertilizer bag, representing Nitrogen-Phosphorus-Potassium content.</p></TooltipContent></Tooltip></TooltipProvider>
+                    <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The three numbers on the fertilizer bag, representing Nitrogen-Phosphorus-Potassium content.</p></TooltipContent></Tooltip></TooltipProvider>
                 </div>
               <div className="grid grid-cols-3 gap-4 mt-2">
                 <FormField control={form.control} name="nitrogenRatio" render={({ field }) => (<FormItem><FormControl><Input type="number" placeholder="N" {...field} /></FormControl><FormMessage/></FormItem>)}/>
@@ -181,8 +181,8 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
               </Button>
               {fertilizerResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear
                   <X className="h-4 w-4" />
+                  Clear
                 </Button>
               )}
             </div>

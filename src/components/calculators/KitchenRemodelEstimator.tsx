@@ -205,8 +205,8 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
               </Button>
               {costResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear
                   <X className="h-4 w-4" />
+                  Clear
                 </Button>
               )}
             </div>

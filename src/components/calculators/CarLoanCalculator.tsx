@@ -167,35 +167,35 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField control={form.control} name="vehiclePrice" render={({ field }) => (
                   <FormItem>
-                    <div className="flex items-center gap-1.5"><FormLabel>Vehicle Price ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The sticker price or negotiated price of the car.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                    <div className="flex items-center gap-1.5"><FormLabel>Vehicle Price ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The sticker price or negotiated price of the car.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" placeholder="e.g., 35000" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
                <FormField control={form.control} name="interestRate" render={({ field }) => (
                   <FormItem>
-                    <div className="flex items-center gap-1.5"><FormLabel>Annual Interest Rate (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The annual percentage rate (APR) on your loan offer.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                    <div className="flex items-center gap-1.5"><FormLabel>Annual Interest Rate (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The annual percentage rate (APR) on your loan offer.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" step="0.01" placeholder="e.g., 7.5" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
                <FormField control={form.control} name="downPayment" render={({ field }) => (
                   <FormItem>
-                    <div className="flex items-center gap-1.5"><FormLabel>Down Payment ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The amount of cash you are paying upfront.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                    <div className="flex items-center gap-1.5"><FormLabel>Down Payment ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The amount of cash you are paying upfront.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" placeholder="e.g., 5000" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
               <FormField control={form.control} name="tradeInValue" render={({ field }) => (
                   <FormItem>
-                    <div className="flex items-center gap-1.5"><FormLabel>Trade-in Value ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The value the dealership is giving you for your old car.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                    <div className="flex items-center gap-1.5"><FormLabel>Trade-in Value ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The value the dealership is giving you for your old car.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" placeholder="e.g., 2000" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
               <FormField control={form.control} name="loanTerm" render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <div className="flex items-center gap-1.5"><FormLabel>Loan Term (Years)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The length of the loan in years. Common terms are 3, 4, 5, or 6 years.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                    <div className="flex items-center gap-1.5"><FormLabel>Loan Term (Years)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The length of the loan in years. Common terms are 3, 4, 5, or 6 years.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" placeholder="e.g., 5" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -206,14 +206,14 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 rounded-md border p-4">
                     <FormField control={form.control} name="salesTaxRate" render={({ field }) => (
                         <FormItem>
-                            <div className="flex items-center gap-1.5"><FormLabel>Sales Tax Rate (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Your state or local sales tax rate. Enter 6.5 for 6.5%.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                            <div className="flex items-center gap-1.5"><FormLabel>Sales Tax Rate (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Your state or local sales tax rate. Enter 6.5 for 6.5%.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 6.25" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="otherFees" render={({ field }) => (
                         <FormItem>
-                            <div className="flex items-center gap-1.5"><FormLabel>Other Fees ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Include dealer documentation fees, title, and registration fees.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                            <div className="flex items-center gap-1.5"><FormLabel>Other Fees ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Include dealer documentation fees, title, and registration fees.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 500" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
@@ -229,8 +229,8 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
               </Button>
               {result && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear
                   <X className="h-4 w-4" />
+                  Clear
                 </Button>
               )}
             </div>

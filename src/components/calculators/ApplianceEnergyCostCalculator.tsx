@@ -132,7 +132,7 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
                             <FormLabel>Appliance Wattage (W)</FormLabel>
                             <TooltipProvider delayDuration={100}>
                                 <Tooltip>
-                                <TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger>
+                                <TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger>
                                 <TooltipContent><p>Check the label on the back or bottom of the appliance. If you see Amps and Volts, multiply them together to get Watts.</p></TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -147,7 +147,7 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
                             <FormLabel>Hours Used Per Day</FormLabel>
                             <TooltipProvider delayDuration={100}>
                                 <Tooltip>
-                                <TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger>
+                                <TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger>
                                 <TooltipContent><p>Enter the average number of hours the appliance runs in a 24-hour period.</p></TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -162,7 +162,7 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
                             <FormLabel>Cost per kWh ($)</FormLabel>
                             <TooltipProvider delayDuration={100}>
                                 <Tooltip>
-                                <TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger>
+                                <TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger>
                                 <TooltipContent><p>Found on your electricity bill, this is your rate per kilowatt-hour. The US average is about $0.17.</p></TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -181,8 +181,8 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
               </Button>
               {costResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear
                   <X className="h-4 w-4" />
+                  Clear
                 </Button>
               )}
             </div>

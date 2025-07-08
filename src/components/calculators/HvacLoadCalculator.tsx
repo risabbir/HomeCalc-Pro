@@ -180,7 +180,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Total Window Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Sum the area (width x height) of all windows.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Sum the area (width x height) of all windows.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 150" {...field} /></FormControl>
                         <FormMessage />
@@ -190,7 +190,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>U.S. Climate Zone</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Determines your recommended R-value. See our <Link href="/resources/climate-zone-map" className="text-primary underline">Climate Zone Map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Determines your recommended R-value. See our <Link href="/resources/climate-zone-map" className="text-primary underline">Climate Zone Map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -217,7 +217,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
                     <FormItem className="md:col-span-2">
                        <div className="flex items-center gap-1.5">
                             <FormLabel>Overall Insulation Quality</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent>
                                 <ul className="list-disc pl-4 text-left"><li><b>Good:</b> Meets or exceeds modern code; well-sealed.</li><li><b>Average:</b> Older construction, but reasonably insulated.</li><li><b>Poor:</b> Little to no insulation, drafty.</li></ul>
                             </TooltipContent></Tooltip></TooltipProvider>
                         </div>
@@ -245,8 +245,8 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
               </Button>
               {loadResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear
                   <X className="h-4 w-4" />
+                  Clear
                 </Button>
               )}
             </div>

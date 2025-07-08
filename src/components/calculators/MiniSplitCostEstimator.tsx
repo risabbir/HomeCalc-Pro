@@ -137,7 +137,7 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel># of Zones</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The number of indoor units (heads) you need. One per room is typical.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The number of indoor units (heads) you need. One per room is typical.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
                         <FormMessage />
@@ -147,7 +147,7 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Total Capacity ({units === 'imperial' ? 'BTU/hr' : 'Watts'})</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The total cooling/heating capacity of the outdoor unit. This should match the needs of all zones combined.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The total cooling/heating capacity of the outdoor unit. This should match the needs of all zones combined.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 12000" {...field} /></FormControl>
                         <FormMessage />
@@ -157,7 +157,7 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>SEER2 Rating</FormLabel>
-                             <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The unit's efficiency rating (SEER2 is the new standard). Higher is more efficient but costs more upfront.</p></TooltipContent></Tooltip></TooltipProvider>
+                             <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The unit's efficiency rating (SEER2 is the new standard). Higher is more efficient but costs more upfront.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 20" {...field} /></FormControl>
                         <FormMessage />
@@ -173,8 +173,8 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
               </Button>
               {costResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear
                   <X className="h-4 w-4" />
+                  Clear
                 </Button>
               )}
             </div>

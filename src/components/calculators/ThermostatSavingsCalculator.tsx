@@ -135,14 +135,14 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
                 )}/>
                 <FormField control={form.control} name="setbackDegrees" render={({ field }) => (
                     <FormItem>
-                         <div className="flex items-center gap-1.5"><FormLabel>Avg. Setback ({units === 'imperial' ? '°F' : '°C'})</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The number of degrees you turn your thermostat up (in summer) or down (in winter).</p></TooltipContent></Tooltip></TooltipProvider></div>
+                         <div className="flex items-center gap-1.5"><FormLabel>Avg. Setback ({units === 'imperial' ? '°F' : '°C'})</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The number of degrees you turn your thermostat up (in summer) or down (in winter).</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                  <FormField control={form.control} name="setbackHours" render={({ field }) => (
                     <FormItem>
-                         <div className="flex items-center gap-1.5"><FormLabel>Setback Hours/Day</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The number of hours per day the thermostat is at the setback temperature (e.g., while at work or asleep).</p></TooltipContent></Tooltip></TooltipProvider></div>
+                         <div className="flex items-center gap-1.5"><FormLabel>Setback Hours/Day</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The number of hours per day the thermostat is at the setback temperature (e.g., while at work or asleep).</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -157,8 +157,8 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
               </Button>
               {savingsResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear
                   <X className="h-4 w-4" />
+                  Clear
                 </Button>
               )}
             </div>

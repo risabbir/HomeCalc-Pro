@@ -160,7 +160,7 @@ export function SavingsCalculator({ calculator }: { calculator: Omit<Calculator,
               )}/>
                <FormField control={form.control} name="interestRate" render={({ field }) => (
                   <FormItem>
-                    <div className="flex items-center gap-1.5"><FormLabel>Annual Interest Rate (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Your estimated annual rate of return. The historical average for the S&P 500 is ~10%.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                    <div className="flex items-center gap-1.5"><FormLabel>Annual Interest Rate (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Your estimated annual rate of return. The historical average for the S&P 500 is ~10%.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" step="0.01" placeholder="e.g., 7" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -182,8 +182,8 @@ export function SavingsCalculator({ calculator }: { calculator: Omit<Calculator,
               </Button>
               {result && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear
                   <X className="h-4 w-4" />
+                  Clear
                 </Button>
               )}
             </div>

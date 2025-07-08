@@ -172,7 +172,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Slab Thickness ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Standard residential slabs are often 4 inches (10 cm) thick.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Standard residential slabs are often 4 inches (10 cm) thick.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 4" {...field} /></FormControl>
                         <FormMessage />
@@ -182,7 +182,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>Waste Factor (%)</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Accounts for uneven ground and spillage. 5-10% is standard.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Accounts for uneven ground and spillage. 5-10% is standard.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
@@ -198,8 +198,8 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
               </Button>
               {concreteResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear
                   <X className="h-4 w-4" />
+                  Clear
                 </Button>
               )}
             </div>

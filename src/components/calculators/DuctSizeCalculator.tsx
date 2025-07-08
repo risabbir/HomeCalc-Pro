@@ -127,7 +127,7 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Air Flow (CFM)</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Cubic Feet per Minute. This is the volume of air the duct needs to move, typically 400 CFM per ton of AC.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Cubic Feet per Minute. This is the volume of air the duct needs to move, typically 400 CFM per ton of AC.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 800" {...field} /></FormControl>
                         <FormMessage />
@@ -137,7 +137,7 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>Friction Loss (in. w.g./100 ft)</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The resistance to airflow. 0.1 in. w.g. is a common value for residential main trunk lines.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The resistance to airflow. 0.1 in. w.g. is a common value for residential main trunk lines.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                         <FormControl><Input type="number" step="0.01" placeholder="e.g., 0.1" {...field} /></FormControl>
                         <FormMessage />
@@ -153,8 +153,8 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
               </Button>
               {ductSizeResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear
                   <X className="h-4 w-4" />
+                  Clear
                 </Button>
               )}
             </div>

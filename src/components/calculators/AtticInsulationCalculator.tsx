@@ -201,7 +201,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Attic Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
-                             <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Calculate the length times width of your attic floor.</p></TooltipContent></Tooltip></TooltipProvider>
+                             <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Calculate the length times width of your attic floor.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 1000" {...field} /></FormControl>
                         <FormMessage />
@@ -211,7 +211,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>U.S. Climate Zone</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Determines your recommended R-value. See our <Link href="/resources/climate-zone-map" className="text-primary underline">Climate Zone Map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Determines your recommended R-value. See our <Link href="/resources/climate-zone-map" className="text-primary underline">Climate Zone Map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -228,7 +228,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Existing Insulation Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Use a ruler to measure the depth of your current insulation at its most level point. Enter 0 if none.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Use a ruler to measure the depth of your current insulation at its most level point. Enter 0 if none.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 5" {...field} /></FormControl>
                         <FormMessage />
@@ -238,7 +238,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>New Insulation Type</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Cellulose generally has a higher R-value per inch than fiberglass. Choose the type you plan to add.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Cellulose generally has a higher R-value per inch than fiberglass. Choose the type you plan to add.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -260,8 +260,8 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
               </Button>
               {(result || isSufficient) && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                    Clear
                     <X className="h-4 w-4" />
+                    Clear
                 </Button>
               )}
             </div>

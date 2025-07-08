@@ -174,7 +174,7 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Waste Factor (%)</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent>
                                 <p className="max-w-xs">Standard layouts: 10%. Complex rooms or diagonal/herringbone patterns: 15-20%.</p>
                             </TooltipContent></Tooltip></TooltipProvider>
                         </div>
@@ -187,7 +187,7 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
                 <FormItem>
                     <div className="flex items-center gap-1.5">
                         <FormLabel>Box Coverage ({units === 'imperial' ? 'sq ft' : 'sq m'}) (Optional)</FormLabel>
-                        <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Enter the area coverage listed on the flooring box to estimate how many you need to buy.</p></TooltipContent></Tooltip></TooltipProvider>
+                        <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Enter the area coverage listed on the flooring box to estimate how many you need to buy.</p></TooltipContent></Tooltip></TooltipProvider>
                     </div>
                     <FormControl><Input type="number" placeholder="e.g., 22.5" {...field} /></FormControl>
                     <FormMessage />
@@ -202,8 +202,8 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
               </Button>
               {flooringResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear
                   <X className="h-4 w-4" />
+                  Clear
                 </Button>
               )}
             </div>
