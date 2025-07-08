@@ -60,11 +60,8 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
-    );
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -75,7 +72,11 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
         setAiHint(result.hintsAndNextSteps);
       }
     } catch (error) {
-      toast({ title: 'AI Error', description: error instanceof Error ? error.message : 'Could not get assistance from AI.', variant: 'destructive' });
+      toast({
+        title: 'An error occurred',
+        description: error instanceof Error ? error.message : 'Failed to get AI assistance. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }

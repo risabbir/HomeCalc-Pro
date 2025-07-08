@@ -38,10 +38,8 @@ const prompt = ai.definePrompt({
 
 The user is currently using the '{{{calculatorType}}}'. They are working in the {{#if units}}{{{units}}}{{else}}imperial{{/if}} unit system.
 
-Here are all the parameters provided by the user. Note that an empty string for a value means the user has left that field blank.
-{{#each parameters}}
-  - {{@key}}: {{this}}
-{{/each}}
+Here are all the parameters provided by the user as a JSON object. Note that an empty string for a value means the user has left that field blank.
+{{{json parameters}}}
 
 Your task is to analyze the provided parameters and suggest reasonable, common-sense estimates for the blank fields (those with empty string values).
 - Your response MUST be a valid JSON object that conforms to the specified output schema. Do not include any explanatory text, markdown formatting, or anything else outside of the JSON structure.
