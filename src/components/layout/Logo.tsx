@@ -6,7 +6,7 @@ export function Logo({ className }: { className?: string }) {
       <span className="text-2xl font-bold tracking-tight text-foreground font-headline">
         HomeCalc
       </span>
-      <span className="inline-block rounded-md bg-primary px-2 py-1 text-lg font-bold leading-none text-primary-foreground font-headline shadow-glow-primary">
+      <span className="inline-block rounded-md bg-primary px-2 py-1 text-lg font-bold leading-none text-primary-foreground font-headline shadow-[0_5px_25px_-5px_hsla(var(--primary),0.5)]">
         Pro
       </span>
     </div>
