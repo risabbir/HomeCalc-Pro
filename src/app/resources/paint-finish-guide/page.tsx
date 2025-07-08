@@ -69,20 +69,6 @@ export default function PaintFinishGuidePage() {
                         The finish, or sheen, you choose is as important as the color. It affects the final look, durability, and cleanability of your walls. Use this guide to make the perfect choice for every surface.
                     </p>
                 </div>
-                
-                 <Card className="mb-12">
-                    <CardContent className="p-0 overflow-hidden rounded-lg">
-                        <Image 
-                            src="https://placehold.co/1200x500.png"
-                            alt="A wall with paint swatches showing the gradient of different finishes, from non-reflective matte to shiny high-gloss."
-                            width={1200}
-                            height={500}
-                            className="w-full h-auto object-cover"
-                            data-ai-hint="paint swatches wall"
-                            priority
-                        />
-                    </CardContent>
-                 </Card>
 
                 <Alert className="mb-12">
                     <Lightbulb className="h-4 w-4" />
