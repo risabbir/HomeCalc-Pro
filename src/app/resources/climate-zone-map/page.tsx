@@ -1,3 +1,4 @@
+
 import { calculators } from "@/lib/calculators";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -47,11 +48,11 @@ export default function ClimateZoneMapPage() {
                     <Card className="overflow-hidden border-2">
                              <CardContent className="p-0 bg-white">
                                 <Image
-                                    src="https://www.researchgate.net/profile/Dazhi-Yang-3/publication/359387671/figure/fig2/AS:1139834437545984@1648769115133/The-climate-zone-designations-used-by-the-US-Department-of-Energy-Building-America.png"
-                                    alt="U.S. IECC Climate Zone Map showing 8 distinct climate zones across the United States."
-                                    width={732}
-                                    height={554}
-                                    className="w-full h-auto object-contain bg-muted"
+                                    src="https://www.energy.gov/sites/default/files/2023-10/BASC_climate-zone-map_10-25-23.png"
+                                    alt="A map of the United States showing the 8 building climate zones as defined by the U.S. Department of Energy."
+                                    width={1152}
+                                    height={835}
+                                    className="w-full h-auto object-contain bg-white"
                                     priority
                                 />
                         </CardContent>
