@@ -48,16 +48,16 @@ export default function ClimateZoneMapPage() {
                     <Card className="overflow-hidden border-2">
                              <CardContent className="p-0 bg-white">
                                 <Image
-                                    src="https://building-performance.org/wp-content/uploads/2022/03/Climate-Zone-Map_Rev-02.22.22_JPG.jpg"
+                                    src="https://www.researchgate.net/publication/344063185/figure/fig1/AS:11431281172911558@1688703914687/Map-of-the-United-States-with-selected-cities-identified-Color-shading-indicates-US.png"
                                     alt="A map of the United States showing the 8 building climate zones as defined by the U.S. Department of Energy."
-                                    width={2550}
-                                    height={1650}
+                                    width={850}
+                                    height={531}
                                     className="w-full h-auto object-contain bg-white"
                                     priority
                                 />
                         </CardContent>
                         <CardFooter className="bg-muted/50 p-3 text-xs text-muted-foreground">
-                            <p>Map courtesy of the Building Performance Association.</p>
+                            <p>Map courtesy of the U.S. Department of Energy – Building America Climate Zone Map.</p>
                         </CardFooter>
                     </Card>
 
