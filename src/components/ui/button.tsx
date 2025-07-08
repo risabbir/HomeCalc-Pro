@@ -13,7 +13,7 @@ const buttonVariants = cva(
         default:
           "bg-gradient-to-r from-gradient-from to-gradient-to text-primary-foreground [background-size:200%_auto] hover:[background-position:right_center]",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-md",
+          "bg-destructive text-destructive-foreground shadow-lg shadow-destructive/50 hover:bg-destructive/90",
         outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
