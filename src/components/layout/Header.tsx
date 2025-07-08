@@ -45,7 +45,7 @@ export function Header() {
                   data-state={isMegaMenuOpen ? 'open' : 'closed'}
                   className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max max-w-5xl origin-top transition-all duration-300 data-[state=closed]:opacity-0 data-[state=closed]:-translate-y-2 data-[state=open]:opacity-100 data-[state=open]:translate-y-0 data-[state=closed]:pointer-events-none"
                 >
-                  <div className="bg-popover text-popover-foreground rounded-lg border shadow-md p-6 grid grid-cols-4 gap-x-12 gap-y-6">
+                  <div className="bg-popover text-popover-foreground rounded-lg border p-6 grid grid-cols-4 gap-x-12 gap-y-6">
                     {calculatorsByCategory.map((category) => (
                       <div key={category.name}>
                         <h3 className="font-semibold text-foreground mb-4">{category.name}</h3>
