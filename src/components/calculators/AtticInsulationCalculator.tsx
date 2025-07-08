@@ -135,7 +135,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
         setAiHint(res.hintsAndNextSteps);
       }
     } catch (error) {
-      toast({ title: 'AI Error', description: 'Could not get assistance from AI.', variant: 'destructive' });
+      toast({ title: 'AI Error', description: error instanceof Error ? error.message : 'Could not get assistance from AI.', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -260,7 +260,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
               </Button>
               {(result || isSufficient) && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                    <X className="h-4 w-4" />
+                    <X className="mr-1 h-4 w-4" />
                     Clear
                 </Button>
               )}

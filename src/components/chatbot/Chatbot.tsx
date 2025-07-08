@@ -55,13 +55,14 @@ export function Chatbot() {
       const modelMessage: Message = { role: 'model', content: res.answer, link: res.link };
       setMessages(prev => [...prev, modelMessage]);
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Sorry, I encountered an error. Please try again.';
       toast({
         title: 'Chatbot Error',
-        description: 'Sorry, I encountered an error. Please try again.',
+        description: errorMessage,
         variant: 'destructive',
       });
-      const errorMessage: Message = { role: 'model', content: "Sorry, I'm having trouble connecting right now. Please try again later." };
-      setMessages(prev => [...prev, errorMessage]);
+      const errorResponseMessage: Message = { role: 'model', content: "Sorry, I'm having trouble connecting right now. Please try again later." };
+      setMessages(prev => [...prev, errorResponseMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +85,7 @@ export function Chatbot() {
         {showCallout && (
           <div className="bg-card text-card-foreground rounded-lg p-4 shadow-lg w-64 relative animate-in fade-in-50 slide-in-from-bottom-10">
             <p className="text-sm">
-              Have a home improvement question? Ask our AI assistant for help or calculator recommendations! 👇
+              Have a question about home calculations? Ask our AI assistant for help! 👇
             </p>
             <Button 
                 variant="ghost"

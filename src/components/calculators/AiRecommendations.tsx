@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -41,7 +42,7 @@ export function AiRecommendations() {
     } catch (error) {
       toast({
         title: 'An error occurred',
-        description: 'Failed to get AI recommendations. Please try again.',
+        description: error instanceof Error ? error.message : 'Failed to get AI recommendations. Please try again.',
         variant: 'destructive',
       });
     } finally {

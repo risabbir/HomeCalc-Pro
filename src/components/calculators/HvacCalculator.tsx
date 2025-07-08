@@ -103,7 +103,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     } catch (error) {
         toast({
             title: 'AI Error',
-            description: 'Could not get assistance from AI.',
+            description: error instanceof Error ? error.message : 'Could not get assistance from AI.',
             variant: 'destructive',
         });
     } finally {
@@ -240,8 +240,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
               </Button>
               {btuResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  <X className="h-4 w-4" />
-                  Clear
+                  Clear<X className="ml-1 h-4 w-4" />
                 </Button>
               )}
             </div>

@@ -106,13 +106,13 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
         });
-        toast({ title: 'AI Assistance', description: 'We\'ve filled in some values for you.' });
+        toast({ title: 'AI Assistance', description: "We've filled in some values for you." });
       }
       if (result.hintsAndNextSteps) {
         setAiHint(result.hintsAndNextSteps);
       }
     } catch (error) {
-      toast({ title: 'AI Error', description: 'Could not get assistance from AI.', variant: 'destructive' });
+      toast({ title: 'AI Error', description: error instanceof Error ? error.message : 'Could not get assistance from AI.', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -245,8 +245,7 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
               </Button>
               {paintResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  <X className="h-4 w-4" />
-                  Clear
+                  Clear<X className="ml-1 h-4 w-4" />
                 </Button>
               )}
             </div>
