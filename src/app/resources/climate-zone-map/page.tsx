@@ -48,10 +48,10 @@ export default function ClimateZoneMapPage() {
                     <Card className="overflow-hidden border-2">
                          <CardContent className="p-0">
                             <Image 
-                                src="https://storage.googleapis.com/fs-apps-production.appspot.com/1-1181283350/2024-07-16/climatemap.png"
+                                src="https://www.energy.gov/sites/default/files/2023-11/FS-BTO-IECC-2021-climate-zone-map-2023-11-28.png"
                                 alt="A map of the United States showing the 8 distinct climate zones as defined by the Department of Energy."
-                                width={1200}
-                                height={675}
+                                width={1100}
+                                height={850}
                                 className="w-full h-auto object-cover"
                                 priority
                             />
