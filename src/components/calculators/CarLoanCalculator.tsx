@@ -10,10 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Download, X, HelpCircle } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
@@ -36,8 +34,6 @@ interface LoanResult {
 }
 
 export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
-  const [loading, setLoading] = useState(false);
-  const [aiHint, setAiHint] = useState<string | null>(null);
   const [result, setResult] = useState<LoanResult | null>(null);
   const { toast } = useToast();
 
@@ -98,29 +94,6 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
   const handleClear = () => {
     form.reset();
     setResult(null);
-    setAiHint(null);
-  };
-
-  const handleAiAssist = async () => {
-    setLoading(true);
-    setAiHint(null);
-    const values = form.getValues();
-    try {
-      const res = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
-      if (res.autoCalculatedValues) {
-        Object.entries(res.autoCalculatedValues).forEach(([key, value]) => {
-          form.setValue(key as keyof FormValues, String(value));
-        });
-        toast({ title: 'AI Assistance', description: 'We\'ve filled in some values for you.' });
-      }
-      if (res.hintsAndNextSteps) {
-        setAiHint(res.hintsAndNextSteps);
-      }
-    } catch (error) {
-      toast({ title: 'AI Error', description: error instanceof Error ? error.message : 'Could not get assistance from AI.', variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleDownload = () => {
@@ -223,10 +196,6 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
             
             <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate Payment</Button>
-              <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
-                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
-                AI Assist
-              </Button>
               {result && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
                   Clear<X className="ml-1 h-4 w-4" />
@@ -235,9 +204,6 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
             </div>
           </form>
         </Form>
-        {aiHint && (
-          <Alert className="mt-6"><Wand2 className="h-4 w-4" /><AlertTitle>AI Suggestion</AlertTitle><AlertDescription>{aiHint}</AlertDescription></Alert>
-        )}
         {result && (
           <Card className="mt-6 bg-accent">
             <CardHeader>

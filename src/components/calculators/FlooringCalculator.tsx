@@ -10,10 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Download, X, HelpCircle } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -32,8 +30,6 @@ interface Result {
 }
 
 export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
-  const [loading, setLoading] = useState(false);
-  const [aiHint, setAiHint] = useState<string | null>(null);
   const [flooringResult, setFlooringResult] = useState<Result | null>(null);
   const [units, setUnits] = useState<'imperial' | 'metric'>('imperial');
   const { toast } = useToast();
@@ -77,29 +73,6 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
   const handleClear = () => {
     form.reset();
     setFlooringResult(null);
-    setAiHint(null);
-  };
-
-  const handleAiAssist = async () => {
-    setLoading(true);
-    setAiHint(null);
-    const values = form.getValues();
-    try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: {...values, units} });
-      if (result.autoCalculatedValues) {
-        Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
-          form.setValue(key as keyof FormValues, String(value));
-        });
-        toast({ title: 'AI Assistance', description: "We've filled in some values for you." });
-      }
-      if (result.hintsAndNextSteps) {
-        setAiHint(result.hintsAndNextSteps);
-      }
-    } catch (error) {
-      toast({ title: 'AI Error', description: error instanceof Error ? error.message : 'Could not get assistance from AI.', variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleDownload = () => {
@@ -189,17 +162,13 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
                         <FormLabel>Box Coverage ({units === 'imperial' ? 'sq ft' : 'sq m'}) (Optional)</FormLabel>
                         <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Enter the area coverage listed on the flooring box to estimate how many you need to buy.</p></TooltipContent></Tooltip></TooltipProvider>
                     </div>
-                    <FormControl><Input type="number" placeholder="e.g., 22.5" {...field} /></FormControl>
+                    <FormControl><Input type="number" placeholder={units === 'imperial' ? "e.g., 22.5" : "e.g., 2.1"} {...field} /></FormControl>
                     <FormMessage />
                 </FormItem>
             )}/>
             
             <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate</Button>
-              <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
-                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
-                AI Assist
-              </Button>
               {flooringResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
                   Clear<X className="ml-1 h-4 w-4" />
@@ -208,9 +177,6 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
             </div>
           </form>
         </Form>
-        {aiHint && (
-          <Alert className="mt-6"><Wand2 className="h-4 w-4" /><AlertTitle>AI Suggestion</AlertTitle><AlertDescription>{aiHint}</AlertDescription></Alert>
-        )}
         {flooringResult && (
           <Card className="mt-6 bg-accent">
             <CardHeader><CardTitle>Total Flooring Required</CardTitle></CardHeader>

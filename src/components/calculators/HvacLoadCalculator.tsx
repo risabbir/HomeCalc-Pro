@@ -10,9 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X, HelpCircle, AlertTriangle } from 'lucide-react';
+import { Download, X, HelpCircle, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -35,8 +34,6 @@ const CLIMATE_FACTORS = {
 }
 
 export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
-  const [loading, setLoading] = useState(false);
-  const [aiHint, setAiHint] = useState<string | null>(null);
   const [loadResult, setLoadResult] = useState<string | null>(null);
   const [units, setUnits] = useState<'imperial' | 'metric'>('imperial');
   const { toast } = useToast();
@@ -91,29 +88,6 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
   const handleClear = () => {
     form.reset();
     setLoadResult(null);
-    setAiHint(null);
-  };
-
-  const handleAiAssist = async () => {
-    setLoading(true);
-    setAiHint(null);
-    const values = form.getValues();
-    try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: {...values, units} });
-      if (result.autoCalculatedValues) {
-        Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
-          form.setValue(key as keyof FormValues, String(value));
-        });
-        toast({ title: 'AI Assistance', description: "We've filled in some values for you." });
-      }
-      if (result.hintsAndNextSteps) {
-        setAiHint(result.hintsAndNextSteps);
-      }
-    } catch (error) {
-      toast({ title: 'AI Error', description: error instanceof Error ? error.message : 'Could not get assistance from AI.', variant: 'destructive' });
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleDownload = () => {
@@ -239,10 +213,6 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
 
             <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate Load</Button>
-              <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
-                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
-                AI Assist
-              </Button>
               {loadResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
                   Clear<X className="ml-1 h-4 w-4" />
@@ -251,9 +221,6 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
             </div>
           </form>
         </Form>
-        {aiHint && (
-          <Alert className="mt-6"><Wand2 className="h-4 w-4" /><AlertTitle>AI Suggestion</AlertTitle><AlertDescription>{aiHint}</AlertDescription></Alert>
-        )}
         {loadResult && (
           <Card className="mt-6 bg-accent">
             <CardHeader><CardTitle>Estimated HVAC Load</CardTitle></CardHeader>
