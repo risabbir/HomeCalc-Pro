@@ -11,9 +11,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2 } from 'lucide-react';
+import { Download, Loader2, Wand2, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const formSchema = z.object({
   kitchenSize: z.string().min(1, 'Kitchen size is required.'),
@@ -32,6 +33,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const [costResult, setCostResult] = useState<string | null>(null);
+  const [units, setUnits] = useState<'imperial' | 'metric'>('imperial');
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -43,7 +45,11 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
   });
 
   const onSubmit = (values: FormValues) => {
-    const size = parseFloat(values.kitchenSize);
+    let size = parseFloat(values.kitchenSize);
+
+    if (units === 'metric') {
+        size = size * 10.764; // sq m to sq ft
+    }
     
     if (size > 0 && values.quality) {
       const costFactor = COST_PER_SQFT[values.quality];
@@ -56,15 +62,18 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
     }
   };
 
+  const handleClear = () => {
+    form.reset();
+    setCostResult(null);
+    setAiHint(null);
+  };
+
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
-    );
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: {...values, units} });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -88,7 +97,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
       return;
     }
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Kitchen Size: ${values.kitchenSize} sq ft\n` +
+      `Kitchen Size: ${values.kitchenSize} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
       `Finish Quality: ${values.quality}\n\n`+
       `--------------------\n` +
       `Estimated Cost: ${costResult}\n`;
@@ -114,10 +123,18 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="flex justify-start mb-4">
+                <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
+                    <TabsList>
+                        <TabsTrigger value="imperial">Imperial</TabsTrigger>
+                        <TabsTrigger value="metric">Metric</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="kitchenSize" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Kitchen Size (sq ft)</FormLabel>
+                        <FormLabel>Kitchen Size ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 200" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -138,11 +155,15 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
                 )}/>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Estimate Cost</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
+              </Button>
+               <Button type="button" variant="ghost" onClick={handleClear}>
+                <X className="mr-2 h-4 w-4" />
+                Clear
               </Button>
             </div>
           </form>

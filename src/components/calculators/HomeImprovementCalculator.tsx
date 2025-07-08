@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -12,9 +11,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2 } from 'lucide-react';
+import { Download, Loader2, Wand2, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const formSchema = z.object({
   roomLength: z.string().min(1, 'Room length is required.'),
@@ -30,7 +30,8 @@ type FormValues = z.infer<typeof formSchema>;
 export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
-  const [paintGallons, setPaintGallons] = useState<string | null>(null);
+  const [paintResult, setPaintResult] = useState<string | null>(null);
+  const [units, setUnits] = useState<'imperial' | 'metric'>('imperial');
   const { toast } = useToast();
   
   const form = useForm<FormValues>({
@@ -47,17 +48,25 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
   });
 
   const onSubmit = (values: FormValues) => {
-    const GALLONS_PER_SQFT = 350;
-    const length = parseFloat(values.roomLength);
-    const width = parseFloat(values.roomWidth);
-    const height = parseFloat(values.wallHeight);
+    let length = parseFloat(values.roomLength);
+    let width = parseFloat(values.roomWidth);
+    let height = parseFloat(values.wallHeight);
     const coats = parseInt(values.coats, 10);
     const windows = parseInt(values.numWindows || '0', 10);
     const doors = parseInt(values.numDoors || '0', 10);
 
+    const GALLONS_PER_SQFT = 350;
+    const LITERS_PER_SQ_METER = 9.8; // Approx. coverage for metric
+
+    if (units === 'metric') {
+        length = length * 3.28084; // m to ft for underlying logic
+        width = width * 3.28084; // m to ft
+        height = height * 3.28084; // m to ft
+    }
+
     if (length > 0 && width > 0 && height > 0 && coats > 0) {
       const wallArea = 2 * (length + width) * height;
-      const areaToSubtract = (windows * 15) + (doors * 21); // Standard area for windows and doors
+      const areaToSubtract = (windows * 15) + (doors * 21); // Standard imperial area for windows and doors
       let paintableArea = wallArea - areaToSubtract;
 
       if(values.includeCeiling) {
@@ -65,11 +74,24 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
         paintableArea += ceilingArea;
       }
       
-      const gallonsNeeded = (paintableArea * coats) / GALLONS_PER_SQFT;
-      setPaintGallons(`${gallonsNeeded.toFixed(2)} gallons`);
+      if (units === 'imperial') {
+          const gallonsNeeded = (paintableArea * coats) / GALLONS_PER_SQFT;
+          setPaintResult(`${gallonsNeeded.toFixed(2)} gallons`);
+      } else {
+          const paintableAreaMetric = paintableArea / 10.764; // sq ft to sq m
+          const litersNeeded = (paintableAreaMetric * coats) / LITERS_PER_SQ_METER;
+          setPaintResult(`${litersNeeded.toFixed(2)} liters`);
+      }
+
     } else {
-      setPaintGallons(null);
+      setPaintResult(null);
     }
+  };
+
+  const handleClear = () => {
+    form.reset();
+    setPaintResult(null);
+    setAiHint(null);
   };
 
   const handleAiAssist = async () => {
@@ -77,7 +99,7 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
     setAiHint(null);
     const values = form.getValues();
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: {...values, units} });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -96,18 +118,19 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
 
   const handleDownload = () => {
     const values = form.getValues();
-    if (!paintGallons) {
+    if (!paintResult) {
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
+    const unit = units === 'imperial' ? 'ft' : 'm';
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Room Dimensions (LxWxH): ${values.roomLength} ft x ${values.roomWidth} ft x ${values.wallHeight} ft\n` +
+      `Room Dimensions (LxWxH): ${values.roomLength} ${unit} x ${values.roomWidth} ${unit} x ${values.wallHeight} ${unit}\n` +
       `Number of Coats: ${values.coats}\n` +
       `Number of Windows: ${values.numWindows || '0'}\n` +
       `Number of Doors: ${values.numDoors || '0'}\n` +
       `Paint Ceiling: ${values.includeCeiling ? 'Yes' : 'No'}\n\n` +
       `--------------------\n` +
-      `Paint Needed: ${paintGallons}\n`;
+      `Paint Needed: ${paintResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -125,30 +148,38 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Figure out how much paint you'll need. Enter your room's dimensions and the number of coats. We'll automatically subtract standard-sized areas for doors and windows. A standard gallon of paint covers about 350 sq ft.
+            Figure out how much paint you'll need. Enter your room's dimensions and the number of coats. We'll automatically subtract standard-sized areas for doors and windows.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+             <div className="flex justify-start mb-4">
+                <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
+                    <TabsList>
+                        <TabsTrigger value="imperial">Imperial</TabsTrigger>
+                        <TabsTrigger value="metric">Metric</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormField control={form.control} name="roomLength" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Room Length (ft)</FormLabel>
+                    <FormLabel>Room Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
                     <FormControl><Input type="number" placeholder="e.g., 12" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
               <FormField control={form.control} name="roomWidth" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Room Width (ft)</FormLabel>
+                    <FormLabel>Room Width ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
                     <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
               <FormField control={form.control} name="wallHeight" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Wall Height (ft)</FormLabel>
+                    <FormLabel>Wall Height ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
                     <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -206,11 +237,15 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
                 </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
+              </Button>
+               <Button type="button" variant="ghost" onClick={handleClear}>
+                <X className="mr-2 h-4 w-4" />
+                Clear
               </Button>
             </div>
           </form>
@@ -218,13 +253,13 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
         {aiHint && (
           <Alert className="mt-6"><Wand2 className="h-4 w-4" /><AlertTitle>AI Suggestion</AlertTitle><AlertDescription>{aiHint}</AlertDescription></Alert>
         )}
-        {paintGallons && (
+        {paintResult && (
           <Card className="mt-6 bg-accent">
             <CardHeader><CardTitle>Paint Estimation</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground">Gallons of Paint Needed</p>
-                <p className="text-2xl font-bold">{paintGallons}</p>
+                <p className="text-muted-foreground">Paint Needed</p>
+                <p className="text-2xl font-bold">{paintResult}</p>
               </div>
               <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
             </CardContent>

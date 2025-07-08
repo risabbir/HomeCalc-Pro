@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -12,8 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2 } from 'lucide-react';
+import { Download, Loader2, Wand2, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const formSchema = z.object({
   length: z.string().min(1, 'Length is required.'),
@@ -25,7 +25,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface Result {
-    cubicYards: number;
+    volume: number;
     bagsNeeded: number;
 }
 
@@ -33,6 +33,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const [concreteResult, setConcreteResult] = useState<Result | null>(null);
+  const [units, setUnits] = useState<'imperial' | 'metric'>('imperial');
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -46,32 +47,49 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
   });
 
   const onSubmit = (values: FormValues) => {
-    const length = parseFloat(values.length);
-    const width = parseFloat(values.width);
-    const thickness = parseFloat(values.thickness);
+    let length = parseFloat(values.length);
+    let width = parseFloat(values.width);
+    let thickness = parseFloat(values.thickness);
     const waste = parseFloat(values.wasteFactor);
+
+    if (units === 'metric') {
+      length = length * 3.28084; // m to ft
+      width = width * 3.28084; // m to ft
+      thickness = thickness / 2.54; // cm to in
+    }
     
     if (length > 0 && width > 0 && thickness > 0 && waste >= 0) {
-      const thicknessInFeet = thickness / 12; // inches to feet
+      const thicknessInFeet = thickness / 12;
       const cubicFeet = length * width * thicknessInFeet;
       const cubicFeetWithWaste = cubicFeet * (1 + waste / 100);
-      const cubicYards = cubicFeetWithWaste / 27;
+      
+      const bagsNeeded = Math.ceil(cubicFeetWithWaste / 0.6); // Assuming 80lb bag yields ~0.6 cu ft
 
-      // Assuming an 80lb bag yields ~0.6 cubic feet
-      const bagsNeeded = Math.ceil(cubicFeetWithWaste / 0.6);
+      let volumeForDisplay: number;
+      if (units === 'imperial') {
+        volumeForDisplay = cubicFeetWithWaste / 27; // cubic yards
+      } else {
+        volumeForDisplay = cubicFeetWithWaste * 0.0283168; // cubic meters
+      }
 
-      setConcreteResult({ cubicYards, bagsNeeded });
+      setConcreteResult({ volume: volumeForDisplay, bagsNeeded });
     } else {
       setConcreteResult(null);
     }
   }
+
+  const handleClear = () => {
+    form.reset();
+    setConcreteResult(null);
+    setAiHint(null);
+  };
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: {...values, units} });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -94,14 +112,15 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
+    const unitVol = units === 'imperial' ? 'cubic yards' : 'cubic meters';
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Slab Length: ${values.length} ft\n` +
-      `Slab Width: ${values.width} ft\n` +
-      `Slab Thickness: ${values.thickness} in\n` +
+      `Slab Length: ${values.length} ${units === 'imperial' ? 'ft' : 'm'}\n` +
+      `Slab Width: ${values.width} ${units === 'imperial' ? 'ft' : 'm'}\n` +
+      `Slab Thickness: ${values.thickness} ${units === 'imperial' ? 'in' : 'cm'}\n` +
       `Waste Factor: ${values.wasteFactor}%\n\n`+
       `--------------------\n` +
-      `Concrete Needed (for delivery): ${concreteResult.cubicYards.toFixed(2)} cubic yards\n` +
-      `Concrete Needed (for bags): ~${concreteResult.bagsNeeded} (80lb) bags\n`;
+      `Concrete Needed (for delivery): ${concreteResult.volume.toFixed(2)} ${unitVol}\n` +
+      `Concrete Needed (for bags): ~${concreteResult.bagsNeeded} (80lb / 36kg) bags\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -118,30 +137,38 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Planning a foundation, patio, or sidewalk? Enter the dimensions of your slab to calculate the volume of concrete required in cubic yards. Press calculate to see the result.
+            Planning a foundation, patio, or sidewalk? Enter the dimensions of your slab to calculate the volume of concrete required. Press calculate to see the result.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+             <div className="flex justify-start mb-4">
+                <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
+                    <TabsList>
+                        <TabsTrigger value="imperial">Imperial</TabsTrigger>
+                        <TabsTrigger value="metric">Metric</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="length" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Slab Length (ft)</FormLabel>
+                        <FormLabel>Slab Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="width" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Slab Width (ft)</FormLabel>
+                        <FormLabel>Slab Width ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="thickness" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Slab Thickness (in)</FormLabel>
+                        <FormLabel>Slab Thickness ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 4" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -155,11 +182,15 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
                 )}/>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
+              </Button>
+               <Button type="button" variant="ghost" onClick={handleClear}>
+                <X className="mr-2 h-4 w-4" />
+                Clear
               </Button>
             </div>
           </form>
@@ -172,8 +203,8 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
             <CardHeader><CardTitle>Concrete Needed</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
               <div>
-                <p className="text-2xl font-bold">{concreteResult.cubicYards.toFixed(2)} cubic yards</p>
-                <p className="text-muted-foreground">or ~{concreteResult.bagsNeeded} (80lb) bags</p>
+                <p className="text-2xl font-bold">{concreteResult.volume.toFixed(2)} {units === 'imperial' ? 'cubic yards' : 'cubic meters'}</p>
+                <p className="text-muted-foreground">or ~{concreteResult.bagsNeeded} (80lb / 36kg) bags</p>
               </div>
               <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
             </CardContent>

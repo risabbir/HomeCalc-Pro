@@ -13,7 +13,8 @@ import {z} from 'genkit';
 
 const AiAssistedCalculationsInputSchema = z.object({
   calculatorType: z.string().describe('The type of calculator being used (e.g., "BTU Calculator", "Paint Coverage Calculator").'),
-  parameters: z.record(z.string(), z.union([z.string(), z.number()])).describe('A key-value pair of parameters provided by the user. Empty strings represent fields the user has not filled in.'),
+  parameters: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])).describe('A key-value pair of parameters provided by the user. Empty strings represent fields the user has not filled in.'),
+  units: z.enum(['imperial', 'metric']).optional().describe('The unit system selected by the user, if applicable.'),
 });
 export type AiAssistedCalculationsInput = z.infer<typeof AiAssistedCalculationsInputSchema>;
 
@@ -33,7 +34,7 @@ const prompt = ai.definePrompt({
   output: {schema: AiAssistedCalculationsOutputSchema},
   prompt: `You are a friendly and helpful AI assistant for a web application called HomeCalc Pro. Your role is to help users complete home-related calculations by providing reasonable estimates for missing information.
 
-The user is currently using the '{{{calculatorType}}}'.
+The user is currently using the '{{{calculatorType}}}'. They are working in the {{#if units}}{{{units}}}{{else}}imperial{{/if}} unit system.
 
 These are the parameters they have already filled in:
 {{#each parameters}}

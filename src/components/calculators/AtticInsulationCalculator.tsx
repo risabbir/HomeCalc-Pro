@@ -11,11 +11,11 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, Info } from 'lucide-react';
+import { Download, Loader2, Wand2, Info, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-// Updated form schema
 const formSchema = z.object({
   atticArea: z.string().min(1, 'Attic area is required.'),
   climateZone: z.string().min(1, 'Climate zone is required.'),
@@ -25,18 +25,14 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Data for R-Values and insulation properties
 const R_VALUES_BY_ZONE: { [key: string]: number } = {
   '1': 30, '2': 38, '3': 38, '4': 49, '5': 49, '6': 60, '7': 60, '8': 60
 };
 
-// Simplified data for common DIY blown-in insulation types
 const INSULATION_DATA = {
   'loose-fill-fiberglass': {
     name: 'Loose-Fill Fiberglass',
     rValuePerInch: 2.5,
-    // Based on a standard 25-30 lb bag, this is the number of square feet it can cover to a depth of 1 inch.
-    // This is a simplified average for calculation.
     sqftCoveragePerInchPerBag: 100,
   },
   'loose-fill-cellulose': {
@@ -59,6 +55,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
   const [aiHint, setAiHint] = useState<string | null>(null);
   const [result, setResult] = useState<Result | null>(null);
   const [isSufficient, setIsSufficient] = useState(false);
+  const [units, setUnits] = useState<'imperial' | 'metric'>('imperial');
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -75,19 +72,22 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
     setResult(null);
     setIsSufficient(false);
 
-    const area = parseFloat(values.atticArea);
+    let area = parseFloat(values.atticArea);
     const climateZone = values.climateZone;
-    const existingDepth = parseFloat(values.existingInsulation);
-    const insulationType = values.insulationType;
+    let existingDepth = parseFloat(values.existingInsulation);
 
+    if (units === 'metric') {
+        area = area * 10.764; // sq meters to sq feet
+        existingDepth = existingDepth / 2.54; // cm to inches
+    }
+    
     if(isNaN(area) || area <= 0) {
       form.setError("atticArea", { type: "manual", message: "Please enter a valid area." });
       return;
     }
 
+    const insulationType = values.insulationType;
     const selectedInsulation = INSULATION_DATA[insulationType];
-
-    // Assuming existing insulation has a generic R-value of 2.5 per inch for calculation purposes.
     const currentRValue = existingDepth * 2.5;
     const targetRValue = R_VALUES_BY_ZONE[climateZone];
     
@@ -98,7 +98,6 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
 
     const neededRValue = targetRValue - currentRValue;
     const neededInches = neededRValue / selectedInsulation.rValuePerInch;
-    
     const bagsNeeded = Math.ceil((area * neededInches) / selectedInsulation.sqftCoveragePerInchPerBag);
 
     setResult({
@@ -110,18 +109,19 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
     });
   };
 
+  const handleClear = () => {
+    form.reset();
+    setResult(null);
+    setIsSufficient(false);
+    setAiHint(null);
+  };
+
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = {
-        atticArea: values.atticArea,
-        climateZone: values.climateZone,
-        existingInsulation: values.existingInsulation,
-        insulationType: values.insulationType,
-    };
     try {
-      const res = await getAiAssistance({ calculatorType: calculator.name, parameters });
+      const res = await getAiAssistance({ calculatorType: calculator.name, parameters: {...values, units} });
       if (res.autoCalculatedValues) {
         Object.entries(res.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -147,19 +147,20 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
 
     let content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
       `--Your Inputs--\n` +
-      `Attic Area: ${values.atticArea} sq ft\n` +
+      `Attic Area: ${values.atticArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
       `Climate Zone: ${values.climateZone}\n` +
-      `Existing Insulation: ${values.existingInsulation} inches\n` +
+      `Existing Insulation: ${values.existingInsulation} ${units === 'imperial' ? 'inches' : 'cm'}\n` +
       `Selected New Insulation: ${INSULATION_DATA[values.insulationType].name}\n\n`;
 
     if(isSufficient) {
         content += `--------------------\n` +
         `Your current insulation level appears to be sufficient for your climate zone. No additional insulation is recommended.`;
     } else if (result) {
+        const neededDisplay = units === 'imperial' ? result.neededInches.toFixed(1) + '"' : (result.neededInches * 2.54).toFixed(1) + ' cm';
         content += `--------------------\n` +
         `--Your Insulation Plan--\n` +
         `Target R-Value for Zone ${values.climateZone}: R-${result.targetRValue}\n` +
-        `Additional Inches Needed: ${result.neededInches.toFixed(1)} inches\n` +
+        `Additional Depth Needed: ${neededDisplay}\n` +
         `Estimated Bags Needed: ~${result.bagsNeeded} bags\n`;
     }
 
@@ -184,10 +185,18 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="flex justify-start mb-4">
+                <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
+                    <TabsList>
+                        <TabsTrigger value="imperial">Imperial</TabsTrigger>
+                        <TabsTrigger value="metric">Metric</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="atticArea" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Attic Area (sq ft)</FormLabel>
+                        <FormLabel>Attic Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 1000" {...field} /></FormControl>
                         <FormDescription>The length x width of your attic floor.</FormDescription>
                         <FormMessage />
@@ -210,7 +219,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                 )}/>
                 <FormField control={form.control} name="existingInsulation" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Existing Insulation Depth (in)</FormLabel>
+                        <FormLabel>Existing Insulation Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 5" {...field} /></FormControl>
                         <FormDescription>Measure the depth with a ruler.</FormDescription>
                         <FormMessage />
@@ -232,11 +241,15 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                 )}/>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
-                Need a hint? Use AI Assist
+                AI Assist
+              </Button>
+               <Button type="button" variant="ghost" onClick={handleClear}>
+                <X className="mr-2 h-4 w-4" />
+                Clear
               </Button>
             </div>
           </form>
@@ -267,8 +280,8 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                     <p className="text-3xl font-bold">R-{result.targetRValue}</p>
                  </div>
                  <div className="bg-background/50 rounded-lg p-4">
-                    <p className="text-sm text-muted-foreground">Inches to Add</p>
-                    <p className="text-3xl font-bold">{result.neededInches.toFixed(1)}"</p>
+                    <p className="text-sm text-muted-foreground">Depth to Add</p>
+                    <p className="text-3xl font-bold">{units === 'imperial' ? `${result.neededInches.toFixed(1)}"` : `${(result.neededInches * 2.54).toFixed(1)} cm`}</p>
                  </div>
                  <div className="bg-background/50 rounded-lg p-4">
                     <p className="text-sm text-muted-foreground">Bags of {result.insulationTypeName}</p>

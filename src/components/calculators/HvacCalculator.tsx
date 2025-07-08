@@ -6,21 +6,15 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2 } from 'lucide-react';
+import { Download, Loader2, Wand2, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const formSchema = z.object({
   roomArea: z.string().min(1, 'Room area is required.'),
@@ -35,6 +29,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const [btuResult, setBtuResult] = useState<string | null>(null);
+  const [units, setUnits] = useState<'imperial' | 'metric'>('imperial');
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -48,8 +43,13 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
   });
   
   const onSubmit = (values: FormValues) => {
-    const area = parseFloat(values.roomArea);
-    const height = parseFloat(values.ceilingHeight);
+    let area = parseFloat(values.roomArea);
+    let height = parseFloat(values.ceilingHeight);
+
+    if (units === 'metric') {
+        area = area * 10.764; // sq m to sq ft
+        height = height * 3.28084; // m to ft
+    }
 
     if (area > 0 && height > 0) {
       const volume = area * height;
@@ -59,27 +59,31 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       if (values.insulation === 'good') btu *= 0.8;
       if (values.sunExposure === 'sunny') btu *= 1.1;
 
-      setBtuResult(`${Math.ceil(btu)} BTU/hr`);
+      if (units === 'imperial') {
+          setBtuResult(`${Math.ceil(btu)} BTU/hr`);
+      } else {
+          const watts = btu / 3.41;
+          setBtuResult(`${Math.ceil(watts)} Watts`);
+      }
     } else {
       setBtuResult(null);
     }
+  };
+
+  const handleClear = () => {
+    form.reset();
+    setBtuResult(null);
+    setAiHint(null);
   };
 
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = {
-        roomArea: values.roomArea,
-        ceilingHeight: values.ceilingHeight,
-        insulation: values.insulation,
-        sunExposure: values.sunExposure,
-    };
-
     try {
         const result = await getAiAssistance({
             calculatorType: calculator.name,
-            parameters,
+            parameters: {...values, units},
         });
 
         if (result.autoCalculatedValues) {
@@ -109,8 +113,9 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
         return;
     }
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-        `Room Area: ${values.roomArea} sq ft\n` +
-        `Ceiling Height: ${values.ceilingHeight} ft\n` +
+        `Units: ${units}\n`+
+        `Room Area: ${values.roomArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
+        `Ceiling Height: ${values.ceilingHeight} ${units === 'imperial' ? 'ft' : 'm'}\n` +
         `Insulation: ${values.insulation}\n` +
         `Sun Exposure: ${values.sunExposure}\n\n` +
         `--------------------\n` +
@@ -132,19 +137,27 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Enter your room's dimensions and environmental factors to get an estimate of the cooling capacity (in British Thermal Units or BTUs) your air conditioner needs. This is a simplified estimate for residential spaces. Press calculate to see the result.
+            Enter your room's dimensions and environmental factors to get an estimate of the cooling capacity your air conditioner needs. This is a simplified estimate for residential spaces.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="flex justify-start mb-4">
+                <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
+                    <TabsList>
+                        <TabsTrigger value="imperial">Imperial</TabsTrigger>
+                        <TabsTrigger value="metric">Metric</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                 control={form.control}
                 name="roomArea"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Room Area (sq ft)</FormLabel>
+                    <FormLabel>Room Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
                     <FormControl>
                         <Input type="number" placeholder="e.g., 200" {...field} />
                     </FormControl>
@@ -157,7 +170,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                 name="ceilingHeight"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Ceiling Height (ft)</FormLabel>
+                    <FormLabel>Ceiling Height ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
                     <FormControl>
                         <Input type="number" placeholder="e.g., 8" {...field} />
                     </FormControl>
@@ -206,11 +219,15 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                 />
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                   {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                   AI Assist
+              </Button>
+               <Button type="button" variant="ghost" onClick={handleClear}>
+                <X className="mr-2 h-4 w-4" />
+                Clear
               </Button>
             </div>
           </form>

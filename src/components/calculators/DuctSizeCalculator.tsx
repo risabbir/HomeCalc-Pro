@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2 } from 'lucide-react';
+import { Download, Loader2, Wand2, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const formSchema = z.object({
@@ -46,6 +46,12 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
     } else {
       setDuctSizeResult(null);
     }
+  };
+
+  const handleClear = () => {
+    form.reset();
+    setDuctSizeResult(null);
+    setAiHint(null);
   };
 
   const handleAiAssist = async () => {
@@ -100,7 +106,7 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Ensure efficient airflow in your HVAC system by calculating the correct duct size. This requires technical inputs like Air Flow (CFM) and Friction Loss Rate. Press calculate to see the result.
+            Ensure efficient airflow in your HVAC system by calculating the correct duct size. This requires technical inputs like Air Flow (CFM) and Friction Loss Rate. This calculator uses Imperial units and is intended for estimation.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -123,11 +129,15 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
                 )}/>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
+              </Button>
+               <Button type="button" variant="ghost" onClick={handleClear}>
+                <X className="mr-2 h-4 w-4" />
+                Clear
               </Button>
             </div>
           </form>

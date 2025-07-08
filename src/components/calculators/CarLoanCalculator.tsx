@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -12,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2 } from 'lucide-react';
+import { Download, Loader2, Wand2, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const formSchema = z.object({
@@ -66,7 +65,18 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
     const totalVehicleCost = price * (1 + taxRate) + fees;
     const P = totalVehicleCost - downPayment - tradeIn; // Principal Loan Amount
 
-    if (P > 0 && annualRate > 0 && termInMonths > 0) {
+    if (P > 0 && annualRate >= 0 && termInMonths > 0) {
+        if (annualRate === 0) {
+            const monthlyPayment = P / termInMonths;
+            setResult({
+                monthlyPayment,
+                totalLoanAmount: P,
+                totalInterest: 0,
+                totalCost: totalVehicleCost,
+            });
+            return;
+        }
+
         const monthlyPayment = (P * monthlyRate * Math.pow(1 + monthlyRate, termInMonths)) / (Math.pow(1 + monthlyRate, termInMonths) - 1);
         const totalPayments = monthlyPayment * termInMonths;
         const totalInterest = totalPayments - P;
@@ -81,6 +91,12 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
     } else {
         setResult(null);
     }
+  };
+
+  const handleClear = () => {
+    form.reset();
+    setResult(null);
+    setAiHint(null);
   };
 
   const handleAiAssist = async () => {
@@ -204,11 +220,15 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
                 </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate Payment</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
+              </Button>
+               <Button type="button" variant="ghost" onClick={handleClear}>
+                <X className="mr-2 h-4 w-4" />
+                Clear
               </Button>
             </div>
           </form>

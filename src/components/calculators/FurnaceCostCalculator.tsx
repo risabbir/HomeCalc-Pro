@@ -11,9 +11,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2 } from 'lucide-react';
+import { Download, Loader2, Wand2, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const formSchema = z.object({
   homeSize: z.string().min(1, 'Home size is required.'),
@@ -27,6 +28,7 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const [costResult, setCostResult] = useState<string | null>(null);
+  const [units, setUnits] = useState<'imperial' | 'metric'>('imperial');
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -39,7 +41,11 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
   });
 
   const onSubmit = (values: FormValues) => {
-    const homeSize = parseFloat(values.homeSize);
+    let homeSize = parseFloat(values.homeSize);
+
+    if (units === 'metric') {
+        homeSize = homeSize * 10.764; // sq m to sq ft
+    }
 
     if (homeSize > 0 && values.furnaceType && values.efficiency) {
       let baseCost = 0;
@@ -58,15 +64,18 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
     }
   };
 
+  const handleClear = () => {
+    form.reset();
+    setCostResult(null);
+    setAiHint(null);
+  };
+
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
-    const parameters = Object.fromEntries(
-      Object.entries(values).filter(([key, value]) => value !== '' && value !== undefined)
-    );
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: {...values, units} });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -90,7 +99,7 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
       return;
     }
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Home Size: ${values.homeSize} sq ft\n` +
+      `Home Size: ${values.homeSize} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
       `Furnace Type: ${values.furnaceType}\n` +
       `Efficiency: ${values.efficiency}\n\n`+
       `--------------------\n` +
@@ -117,10 +126,18 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+             <div className="flex justify-start mb-4">
+                <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
+                    <TabsList>
+                        <TabsTrigger value="imperial">Imperial</TabsTrigger>
+                        <TabsTrigger value="metric">Metric</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="homeSize" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Home Size (sq ft)</FormLabel>
+                        <FormLabel>Home Size ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 2000" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -154,11 +171,15 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
                 )}/>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate Cost</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
+              </Button>
+               <Button type="button" variant="ghost" onClick={handleClear}>
+                <X className="mr-2 h-4 w-4" />
+                Clear
               </Button>
             </div>
           </form>

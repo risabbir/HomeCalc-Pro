@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -12,8 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2 } from 'lucide-react';
+import { Download, Loader2, Wand2, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const formSchema = z.object({
   gardenArea: z.string().min(1, 'Garden area is required.'),
@@ -29,6 +29,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const [fertilizerResult, setFertilizerResult] = useState<string | null>(null);
+  const [units, setUnits] = useState<'imperial' | 'metric'>('imperial');
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -43,19 +44,39 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
   });
 
   const onSubmit = (values: FormValues) => {
-    const area = parseFloat(values.gardenArea);
-    const appRate = parseFloat(values.applicationRate);
+    let area = parseFloat(values.gardenArea);
+    let appRate = parseFloat(values.applicationRate);
     const n = parseFloat(values.nitrogenRatio);
 
+    if (units === 'metric') {
+        area = area * 10.764; // sq m to sq ft
+        // Convert kg/100 sq m to lbs/1000 sq ft
+        // 1 kg = 2.20462 lbs. 100 sq m = 1076.4 sq ft.
+        // (X kg / 100 sq m) * (2.20462 lbs/kg) * (1076.4 sq ft / 100 sq m) * (1000/1000)
+        // (X kg / 100 sq m) * (2.20462 lbs/kg) * (10.764) ~= X * 22.5
+        appRate = appRate * 0.2048; // kg/sq m to lbs/sq ft, then scale to rate
+    }
+
     if (area > 0 && n > 0 && values.phosphorusRatio && values.potassiumRatio) {
-      // Amount of N needed = (Area / 1000) * Application Rate
       const nitrogenNeeded = (area / 1000) * appRate; 
-      // Total fertilizer = N needed / (%N in bag)
-      const fertilizerAmount = (nitrogenNeeded / (n / 100));
-      setFertilizerResult(`${fertilizerAmount.toFixed(2)} lbs of ${values.nitrogenRatio}-${values.phosphorusRatio}-${values.potassiumRatio} fertilizer`);
+      let fertilizerAmount = (nitrogenNeeded / (n / 100)); // in lbs
+      
+      let resultUnit = 'lbs';
+      if (units === 'metric') {
+        fertilizerAmount = fertilizerAmount * 0.453592; // lbs to kg
+        resultUnit = 'kg';
+      }
+
+      setFertilizerResult(`${fertilizerAmount.toFixed(2)} ${resultUnit} of ${values.nitrogenRatio}-${values.phosphorusRatio}-${values.potassiumRatio} fertilizer`);
     } else {
       setFertilizerResult(null);
     }
+  };
+
+  const handleClear = () => {
+    form.reset();
+    setFertilizerResult(null);
+    setAiHint(null);
   };
 
   const handleAiAssist = async () => {
@@ -63,12 +84,12 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
     setAiHint(null);
     const values = form.getValues();
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: {...values, units} });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
         });
-        toast({ title: 'AI Assistance', description: 'We\'ve filled in some values for you.' });
+        toast({ title: 'AI Assistance', description: "We've filled in some values for you." });
       }
       if (result.hintsAndNextSteps) {
         setAiHint(result.hintsAndNextSteps);
@@ -87,8 +108,8 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
       return;
     }
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Garden Area: ${values.gardenArea} sq ft\n` +
-      `Application Rate: ${values.applicationRate} lbs of Nitrogen per 1000 sq ft\n` +
+      `Garden Area: ${values.gardenArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
+      `Application Rate: ${values.applicationRate} ${units === 'imperial' ? 'lbs of Nitrogen per 1000 sq ft' : 'kg of N per 100 sq m'}\n` +
       `Fertilizer Ratio (N-P-K): ${values.nitrogenRatio}-${values.phosphorusRatio}-${values.potassiumRatio}\n\n`+
       `--------------------\n` +
       `Amount Needed: ${fertilizerResult}\n`;
@@ -115,10 +136,18 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="flex justify-start mb-4">
+                <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
+                    <TabsList>
+                        <TabsTrigger value="imperial">Imperial</TabsTrigger>
+                        <TabsTrigger value="metric">Metric</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="gardenArea" render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Garden Area (sq ft)</FormLabel>
+                    <FormLabel>Garden Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
                     <FormControl><Input type="number" placeholder="e.g., 500" {...field} /></FormControl>
                     <FormMessage />
                     </FormItem>
@@ -127,7 +156,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
                     <FormItem>
                     <FormLabel>Application Rate</FormLabel>
                     <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
-                     <FormDescription>Lbs of Nitrogen per 1000 sq ft.</FormDescription>
+                     <FormDescription>{units === 'imperial' ? 'Lbs of Nitrogen per 1000 sq ft.' : 'Kg of N per 100 sq m.'}</FormDescription>
                     <FormMessage />
                     </FormItem>
                 )}/>
@@ -142,11 +171,15 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
               </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
+              </Button>
+               <Button type="button" variant="ghost" onClick={handleClear}>
+                <X className="mr-2 h-4 w-4" />
+                Clear
               </Button>
             </div>
           </form>

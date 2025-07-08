@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -12,8 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2 } from 'lucide-react';
+import { Download, Loader2, Wand2, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const formSchema = z.object({
   roomPerimeter: z.string().min(1, 'Room perimeter is required.'),
@@ -29,6 +29,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const [wallpaperResult, setWallpaperResult] = useState<string | null>(null);
+  const [units, setUnits] = useState<'imperial' | 'metric'>('imperial');
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -43,11 +44,18 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
   });
 
   const onSubmit = (values: FormValues) => {
-    const perimeter = parseFloat(values.roomPerimeter);
-    const height = parseFloat(values.wallHeight);
-    const rWidth = parseFloat(values.rollWidth);
-    const rLength = parseFloat(values.rollLength);
+    let perimeter = parseFloat(values.roomPerimeter);
+    let height = parseFloat(values.wallHeight);
+    let rWidth = parseFloat(values.rollWidth);
+    let rLength = parseFloat(values.rollLength);
     const waste = parseFloat(values.wasteFactor);
+
+    if (units === 'metric') {
+        perimeter = perimeter * 3.28084; // m to ft
+        height = height * 3.28084; // m to ft
+        rWidth = rWidth / 2.54; // cm to in
+        rLength = rLength * 3.28084; // m to ft
+    }
 
     if (perimeter > 0 && height > 0 && rWidth > 0 && rLength > 0 && waste >= 0) {
       const wallArea = perimeter * height;
@@ -60,12 +68,18 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
     }
   };
 
+  const handleClear = () => {
+    form.reset();
+    setWallpaperResult(null);
+    setAiHint(null);
+  };
+
   const handleAiAssist = async () => {
     setLoading(true);
     setAiHint(null);
     const values = form.getValues();
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: {...values, units} });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -89,10 +103,10 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
       return;
     }
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Room Perimeter: ${values.roomPerimeter} ft\n` +
-      `Wall Height: ${values.wallHeight} ft\n` +
-      `Roll Width: ${values.rollWidth} in\n` +
-      `Roll Length: ${values.rollLength} ft\n`+
+      `Room Perimeter: ${values.roomPerimeter} ${units === 'imperial' ? 'ft' : 'm'}\n` +
+      `Wall Height: ${values.wallHeight} ${units === 'imperial' ? 'ft' : 'm'}\n` +
+      `Roll Width: ${values.rollWidth} ${units === 'imperial' ? 'in' : 'cm'}\n` +
+      `Roll Length: ${values.rollLength} ${units === 'imperial' ? 'ft' : 'm'}\n`+
       `Waste Factor: ${values.wasteFactor}%\n\n`+
       `--------------------\n` +
       `Rolls Needed: ${wallpaperResult}\n`;
@@ -118,31 +132,39 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="flex justify-start mb-4">
+                <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
+                    <TabsList>
+                        <TabsTrigger value="imperial">Imperial</TabsTrigger>
+                        <TabsTrigger value="metric">Metric</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="roomPerimeter" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Room Perimeter (ft)</FormLabel>
+                        <FormLabel>Room Perimeter ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 40" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="wallHeight" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Wall Height (ft)</FormLabel>
+                        <FormLabel>Wall Height ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="rollWidth" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Roll Width (inches)</FormLabel>
+                        <FormLabel>Roll Width ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 20.5" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="rollLength" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Roll Length (ft)</FormLabel>
+                        <FormLabel>Roll Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 33" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -156,11 +178,15 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
                 )}/>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
+              </Button>
+               <Button type="button" variant="ghost" onClick={handleClear}>
+                <X className="mr-2 h-4 w-4" />
+                Clear
               </Button>
             </div>
           </form>

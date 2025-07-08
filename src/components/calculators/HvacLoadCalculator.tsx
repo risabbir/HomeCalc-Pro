@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -12,9 +11,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2 } from 'lucide-react';
+import { Download, Loader2, Wand2, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const formSchema = z.object({
   totalArea: z.string().min(1, 'Total area is required.'),
@@ -30,6 +30,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
   const [loading, setLoading] = useState(false);
   const [aiHint, setAiHint] = useState<string | null>(null);
   const [loadResult, setLoadResult] = useState<string | null>(null);
+  const [units, setUnits] = useState<'imperial' | 'metric'>('imperial');
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -44,30 +45,46 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
   });
 
   const onSubmit = (values: FormValues) => {
-    const area = parseFloat(values.totalArea);
-    const windows = parseFloat(values.windowsArea);
+    let area = parseFloat(values.totalArea);
+    let windows = parseFloat(values.windowsArea);
     const climateZone = parseFloat(values.climateZone);
     const occupants = parseInt(values.numberOfOccupants);
 
+    if (units === 'metric') {
+        area = area * 10.764; // sq m to sq ft
+        windows = windows * 10.764; // sq m to sq ft
+    }
+
     if (area > 0 && windows >= 0 && climateZone >= 1 && climateZone <= 8 && occupants > 0) {
-      // Simplified Manual J calculation for demonstration
       const climateFactor = 30 - (climateZone * 2);
       
       let insulationMultiplier = 1;
       if (values.insulationQuality === 'poor') insulationMultiplier = 1.2;
       if (values.insulationQuality === 'good') insulationMultiplier = 0.8;
       
-      const occupantLoad = occupants * 400; // Cooling load per person
+      const occupantLoad = occupants * 400;
       
       const coolingLoad = ((area * climateFactor) + (windows * 100)) * insulationMultiplier + occupantLoad;
       const heatingLoad = (area * (50 - climateFactor)) * insulationMultiplier;
       
-      const coolingTons = (coolingLoad / 12000).toFixed(1);
+      if (units === 'imperial') {
+        const coolingTons = (coolingLoad / 12000).toFixed(1);
+        setLoadResult(`Cooling: ${coolingLoad.toFixed(0)} BTU/hr (${coolingTons} tons) | Heating: ${heatingLoad.toFixed(0)} BTU/hr`);
+      } else {
+        const coolingWatts = coolingLoad / 3.41;
+        const heatingWatts = heatingLoad / 3.41;
+        setLoadResult(`Cooling: ${coolingWatts.toFixed(0)} W | Heating: ${heatingWatts.toFixed(0)} W`);
+      }
 
-      setLoadResult(`Cooling: ${coolingLoad.toFixed(0)} BTU/hr (${coolingTons} tons) | Heating: ${heatingLoad.toFixed(0)} BTU/hr`);
     } else {
       setLoadResult(null);
     }
+  };
+  
+  const handleClear = () => {
+    form.reset();
+    setLoadResult(null);
+    setAiHint(null);
   };
 
   const handleAiAssist = async () => {
@@ -75,7 +92,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
     setAiHint(null);
     const values = form.getValues();
     try {
-      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: values });
+      const result = await getAiAssistance({ calculatorType: calculator.name, parameters: {...values, units} });
       if (result.autoCalculatedValues) {
         Object.entries(result.autoCalculatedValues).forEach(([key, value]) => {
           form.setValue(key as keyof FormValues, String(value));
@@ -99,9 +116,9 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
       return;
     }
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Total Area: ${values.totalArea} sq ft\n` +
+      `Total Area: ${values.totalArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
       `Climate Zone: ${values.climateZone}\n` +
-      `Windows Area: ${values.windowsArea} sq ft\n` +
+      `Windows Area: ${values.windowsArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
       `Number of Occupants: ${values.numberOfOccupants}\n` +
       `Insulation Quality: ${values.insulationQuality}\n\n`+
       `--------------------\n` +
@@ -128,17 +145,25 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="flex justify-start mb-4">
+                <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
+                    <TabsList>
+                        <TabsTrigger value="imperial">Imperial</TabsTrigger>
+                        <TabsTrigger value="metric">Metric</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="totalArea" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Total Area (sq ft)</FormLabel>
+                        <FormLabel>Total Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 2000" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                  <FormField control={form.control} name="windowsArea" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Windows Area (sq ft)</FormLabel>
+                        <FormLabel>Windows Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 150" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -179,11 +204,15 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
                 />
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate Load</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
+              </Button>
+               <Button type="button" variant="ghost" onClick={handleClear}>
+                <X className="mr-2 h-4 w-4" />
+                Clear
               </Button>
             </div>
           </form>

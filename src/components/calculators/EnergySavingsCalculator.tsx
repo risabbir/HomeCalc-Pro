@@ -11,9 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2 } from 'lucide-react';
+import { Download, Loader2, Wand2, X } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
   costPerKwh: z.string().min(1, 'Cost per kWh is required.'),
@@ -67,6 +66,12 @@ export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calcu
     } else {
       setSavingsResult(null);
     }
+  };
+
+  const handleClear = () => {
+    form.reset();
+    setSavingsResult(null);
+    setAiHint(null);
   };
 
   const handleAiAssist = async () => {
@@ -179,11 +184,15 @@ export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calcu
                 </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="flex flex-wrap items-center gap-4 pt-4">
               <Button type="submit">Calculate Savings</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
+              </Button>
+               <Button type="button" variant="ghost" onClick={handleClear}>
+                <X className="mr-2 h-4 w-4" />
+                Clear
               </Button>
             </div>
           </form>
