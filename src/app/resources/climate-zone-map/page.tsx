@@ -47,10 +47,10 @@ export default function ClimateZoneMapPage() {
                     <Card className="overflow-hidden border-2">
                              <CardContent className="p-0 bg-white">
                                 <Image 
-                                    src="https://www.energy.gov/sites/default/files/2023-10/B-5_Image_4_bee-climate-zone-map_0.png"
-                                    alt="U.S. Department of Energy Building America climate zone map."
-                                    width={1200}
-                                    height={927}
+                                    src="https://building-performance.org/wp-content/uploads/2020/12/IECC-Climate-Zone-Map.png"
+                                    alt="U.S. IECC Climate Zone Map showing 8 distinct climate zones across the United States."
+                                    width={982}
+                                    height={759}
                                     className="w-full h-auto object-contain"
                                     priority
                                 />
