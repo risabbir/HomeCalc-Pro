@@ -221,8 +221,8 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
               </Button>
               {paymentBreakdown && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  <X className="mr-2 h-4 w-4" />
                   Clear
+                  <X className="h-4 w-4" />
                 </Button>
               )}
             </div>

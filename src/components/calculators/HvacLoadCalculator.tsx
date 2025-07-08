@@ -245,8 +245,8 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
               </Button>
               {loadResult && (
                 <Button type="button" variant="destructive" onClick={handleClear}>
-                  <X className="mr-2 h-4 w-4" />
                   Clear
+                  <X className="h-4 w-4" />
                 </Button>
               )}
             </div>
