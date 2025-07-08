@@ -2,9 +2,10 @@ import { calculators } from "@/lib/calculators";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from "next/image";
+import { Heater, Layers3, Building } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: 'U.S. Climate Zone Map | HomeCalc Pro',
@@ -35,38 +36,65 @@ export default function ClimateZoneMapPage() {
     return (
         <div className="container mx-auto px-4 py-16">
             <div className="max-w-4xl mx-auto">
-                <article className="prose dark:prose-invert max-w-none">
-                    <h1 className="text-4xl font-bold font-headline mb-4">Understanding U.S. Climate Zones</h1>
-                    <p className="text-lg text-muted-foreground mb-8">
-                        The U.S. Department of Energy's climate zone map is a critical tool for home construction and renovation. It divides the country into eight zones based on climate, which helps determine the most effective strategies for energy-efficient building.
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Understanding U.S. Climate Zones</h1>
+                    <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                        The U.S. Department of Energy divides the country into eight zones. Knowing your zone is the key to energy-efficient home projects.
                     </p>
-                </article>
+                </div>
 
-                <Image 
-                    src="https://placehold.co/1200x600.png"
-                    alt="Map of U.S. Climate Zones"
-                    width={1200}
-                    height={600}
-                    className="rounded-lg my-8 object-cover"
-                    data-ai-hint="climate zone map"
-                />
+                <Card className="overflow-hidden mb-12">
+                     <CardContent className="p-0">
+                        <Image 
+                            src="https://storage.googleapis.com/fs-apps-production.appspot.com/1-1181283350/2024-07-16/climatemap.png"
+                            alt="Map of U.S. Climate Zones"
+                            width={1200}
+                            height={675}
+                            className="w-full h-auto object-cover"
+                        />
+                    </CardContent>
+                </Card>
 
-                <article className="prose dark:prose-invert max-w-none mt-8">
-                    <h2>Why Your Climate Zone Matters</h2>
-                    <p>Using the correct climate zone for your location is essential for several of our most important calculators. An incorrect zone can lead to inaccurate estimates and poor project outcomes:</p>
-                    <ul>
-                        <li><strong>Heating & Cooling (HVAC):</strong> A home in Zone 7 (Very-Cold) requires a significantly more powerful heating system than a home in Zone 1 (Hot-Humid). Conversely, a home in a hot climate needs more cooling power. Using the wrong zone can lead to an undersized or oversized HVAC system, resulting in inefficiency, discomfort, and higher energy bills.</li>
-                        <li><strong>Insulation (R-Value):</strong> Colder zones require higher R-value insulation in walls, attics, and floors to prevent heat loss in the winter. In hot climates, proper insulation helps keep cool air inside. Our insulation calculators use these zones to provide accurate recommendations.</li>
-                        <li><strong>Building Materials:</strong> The choice of windows, siding, and roofing can also be influenced by your climate zone to maximize energy efficiency and durability.</li>
-                    </ul>
-                </article>
+                <Card className="mb-12">
+                    <CardHeader>
+                        <CardTitle>Why Your Climate Zone Matters</CardTitle>
+                        <CardDescription>Using the correct climate zone is essential for getting accurate calculations and achieving the best results for your home.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="flex items-start gap-4">
+                            <div className="bg-primary/10 p-3 rounded-full">
+                                <Heater className="h-6 w-6 text-primary" />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold">Heating & Cooling (HVAC)</h3>
+                                <p className="text-muted-foreground">A home in a cold zone needs a powerful furnace, while one in a hot zone needs a robust AC. An incorrectly sized system leads to inefficiency, discomfort, and high energy bills.</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                            <div className="bg-primary/10 p-3 rounded-full">
+                                <Layers3 className="h-6 w-6 text-primary" />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold">Insulation (R-Value)</h3>
+                                <p className="text-muted-foreground">Colder zones require higher R-value insulation in walls, attics, and floors to prevent heat loss. In hot climates, insulation is key to keeping cool air in. Our calculators use these zones for accurate recommendations.</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-4">
+                            <div className="bg-primary/10 p-3 rounded-full">
+                                <Building className="h-6 w-6 text-primary" />
+                            </div>
+                            <div>
+                                <h3 className="font-semibold">Building Materials</h3>
+                                <p className="text-muted-foreground">Your choice of windows, siding, and roofing should be influenced by your climate zone to maximize energy efficiency and durability against the elements.</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
 
-                <Card className="mt-12">
+                <Card className="mb-12">
                     <CardHeader>
                         <CardTitle>Climate Zone Breakdown</CardTitle>
-                        <CardContent className="pt-4 px-0 pb-0">
-                           <p className="text-muted-foreground">You can typically find your zone by searching for "US DOE climate zone for [your county, state]".</p>
-                        </CardContent>
+                        <CardDescription>Find your zone by searching online for "US DOE climate zone for [your county, state]". Then, use the table below to understand its characteristics.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Table>
@@ -90,13 +118,14 @@ export default function ClimateZoneMapPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="mt-16 bg-accent/50">
+                <Card className="bg-secondary">
                     <CardHeader>
                         <CardTitle>Use Your Zone in These Calculators</CardTitle>
+                        <CardDescription>Now that you know your zone, apply it in these relevant calculators for precise results.</CardDescription>
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {relatedCalculators.map(calc => (
-                            <Button asChild variant="outline" className="justify-start gap-4" key={calc.slug}>
+                            <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
                                 <Link href={`/calculators/${calc.slug}`}>
                                     <calc.Icon className="h-5 w-5 text-primary" />
                                     {calc.name}

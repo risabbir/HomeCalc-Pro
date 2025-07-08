@@ -2,8 +2,10 @@ import { calculators } from "@/lib/calculators";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Image from 'next/image';
+import { Ruler, Lightbulb } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const metadata: Metadata = {
     title: 'How to Measure a Room for Any Project | HomeCalc Pro',
@@ -14,7 +16,7 @@ const relevantCalculators = [
     'paint-coverage',
     'flooring-area',
     'wallpaper',
-]
+];
 
 export default function HowToMeasurePage() {
     const relatedCalculators = calculators.filter(c => relevantCalculators.includes(c.slug));
@@ -22,73 +24,100 @@ export default function HowToMeasurePage() {
     return (
         <div className="container mx-auto px-4 py-16">
             <div className="max-w-4xl mx-auto">
-                <article className="prose dark:prose-invert max-w-none">
-                     <Image 
-                        src="https://placehold.co/1200x400.png"
-                        alt="A person measuring a wall with a tape measure"
-                        width={1200}
-                        height={400}
-                        className="rounded-lg mb-8 object-cover"
-                        data-ai-hint="measuring wall"
-                    />
-                    <h1 className="text-4xl font-bold font-headline mb-4">How to Accurately Measure a Room</h1>
-                    <p className="text-lg text-muted-foreground mb-12">
-                        Getting accurate measurements is the first and most important step for many home improvement projects. Whether you're painting, installing new flooring, or putting up wallpaper, precise numbers will save you time, money, and headaches. Follow these steps to measure like a pro.
+                <div className="text-center mb-12">
+                    <Ruler className="h-16 w-16 mx-auto text-primary mb-4" />
+                    <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">How to Accurately Measure a Room</h1>
+                    <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                        Accurate measurements are the foundation of any successful home improvement project. This guide will help you measure like a pro, saving you time, money, and headaches.
                     </p>
+                </div>
 
-                    <h2>Step 1: Gather Your Tools</h2>
-                    <p>Having the right tools makes the job easier and more accurate. You'll want:</p>
-                    <ul>
-                        <li><strong>Tape Measure:</strong> A 25-foot locking tape measure is standard.</li>
-                        <li><strong>Notepad & Pen:</strong> Or a notes app on your phone. It's helpful to sketch a rough diagram of the room to write measurements on.</li>
-                        <li><strong>Calculator:</strong> Or just keep a tab open for HomeCalc Pro!</li>
-                        <li><strong>(Optional) Laser Measure:</strong> For large rooms or long distances, a laser measure can be faster and more accurate.</li>
-                    </ul>
+                <Card className="mb-12">
+                    <CardHeader>
+                        <CardTitle>Step 1: Gather Your Tools</CardTitle>
+                        <CardDescription>Having the right tools is half the battle. Here’s what you’ll need:</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <ul className="list-disc pl-5 text-muted-foreground space-y-2">
+                            <li><strong>25-foot Locking Tape Measure:</strong> The essential tool for this job.</li>
+                            <li><strong>Notepad & Pen / Notes App:</strong> It's helpful to sketch a rough diagram of the room to write measurements on.</li>
+                            <li><strong>Calculator:</strong> Keep a tab open for HomeCalc Pro!</li>
+                            <li><strong>(Optional) Laser Measure:</strong> For large rooms or long distances, this can be a huge time-saver.</li>
+                        </ul>
+                    </CardContent>
+                </Card>
 
-                    <h2>Step 2: Measuring for Flooring (Square Footage)</h2>
-                    <p>This is the most common measurement needed.</p>
-                    <ol>
-                        <li><strong>Measure the Length:</strong> Run your tape measure along the longest wall from one corner to the other. It's a good practice to measure at two different points along the wall to check for variations. Record the longer measurement.</li>
-                        <li><strong>Measure the Width:</strong> Do the same for the shorter wall.</li>
-                        <li><strong>Calculate the Area:</strong> Multiply the length by the width. For example, a room that is 12 feet long and 10 feet wide has an area of 120 square feet (12 ft x 10 ft = 120 sq ft). This is your base square footage.</li>
-                    </ol>
+                <Card className="mb-12">
+                    <CardHeader>
+                        <CardTitle>Step 2: Measuring for Flooring (Square Footage)</CardTitle>
+                        <CardDescription>This is the most common measurement needed for flooring materials.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <ol className="list-decimal pl-5 text-muted-foreground space-y-4">
+                            <li>
+                                <strong>Measure Length & Width:</strong> Run your tape measure along the longest walls. It's a good practice to measure at two different points to check for variations; use the larger measurement. Do the same for the shorter walls.
+                            </li>
+                            <li>
+                                <strong>Calculate Area:</strong> Multiply the length by the width. A room that is 12 feet long and 10 feet wide has an area of 120 square feet (12 ft x 10 ft = 120 sq ft).
+                            </li>
+                            <li>
+                                <strong>Handle Irregular Shapes:</strong> For L-shaped rooms, break the room into smaller rectangles. Calculate the area of each rectangle and add them together for the total square footage. For alcoves or closets, measure them separately and add to your total.
+                            </li>
+                        </ol>
+                        <Image 
+                            src="https://placehold.co/800x400.png"
+                            alt="Diagram showing how to break down an L-shaped room into two rectangles for measurement"
+                            width={800}
+                            height={400}
+                            className="rounded-lg my-8 mx-auto object-contain bg-secondary/50 p-4"
+                            data-ai-hint="L-shaped diagram"
+                        />
+                    </CardContent>
+                </Card>
 
-                     <Image 
-                        src="https://placehold.co/800x400.png"
-                        alt="Diagram showing how to break down an L-shaped room into two rectangles for measurement"
-                        width={800}
-                        height={400}
-                        className="rounded-lg my-8 mx-auto object-contain"
-                        data-ai-hint="L-shaped diagram"
-                    />
-                    
-                    <h3>Handling Irregular Shapes</h3>
-                    <p>What if your room isn't a perfect rectangle? The trick is to break it down into smaller, regular shapes (rectangles or squares). For an L-shaped room, for example, you would treat it as two separate rectangles.</p>
-                     <ol>
-                        <li>Measure the length and width of the first rectangular section and calculate its area.</li>
-                        <li>Measure the length and width of the second rectangular section and calculate its area.</li>
-                        <li>Add the areas of all sections together to get the total square footage.</li>
-                        <li>For alcoves, closets, or other areas you also want to floor, measure them separately and add them to your total.</li>
-                    </ol>
+                 <Card className="mb-12">
+                    <CardHeader>
+                        <CardTitle>Step 3: Measuring for Walls (Paint & Wallpaper)</CardTitle>
+                        <CardDescription>For wall coverings, you'll need the total surface area of your walls.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <ol className="list-decimal pl-5 text-muted-foreground space-y-4">
+                            <li>
+                                <strong>Measure Wall Height:</strong> Measure from floor to ceiling in a few different places and use the tallest measurement. A standard height is 8 feet.
+                            </li>
+                            <li>
+                                <strong>Calculate Perimeter:</strong> Add the lengths of all walls together. For a 12x10 ft room, the perimeter is (12 + 10 + 12 + 10) = 44 feet.
+                            </li>
+                            <li>
+                                <strong>Calculate Total Wall Area:</strong> Multiply the perimeter by the wall height. For our example, this is 44 ft x 8 ft = 352 square feet of wall space.
+                            </li>
+                            <li>
+                                <strong>Subtract Openings:</strong> Don't pay for materials you won't use. Our calculators can automatically subtract standard sizes for doors and windows, but for maximum precision, measure each one (width x height) and subtract its area from your total.
+                            </li>
+                        </ol>
+                    </CardContent>
+                </Card>
+                
+                <Alert className="mb-12">
+                    <Lightbulb className="h-4 w-4" />
+                    <AlertTitle>Pro Tips for Precision</AlertTitle>
+                    <AlertDescription>
+                        <ul className="list-disc pl-5 mt-2 space-y-1">
+                            <li><strong>Measure Twice, Cut Once:</strong> It's an old saying for a reason. Double-check your measurements before buying materials.</li>
+                            <li><strong>Don't Bend the Tape:</strong> For inside corners, bend the tape measure at the corner mark and read it there, or measure from both sides to the middle and add.</li>
+                            <li><strong>Account for Waste:</strong> Always add a "waste factor" (usually 10-15%) to your total material order to account for cuts, mistakes, or complex patterns.</li>
+                        </ul>
+                    </AlertDescription>
+                </Alert>
 
-                    <h2>Step 3: Measuring for Walls (Paint/Wallpaper)</h2>
-                    <p>If you need the area of the walls, you'll need a couple more measurements.</p>
-                    <ol>
-                        <li><strong>Measure the Wall Height:</strong> Measure from the floor to the ceiling in a few different places to check for consistency. Use the tallest measurement. A standard height is 8 feet.</li>
-                        <li><strong>Calculate the Perimeter:</strong> Add the lengths of all walls together. For our rectangular 12x10 ft room, the perimeter is (12 ft + 10 ft + 12 ft + 10 ft) = 44 feet.</li>
-                        <li><strong>Calculate Total Wall Area:</strong> Multiply the perimeter by the wall height. For our example, this is 44 ft x 8 ft = 352 square feet of wall space.</li>
-                        <li><strong>Subtract for Openings:</strong> Don't measure doors and windows. Our calculators can automatically subtract standard sizes, but for precision, you can measure each one and subtract its area from your total wall area.</li>
-                    </ol>
-
-                </article>
-
-                 <Card className="mt-16 bg-accent/50">
+                 <Card className="mt-16 bg-secondary">
                     <CardHeader>
                         <CardTitle>Ready to Calculate?</CardTitle>
+                        <CardDescription>Now that you have your measurements, let's put them to use.</CardDescription>
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {relatedCalculators.map(calc => (
-                            <Button asChild variant="outline" className="justify-start gap-4" key={calc.slug}>
+                            <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
                                 <Link href={`/calculators/${calc.slug}`}>
                                     <calc.Icon className="h-5 w-5 text-primary" />
                                     {calc.name}
