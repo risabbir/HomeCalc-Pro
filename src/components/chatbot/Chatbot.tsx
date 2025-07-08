@@ -104,7 +104,7 @@ export function Chatbot() {
             className="h-16 w-16 rounded-full shadow-lg bg-primary hover:bg-primary/90 flex items-center justify-center p-0 shrink-0"
             aria-label="Open chatbot"
         >
-            <MessageCircle className="h-8 w-8 text-primary-foreground" />
+            <MessageCircle className="h-9 w-9 text-primary-foreground" />
         </Button>
       </div>
 
