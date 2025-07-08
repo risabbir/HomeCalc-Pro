@@ -12,10 +12,12 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, Info, X } from 'lucide-react';
+import { Download, Loader2, Wand2, Info, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Link from 'next/link';
 
 const formSchema = z.object({
   atticArea: z.string().min(1, 'Attic area is required.'),
@@ -89,7 +91,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
 
     const insulationType = values.insulationType;
     const selectedInsulation = INSULATION_DATA[insulationType];
-    const currentRValue = existingDepth * 2.5;
+    const currentRValue = existingDepth * 2.5; // Assume existing is old fiberglass/cellulose with R-2.5/inch
     const targetRValue = R_VALUES_BY_ZONE[climateZone];
     
     if (currentRValue >= targetRValue) {
@@ -180,7 +182,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Proper attic insulation is key to energy efficiency. This tool helps you determine how much new insulation you need to meet Department of Energy recommendations for your area.
+            Proper attic insulation is key to energy efficiency. This tool helps you determine how much new insulation you need to meet Department of Energy recommendations for your climate zone.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -188,7 +190,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
@@ -197,15 +199,20 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="atticArea" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Attic Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Attic Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
+                             <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Calculate the length times width of your attic floor.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 1000" {...field} /></FormControl>
-                        <FormDescription>The length x width of your attic floor.</FormDescription>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="climateZone" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Climate Zone (US)</FormLabel>
+                        <div className="flex items-center gap-1.5">
+                            <FormLabel>U.S. Climate Zone</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Determines your recommended R-value. See our <Link href="/resources/climate-zone-map" className="text-primary underline">Climate Zone Map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                         <SelectContent>
@@ -214,21 +221,25 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                           ))}
                         </SelectContent>
                       </Select>
-                       <FormDescription>Find your zone on our resources page.</FormDescription>
                       <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="existingInsulation" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Existing Insulation Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Existing Insulation Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Use a ruler to measure the depth of your current insulation at its most level point. Enter 0 if none.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 5" {...field} /></FormControl>
-                        <FormDescription>Measure the depth with a ruler.</FormDescription>
                         <FormMessage />
                     </FormItem>
                 )}/>
                  <FormField control={form.control} name="insulationType" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>New Insulation Type</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>New Insulation Type</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Cellulose generally has a higher R-value per inch than fiberglass. Choose the type you plan to add.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                         <SelectContent>
@@ -236,7 +247,6 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                            <SelectItem value="loose-fill-cellulose">Loose-Fill Cellulose</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormDescription>What you plan to add.</FormDescription>
                       <FormMessage />
                     </FormItem>
                 )}/>
@@ -249,7 +259,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                 AI Assist
               </Button>
               {(result || isSufficient) && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                     <X className="mr-2 h-4 w-4" />
                     Clear
                 </Button>

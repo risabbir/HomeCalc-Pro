@@ -12,9 +12,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   length: z.string().min(1, 'Length is required.'),
@@ -138,7 +139,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Planning a foundation, patio, or sidewalk? Enter the dimensions of your slab to calculate the volume of concrete required. Press calculate to see the result.
+            Planning a foundation, patio, or sidewalk? Enter the dimensions of your slab to calculate the volume of concrete required. The result is given in cubic yards/meters for bulk delivery and in estimated 80lb bags for smaller projects.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -146,7 +147,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
              <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
@@ -169,14 +170,20 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
                 )}/>
                 <FormField control={form.control} name="thickness" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Slab Thickness ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Slab Thickness ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Standard residential slabs are often 4 inches (10 cm) thick.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 4" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="wasteFactor" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Waste Factor (%)</FormLabel>
+                        <div className="flex items-center gap-1.5">
+                            <FormLabel>Waste Factor (%)</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Accounts for uneven ground and spillage. 5-10% is standard.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -190,7 +197,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
                 AI Assist
               </Button>
               {concreteResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

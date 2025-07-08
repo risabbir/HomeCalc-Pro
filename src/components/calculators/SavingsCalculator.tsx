@@ -12,8 +12,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   initialDeposit: z.string().min(1, 'Initial deposit is required.'),
@@ -136,7 +137,7 @@ export function SavingsCalculator({ calculator }: { calculator: Omit<Calculator,
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-          Plan for your future by estimating the growth of your investments over time. This calculation assumes interest is compounded monthly. Enter your initial deposit, how much you plan to contribute monthly, your expected annual return, and the number of years you'll be investing.
+          Plan for your future by estimating the growth of your investments over time. This calculation assumes interest is compounded monthly.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -159,7 +160,7 @@ export function SavingsCalculator({ calculator }: { calculator: Omit<Calculator,
               )}/>
                <FormField control={form.control} name="interestRate" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Annual Interest Rate (%)</FormLabel>
+                    <div className="flex items-center gap-1.5"><FormLabel>Annual Interest Rate (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Your estimated annual rate of return. The historical average for the S&P 500 is ~10%.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" step="0.01" placeholder="e.g., 7" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -180,7 +181,7 @@ export function SavingsCalculator({ calculator }: { calculator: Omit<Calculator,
                 AI Assist
               </Button>
               {result && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

@@ -12,9 +12,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   roomWidth: z.string().min(1, 'Room width is required.'),
@@ -140,7 +141,7 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Measure your room's width and length to find the total area. Don't forget to add a waste factor (typically 5-15%) to account for cuts and mistakes. Press calculate to see the result.
+            Measure your room's width and length to find the total area. It is crucial to add a waste factor to account for cuts, mistakes, and board selection.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -148,7 +149,7 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
@@ -171,7 +172,12 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
                 )}/>
                 <FormField control={form.control} name="wasteFactor" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Waste Factor (%)</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Waste Factor (%)</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent>
+                                <p className="max-w-xs">Standard layouts: 10%. Complex rooms or diagonal/herringbone patterns: 15-20%.</p>
+                            </TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -179,9 +185,11 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
             </div>
              <FormField control={form.control} name="boxCoverage" render={({ field }) => (
                 <FormItem>
-                    <FormLabel>Box Coverage ({units === 'imperial' ? 'sq ft' : 'sq m'}) (Optional)</FormLabel>
+                    <div className="flex items-center gap-1.5">
+                        <FormLabel>Box Coverage ({units === 'imperial' ? 'sq ft' : 'sq m'}) (Optional)</FormLabel>
+                        <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Enter the area coverage listed on the flooring box to estimate how many you need to buy.</p></TooltipContent></Tooltip></TooltipProvider>
+                    </div>
                     <FormControl><Input type="number" placeholder="e.g., 22.5" {...field} /></FormControl>
-                    <FormDescription>Enter the sq ft coverage per box to calculate how many boxes to buy.</FormDescription>
                     <FormMessage />
                 </FormItem>
             )}/>
@@ -193,7 +201,7 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
                 AI Assist
               </Button>
               {flooringResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

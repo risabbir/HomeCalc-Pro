@@ -12,9 +12,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   length: z.string().min(1, 'Length is required.'),
@@ -142,7 +143,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Starting a new garden bed or topping up an old one? Calculate the volume of soil you'll need.
+            Starting a new garden bed or topping up an old one? Calculate the volume of soil you'll need. Results are provided in cubic feet/yards for bulk delivery and in estimated bags for smaller jobs.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -150,7 +151,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
@@ -173,7 +174,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                 )}/>
                 <FormField control={form.control} name="depth" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Soil Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Soil Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Recommended depth for most vegetable gardens is 6-12 inches (15-30 cm).</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 6" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -182,9 +183,8 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
 
             <FormField control={form.control} name="bagSize" render={({ field }) => (
                 <FormItem>
-                    <FormLabel>Bag Size ({units === 'imperial' ? 'cu ft' : 'liters'}) (Optional)</FormLabel>
+                    <div className="flex items-center gap-1.5"><FormLabel>Bag Size ({units === 'imperial' ? 'cu ft' : 'liters'}) (Optional)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Enter the volume of the bags you plan to buy to estimate the required quantity.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" placeholder={units === 'imperial' ? "e.g., 1.5" : "e.g., 50"} {...field} /></FormControl>
-                    <FormDescription>Enter the size of the bags you plan to buy to estimate quantity.</FormDescription>
                     <FormMessage />
                 </FormItem>
             )}/>
@@ -196,7 +196,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                 AI Assist
               </Button>
               {soilResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

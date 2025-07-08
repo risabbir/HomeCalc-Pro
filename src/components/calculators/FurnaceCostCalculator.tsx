@@ -12,18 +12,25 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Link from 'next/link';
 
 const formSchema = z.object({
   homeSize: z.string().min(1, 'Home size is required.'),
   furnaceType: z.enum(['gas', 'electric', 'oil']),
   efficiency: z.enum(['standard', 'high']),
+  climateZone: z.string().min(1, 'Climate zone is required.'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+const CLIMATE_ZONE_FACTORS: { [key: string]: number } = {
+  '1': 30, '2': 35, '3': 40, '4': 45, '5': 50, '6': 55, '7': 60, '8': 60
+};
 
 export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
@@ -38,6 +45,7 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
       homeSize: '',
       furnaceType: 'gas',
       efficiency: 'standard',
+      climateZone: '5',
     },
   });
 
@@ -48,18 +56,20 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
         homeSize = homeSize * 10.764; // sq m to sq ft
     }
 
-    if (homeSize > 0 && values.furnaceType && values.efficiency) {
+    if (homeSize > 0 && values.furnaceType && values.efficiency && values.climateZone) {
+      const btuNeeded = homeSize * CLIMATE_ZONE_FACTORS[values.climateZone as keyof typeof CLIMATE_ZONE_FACTORS];
+      
       let baseCost = 0;
-      if (values.furnaceType === 'gas') baseCost = 2000;
-      if (values.furnaceType === 'electric') baseCost = 1500;
-      if (values.furnaceType === 'oil') baseCost = 2500;
+      if (values.furnaceType === 'gas') baseCost = 3000;
+      if (values.furnaceType === 'electric') baseCost = 2500;
+      if (values.furnaceType === 'oil') baseCost = 4000;
 
       if (values.efficiency === 'high') baseCost *= 1.5;
 
-      const sizeMultiplier = homeSize / 1500;
-      const totalCost = baseCost * sizeMultiplier + 1000; // +1000 for labor
+      const sizeMultiplier = btuNeeded / 80000;
+      const totalCost = baseCost * sizeMultiplier + 2000;
 
-      setCostResult(`~$${totalCost.toFixed(0)} - $${(totalCost * 1.5).toFixed(0)}`);
+      setCostResult(`$${(totalCost * 0.8).toFixed(0)} - $${(totalCost * 1.2).toFixed(0)}`);
     } else {
       setCostResult(null);
     }
@@ -102,9 +112,11 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
       `Home Size: ${values.homeSize} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
       `Furnace Type: ${values.furnaceType}\n` +
-      `Efficiency: ${values.efficiency}\n\n`+
+      `Efficiency: ${values.efficiency}\n` +
+      `Climate Zone: ${values.climateZone}\n\n`+
       `--------------------\n` +
-      `Estimated Cost: ${costResult}\n`;
+      `Estimated Installation Cost Range: ${costResult}\n`+
+      `Note: This is a rough estimate. Get multiple quotes from local HVAC professionals.`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -121,7 +133,7 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Get a rough estimate for a new furnace installation. Cost depends heavily on home size, fuel type, efficiency rating (AFUE), and local labor rates. Press calculate to see the result.
+            Get a rough estimate for a new furnace installation. Cost depends heavily on home size, fuel type, efficiency rating (AFUE), climate, and local labor rates. This is for budget planning only.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -129,18 +141,35 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
              <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
                 </Tabs>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="homeSize" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Home Size ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 2000" {...field} /></FormControl>
                         <FormMessage />
+                    </FormItem>
+                )}/>
+                 <FormField control={form.control} name="climateZone" render={({ field }) => (
+                    <FormItem>
+                        <div className="flex items-center gap-1.5">
+                            <FormLabel>U.S. Climate Zone</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Colder zones require more powerful (and expensive) furnaces. See our <Link href="/resources/climate-zone-map" className="text-primary underline">map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                        <SelectContent>
+                          {Object.keys(CLIMATE_ZONE_FACTORS).map(zone => (
+                             <SelectItem key={zone} value={zone}>Zone {zone}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="furnaceType" render={({ field }) => (
@@ -159,12 +188,15 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
                 )}/>
                 <FormField control={form.control} name="efficiency" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Efficiency</FormLabel>
+                      <div className="flex items-center gap-1.5">
+                        <FormLabel>Efficiency (AFUE)</FormLabel>
+                        <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Annual Fuel Utilization Efficiency. High-efficiency (95%+) units cost more upfront but save money on fuel over time.</p></TooltipContent></Tooltip></TooltipProvider>
+                      </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                         <SelectContent>
-                          <SelectItem value="standard">Standard (80%)</SelectItem>
-                          <SelectItem value="high">High (95% AFUE)</SelectItem>
+                          <SelectItem value="standard">Standard (~80%)</SelectItem>
+                          <SelectItem value="high">High (95%+)</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -173,13 +205,13 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
             </div>
             
             <div className="flex flex-wrap items-center gap-4">
-              <Button type="submit">Calculate Cost</Button>
+              <Button type="submit">Estimate Cost</Button>
               <Button type="button" variant="outline" onClick={handleAiAssist} disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
               </Button>
               {costResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

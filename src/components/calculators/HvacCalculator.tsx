@@ -12,10 +12,11 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   roomArea: z.string().min(1, 'Room area is required.'),
@@ -37,7 +38,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     resolver: zodResolver(formSchema),
     defaultValues: {
       roomArea: '',
-      ceilingHeight: '',
+      ceilingHeight: '8',
       insulation: 'average',
       sunExposure: 'shady',
     },
@@ -53,18 +54,21 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     }
 
     if (area > 0 && height > 0) {
-      const volume = area * height;
-      let btu = volume * 10;
+      let btu = area * 25;
+
+      if (height > 8) {
+          btu += (area * (height - 8)) * 4;
+      }
 
       if (values.insulation === 'poor') btu *= 1.2;
       if (values.insulation === 'good') btu *= 0.8;
       if (values.sunExposure === 'sunny') btu *= 1.1;
 
       if (units === 'imperial') {
-          setBtuResult(`${Math.ceil(btu)} BTU/hr`);
+          setBtuResult(`${Math.ceil(btu / 100) * 100} BTU/hr`);
       } else {
           const watts = btu / 3.41;
-          setBtuResult(`${Math.ceil(watts)} Watts`);
+          setBtuResult(`${Math.ceil(watts / 100) * 100} Watts`);
       }
     } else {
       setBtuResult(null);
@@ -138,7 +142,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Enter your room's dimensions and environmental factors to get an estimate of the cooling capacity your air conditioner needs. This is a simplified estimate for residential spaces.
+            Enter your room's dimensions and environmental factors to get an estimate of the cooling capacity (BTU) your air conditioner needs. This is a simplified estimate for residential spaces.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -146,7 +150,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
@@ -184,7 +188,12 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                   name="insulation"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Insulation Quality</FormLabel>
+                       <div className="flex items-center gap-1.5">
+                            <FormLabel>Insulation Quality</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent>
+                                <ul className="list-disc pl-4 text-left"><li><b>Good:</b> Well-insulated walls, ceiling, and floor; double-pane windows.</li><li><b>Average:</b> Standard insulation; some leakage.</li><li><b>Poor:</b> Little to no insulation; single-pane windows.</li></ul>
+                            </TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger><SelectValue placeholder="Select insulation quality" /></SelectTrigger>
@@ -204,7 +213,10 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                   name="sunExposure"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Sun Exposure</FormLabel>
+                      <div className="flex items-center gap-1.5">
+                        <FormLabel>Sun Exposure</FormLabel>
+                        <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Choose "Sunny" if the room gets significant direct sunlight, especially in the afternoon.</p></TooltipContent></Tooltip></TooltipProvider>
+                      </div>
                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger><SelectValue placeholder="Select sun exposure" /></SelectTrigger>
@@ -227,7 +239,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                   AI Assist
               </Button>
               {btuResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

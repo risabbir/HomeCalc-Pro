@@ -12,10 +12,11 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   roomLength: z.string().min(1, 'Room length is required.'),
@@ -138,7 +139,6 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
     const a = document.createElement('a');
     a.href = url;
     a.download = `${calculator.slug}-results.txt`;
-    document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
@@ -149,7 +149,7 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Figure out how much paint you'll need. Enter your room's dimensions and the number of coats. We'll automatically subtract standard-sized areas for doors and windows.
+            Figure out exactly how much paint you'll need for your next project. Enter your room's dimensions and the number of coats you plan to apply. We'll automatically subtract standard-sized areas for doors and windows.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -157,7 +157,7 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
              <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
@@ -187,26 +187,25 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
               )}/>
             </div>
              <div className="space-y-2">
-                <FormLabel>Doors, Windows, and Ceiling</FormLabel>
-                <FormDescription>Enter details to exclude from the total area or add the ceiling.</FormDescription>
+                <h4 className="font-medium">Details &amp; Coats</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 rounded-md border p-4">
                     <FormField control={form.control} name="numDoors" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Number of Doors</FormLabel>
+                             <div className="flex items-center gap-1.5"><FormLabel># of Doors</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>We subtract 21 sq ft per door.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="numWindows" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Number of Windows</FormLabel>
+                             <div className="flex items-center gap-1.5"><FormLabel># of Windows</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>We subtract 15 sq ft per window.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 2" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="coats" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Number of Coats</FormLabel>
+                             <div className="flex items-center gap-1.5"><FormLabel>Coats of Paint</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Two coats are recommended for best coverage, especially when changing colors.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 2" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
@@ -245,7 +244,7 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
                 AI Assist
               </Button>
               {paintResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

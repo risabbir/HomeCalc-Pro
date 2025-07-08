@@ -12,9 +12,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   zones: z.string().min(1, 'Number of zones is required.'),
@@ -54,7 +55,7 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
       if (btu > 12000) costPerZone += (btu - 12000) * 0.1;
       if (seer > 20) costPerZone += (seer - 20) * 50;
       const totalCost = costPerZone * zones + 750 * zones; // +750 for labor per zone
-      setCostResult(`~$${totalCost.toFixed(0)} - $${(totalCost * 1.4).toFixed(0)}`);
+      setCostResult(`$${(totalCost * 0.8).toFixed(0)} - $${(totalCost * 1.2).toFixed(0)}`);
     } else {
       setCostResult(null);
     }
@@ -97,9 +98,10 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
       `Number of Zones: ${values.zones}\n` +
       `Total Capacity: ${values.btuRating} ${units === 'imperial' ? 'BTU/hr' : 'Watts'}\n` +
-      `SEER Rating: ${values.seerRating}\n\n`+
+      `SEER2 Rating: ${values.seerRating}\n\n`+
       `--------------------\n` +
-      `Estimated Cost: ${costResult}\n`;
+      `Estimated Installation Cost Range: ${costResult}\n`+
+      `Note: This is a rough estimate. Get multiple quotes from local HVAC professionals.`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -116,7 +118,7 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-          Estimate the total cost to purchase and install a ductless mini-split system. Costs can vary based on brand, complexity, and location. Press calculate to see the result.
+          Estimate the total cost to purchase and install a ductless mini-split system. Costs can vary based on brand, system capacity, number of indoor units (zones), and location.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -124,7 +126,7 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
@@ -133,21 +135,30 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="zones" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Number of Zones</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel># of Zones</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The number of indoor units (heads) you need. One per room is typical.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="btuRating" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Total Capacity ({units === 'imperial' ? 'BTU/hr' : 'Watts'})</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Total Capacity ({units === 'imperial' ? 'BTU/hr' : 'Watts'})</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The total cooling/heating capacity of the outdoor unit. This should match the needs of all zones combined.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 12000" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                  <FormField control={form.control} name="seerRating" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>SEER Rating</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>SEER2 Rating</FormLabel>
+                             <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The unit's efficiency rating (SEER2 is the new standard). Higher is more efficient but costs more upfront.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 20" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -161,7 +172,7 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
                 AI Assist
               </Button>
               {costResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

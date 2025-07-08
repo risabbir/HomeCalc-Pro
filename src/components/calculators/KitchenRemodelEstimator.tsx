@@ -12,23 +12,27 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   kitchenSize: z.string().min(1, 'Kitchen size is required.'),
-  quality: z.enum(['basic', 'mid-range', 'high-end']),
+  cabinets: z.enum(['stock', 'semi-custom', 'custom']),
+  countertops: z.enum(['laminate', 'solid-surface', 'granite-quartz']),
+  appliances: z.enum(['basic', 'mid-range', 'high-end']),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-const COST_PER_SQFT = {
-    'basic': 100,
-    'mid-range': 250,
-    'high-end': 450,
-}
+const COST_FACTORS = {
+    cabinets: { stock: 50, 'semi-custom': 125, custom: 250 },
+    countertops: { laminate: 20, 'solid-surface': 50, 'granite-quartz': 100 },
+    appliances: { basic: 20, 'mid-range': 50, 'high-end': 100 },
+    base: 50, // Base cost for labor, plumbing, electrical, flooring, etc. per sqft
+};
 
 export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
@@ -41,7 +45,9 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
     resolver: zodResolver(formSchema),
     defaultValues: {
       kitchenSize: '',
-      quality: 'mid-range',
+      cabinets: 'semi-custom',
+      countertops: 'granite-quartz',
+      appliances: 'mid-range',
     },
   });
 
@@ -52,9 +58,13 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
         size = size * 10.764; // sq m to sq ft
     }
     
-    if (size > 0 && values.quality) {
-      const costFactor = COST_PER_SQFT[values.quality];
-      const estimatedCost = size * costFactor;
+    if (size > 0 && values.cabinets && values.countertops && values.appliances) {
+      const costPerSqFt = COST_FACTORS.base +
+          COST_FACTORS.cabinets[values.cabinets] +
+          COST_FACTORS.countertops[values.countertops] +
+          COST_FACTORS.appliances[values.appliances];
+          
+      const estimatedCost = size * costPerSqFt;
       const minCost = estimatedCost * 0.8;
       const maxCost = estimatedCost * 1.2;
       setCostResult(`$${minCost.toLocaleString(undefined, {maximumFractionDigits: 0})} - $${maxCost.toLocaleString(undefined, {maximumFractionDigits: 0})}`);
@@ -99,9 +109,12 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
     }
     const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
       `Kitchen Size: ${values.kitchenSize} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
-      `Finish Quality: ${values.quality}\n\n`+
+      `Cabinet Quality: ${values.cabinets}\n`+
+      `Countertop Quality: ${values.countertops}\n`+
+      `Appliance Quality: ${values.appliances}\n\n`+
       `--------------------\n` +
-      `Estimated Cost: ${costResult}\n`;
+      `Estimated Cost Range: ${costResult}\n`+
+      `Note: This is a rough estimate for budget planning. Get multiple quotes from local contractors.`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -118,7 +131,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Budget for your dream kitchen. Select your kitchen's size and the desired quality of finishes to get a cost estimate. Press calculate to see the result.
+            Budget for your dream kitchen. Select your kitchen's size and the quality level for major components to get a cost estimate. This is for budget planning only and is not a formal quote.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -126,7 +139,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
@@ -134,15 +147,43 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="kitchenSize" render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="md:col-span-2">
                         <FormLabel>Kitchen Size ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 200" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
-                <FormField control={form.control} name="quality" render={({ field }) => (
+                <FormField control={form.control} name="cabinets" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Finish Quality</FormLabel>
+                      <FormLabel>Cabinet Quality</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                        <SelectContent>
+                          <SelectItem value="stock">Stock</SelectItem>
+                          <SelectItem value="semi-custom">Semi-Custom</SelectItem>
+                          <SelectItem value="custom">Custom</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                )}/>
+                 <FormField control={form.control} name="countertops" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Countertop Material</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                        <SelectContent>
+                          <SelectItem value="laminate">Laminate</SelectItem>
+                          <SelectItem value="solid-surface">Solid Surface</SelectItem>
+                          <SelectItem value="granite-quartz">Granite / Quartz</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                )}/>
+                 <FormField control={form.control} name="appliances" render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Appliance Tier</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                         <SelectContent>
@@ -163,7 +204,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
                 AI Assist
               </Button>
               {costResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

@@ -12,8 +12,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   costPerKwh: z.string().min(1, 'Cost per kWh is required.'),
@@ -132,7 +133,7 @@ export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calcu
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Compare two appliances to see the potential savings. For example, compare your old incandescent light bulbs to new LEDs, or an old refrigerator to a new Energy Star model. Check the appliance label for wattage.
+            Compare two appliances to see the potential savings from an energy-efficient upgrade. For example, compare your old incandescent light bulbs to new LEDs, or an old refrigerator to a new Energy Star model.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -141,7 +142,10 @@ export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calcu
             <div className='text-center'>
                 <FormField control={form.control} name="costPerKwh" render={({ field }) => (
                     <FormItem className="max-w-xs mx-auto">
-                        <FormLabel>Your Electricity Cost per kWh ($)</FormLabel>
+                        <div className="flex items-center justify-center gap-1.5">
+                            <FormLabel>Your Electricity Cost per kWh ($)</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Found on your electricity bill, this is your rate per kilowatt-hour. The US average is about $0.17.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" step="0.01" placeholder="e.g., 0.17" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -149,36 +153,36 @@ export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calcu
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                <div className='space-y-4'>
+                <div className='space-y-4 p-4 rounded-lg border'>
                     <h3 className='text-lg font-semibold text-center'>Current Appliance</h3>
                     <FormField control={form.control} name="current_wattage" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Appliance Wattage (W)</FormLabel>
-                            <FormControl><Input type="number" placeholder="e.g., 1500" {...field} /></FormControl>
+                            <div className="flex items-center gap-1.5"><FormLabel>Appliance Wattage (W)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Check the label on the appliance. For example, an old refrigerator might use 700 watts.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                            <FormControl><Input type="number" placeholder="e.g., 700" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="current_hours" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Hours Used Per Day</FormLabel>
-                            <FormControl><Input type="number" placeholder="e.g., 5" {...field} /></FormControl>
+                            <div className="flex items-center gap-1.5"><FormLabel>Hours Used Per Day</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>A refrigerator runs about 8 hours a day. A light bulb might run for 5.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                            <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                 </div>
-                 <div className='space-y-4'>
+                 <div className='space-y-4 p-4 rounded-lg border'>
                     <h3 className='text-lg font-semibold text-center'>New Appliance</h3>
                     <FormField control={form.control} name="new_wattage" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Appliance Wattage (W)</FormLabel>
+                            <div className="flex items-center gap-1.5"><FormLabel>Appliance Wattage (W)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Check the label on the new appliance. An Energy Star refrigerator might use 200 watts.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 200" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="new_hours" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Hours Used Per Day</FormLabel>
-                            <FormControl><Input type="number" placeholder="e.g., 5" {...field} /></FormControl>
+                            <div className="flex items-center gap-1.5"><FormLabel>Hours Used Per Day</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Usage hours will likely be the same for the new appliance.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                            <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
@@ -192,7 +196,7 @@ export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calcu
                 AI Assist
               </Button>
               {savingsResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

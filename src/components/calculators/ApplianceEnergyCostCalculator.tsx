@@ -12,8 +12,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   wattage: z.string().min(1, 'Wattage is required.'),
@@ -34,7 +35,7 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
     defaultValues: {
       wattage: '',
       hoursPerDay: '',
-      costPerKwh: '0.15', // Average US cost
+      costPerKwh: '0.17', // Average US cost as of 2024
     },
   });
 
@@ -53,7 +54,11 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
   };
 
   const handleClear = () => {
-    form.reset();
+    form.reset({
+      wattage: '',
+      hoursPerDay: '',
+      costPerKwh: '0.17',
+    });
     setCostResult(null);
     setAiHint(null);
   };
@@ -114,7 +119,7 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Calculate the annual energy cost of an appliance. Enter the appliance's wattage (check the label), its daily usage, and your local electricity rate. The average cost per kWh in the US is pre-filled, but you can find a more accurate rate on your utility bill. Press calculate to see the result.
+            Calculate the annual energy cost of any electrical appliance. Find the appliance's wattage on its label, estimate its daily usage, and enter your local electricity rate (found on your utility bill) for the most accurate results.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -123,22 +128,46 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="wattage" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Appliance Wattage (W)</FormLabel>
+                        <div className="flex items-center gap-1.5">
+                            <FormLabel>Appliance Wattage (W)</FormLabel>
+                            <TooltipProvider delayDuration={100}>
+                                <Tooltip>
+                                <TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger>
+                                <TooltipContent><p>Check the label on the back or bottom of the appliance. If you see Amps and Volts, multiply them together to get Watts.</p></TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 1500" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="hoursPerDay" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Hours Used Per Day</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Hours Used Per Day</FormLabel>
+                            <TooltipProvider delayDuration={100}>
+                                <Tooltip>
+                                <TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger>
+                                <TooltipContent><p>Enter the average number of hours the appliance runs in a 24-hour period.</p></TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 2" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="costPerKwh" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Cost per kWh ($)</FormLabel>
-                        <FormControl><Input type="number" step="0.01" placeholder="e.g., 0.15" {...field} /></FormControl>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Cost per kWh ($)</FormLabel>
+                            <TooltipProvider delayDuration={100}>
+                                <Tooltip>
+                                <TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger>
+                                <TooltipContent><p>Found on your electricity bill, this is your rate per kilowatt-hour. The US average is about $0.17.</p></TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        </div>
+                        <FormControl><Input type="number" step="0.01" placeholder="e.g., 0.17" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
@@ -151,7 +180,7 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
                 Need a hint? Use AI Assist
               </Button>
               {costResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

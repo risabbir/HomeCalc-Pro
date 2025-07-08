@@ -12,15 +12,17 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   roomPerimeter: z.string().min(1, 'Room perimeter is required.'),
   wallHeight: z.string().min(1, 'Wall height is required.'),
   rollWidth: z.string().min(1, 'Roll width is required.'),
   rollLength: z.string().min(1, 'Roll length is required.'),
+  patternRepeat: z.string().optional(),
   wasteFactor: z.string().min(1, 'Waste factor is required.'),
 });
 
@@ -40,6 +42,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
       wallHeight: '8',
       rollWidth: '20.5',
       rollLength: '33',
+      patternRepeat: '0',
       wasteFactor: '15',
     },
   });
@@ -49,6 +52,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
     let height = parseFloat(values.wallHeight);
     let rWidth = parseFloat(values.rollWidth);
     let rLength = parseFloat(values.rollLength);
+    let pRepeat = parseFloat(values.patternRepeat || '0');
     const waste = parseFloat(values.wasteFactor);
 
     if (units === 'metric') {
@@ -56,14 +60,22 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
         height = height * 3.28084; // m to ft
         rWidth = rWidth / 2.54; // cm to in
         rLength = rLength * 3.28084; // m to ft
+        pRepeat = pRepeat / 2.54; // cm to in
     }
 
     if (perimeter > 0 && height > 0 && rWidth > 0 && rLength > 0 && waste >= 0) {
-      const wallArea = perimeter * height;
-      const rollWidthInFt = rWidth / 12; // in to ft
-      const rollArea = rollWidthInFt * rLength;
-      const rollsNeeded = Math.ceil(wallArea / rollArea * (1 + waste / 100)); // Add waste
-      setWallpaperResult(`${rollsNeeded} rolls`);
+      const perimeterInInches = perimeter * 12;
+      const stripsNeeded = Math.ceil(perimeterInInches / rWidth);
+      
+      const heightInInches = height * 12;
+      const effectiveHeight = pRepeat > 0 ? (Math.ceil(heightInInches / pRepeat) * pRepeat) : heightInInches;
+
+      const stripsPerRoll = Math.floor((rLength * 12) / effectiveHeight);
+      
+      const rollsNeededRaw = Math.ceil(stripsNeeded / stripsPerRoll);
+      const rollsNeededWithWaste = Math.ceil(rollsNeededRaw * (1 + waste / 100));
+
+      setWallpaperResult(`${rollsNeededWithWaste} rolls`);
     } else {
       setWallpaperResult(null);
     }
@@ -108,9 +120,10 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
       `Wall Height: ${values.wallHeight} ${units === 'imperial' ? 'ft' : 'm'}\n` +
       `Roll Width: ${values.rollWidth} ${units === 'imperial' ? 'in' : 'cm'}\n` +
       `Roll Length: ${values.rollLength} ${units === 'imperial' ? 'ft' : 'm'}\n`+
+      `Pattern Repeat: ${values.patternRepeat || '0'} ${units === 'imperial' ? 'in' : 'cm'}\n`+
       `Waste Factor: ${values.wasteFactor}%\n\n`+
       `--------------------\n` +
-      `Rolls Needed: ${wallpaperResult}\n`;
+      `Estimated Rolls Needed: ${wallpaperResult}\n`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -127,7 +140,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-          Buy the right amount of wallpaper. Calculate the total wall area (perimeter times height) and use your wallpaper roll's dimensions to find how many rolls you need. Remember a higher waste factor for patterns with large repeats.
+          Buy the right amount of wallpaper. Calculate the total wall area and use your wallpaper roll's dimensions to find how many rolls you need. Remember to account for pattern repeat and a waste factor for cuts.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -135,7 +148,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
@@ -144,7 +157,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="roomPerimeter" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Room Perimeter ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Room Perimeter ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The total length of all walls to be papered. (Length1 + Width1 + Length2...).</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 40" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -170,9 +183,16 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
                         <FormMessage />
                     </FormItem>
                 )}/>
+                 <FormField control={form.control} name="patternRepeat" render={({ field }) => (
+                    <FormItem>
+                        <div className="flex items-center gap-1.5"><FormLabel>Pattern Repeat ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Found on the wallpaper label. The vertical distance before the pattern repeats. Enter 0 for solid colors.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <FormControl><Input type="number" placeholder="e.g., 18" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
                  <FormField control={form.control} name="wasteFactor" render={({ field }) => (
-                    <FormItem className="md:col-span-2">
-                        <FormLabel>Waste Factor (%)</FormLabel>
+                    <FormItem>
+                        <div className="flex items-center gap-1.5"><FormLabel>Waste Factor (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Accounts for mistakes and cuts around windows/doors. 15% is standard.</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 15" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -186,7 +206,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
                 AI Assist
               </Button>
               {wallpaperResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

@@ -12,10 +12,11 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   deckWidth: z.string().min(1, 'Deck width is required.'),
@@ -145,7 +146,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-          Plan your new deck project by calculating the number of deck boards and joists you'll need based on your deck's dimensions and structure. Press calculate to see the result.
+          Plan your new deck project by calculating the number of deck boards and framing joists you'll need based on your deck's dimensions and structure.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -153,7 +154,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
@@ -162,25 +163,22 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="deckWidth" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Deck Width ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Deck Width ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The dimension perpendicular to the direction your deck boards will run.</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 12" {...field} /></FormControl>
-                        <FormDescription>Dimension perpendicular to deck boards.</FormDescription>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="deckLength" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Deck Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Deck Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The dimension parallel to the direction your deck boards will run.</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 16" {...field} /></FormControl>
-                        <FormDescription>Dimension parallel to deck boards.</FormDescription>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="boardWidth" render={({ field }) => (
                      <FormItem>
-                        <FormLabel>Deck Board Width ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Deck Board Width ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The actual measured width of a single deck board. (e.g., a "1x6" board is actually 5.5 inches wide).</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 5.5" {...field} /></FormControl>
-                        <FormDescription>Actual width of the board (e.g., 5.5" for a 1x6).</FormDescription>
                         <FormMessage />
                     </FormItem>
                 )}/>
@@ -196,13 +194,12 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
                                 <SelectItem value={units === 'imperial' ? '20' : '6'}>{units === 'imperial' ? '20 ft' : '6 m'}</SelectItem>
                             </SelectContent>
                       </Select>
-                      <FormDescription>Length of boards you plan to buy.</FormDescription>
                       <FormMessage />
                     </FormItem>
                 )}/>
                  <FormField control={form.control} name="joistSpacing" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Joist Spacing ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Joist Spacing</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The distance from the center of one joist to the center of the next. 16" (40cm) is standard.</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                             <SelectContent>
@@ -216,7 +213,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
                 )}/>
                 <FormField control={form.control} name="wasteFactor" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Waste Factor (%)</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Waste Factor (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Accounts for cuts, mistakes, and unusable board sections. 10-15% is standard.</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -230,7 +227,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
                 AI Assist
               </Button>
               {deckingResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

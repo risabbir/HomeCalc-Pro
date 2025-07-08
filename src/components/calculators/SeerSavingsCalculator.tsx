@@ -12,10 +12,11 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   oldSeer: z.string().min(1, 'Old SEER rating is required.'),
@@ -51,7 +52,7 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
       coolingBtu: '36000',
       hoursPerDay: '8',
       daysPerYear: '120',
-      costPerKwh: '0.15',
+      costPerKwh: '0.17',
       unitCost: '',
     },
   });
@@ -166,7 +167,7 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            See how much you could save by upgrading to a more energy-efficient AC unit. A higher SEER (Seasonal Energy Efficiency Ratio) rating means lower energy bills. You can find the SEER rating on your current unit's yellow EnergyGuide label. Note: SEER2 ratings are the new 2023+ standard. For this estimation, you can use a SEER2 value directly in the SEER fields. Press calculate to see the result.
+            See how much you could save by upgrading to a more energy-efficient AC unit. A higher SEER2 (Seasonal Energy Efficiency Ratio 2) rating means lower energy bills. You can find the rating on your unit's yellow EnergyGuide label.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -175,29 +176,29 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="oldSeer" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Old Unit SEER Rating</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Old Unit SEER/SEER2</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Enter the SEER or SEER2 rating of your current AC unit.</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="newSeer" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>New Unit SEER Rating</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>New Unit SEER/SEER2</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Enter the SEER or SEER2 rating of the new unit you're considering.</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 16" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="coolingBtu" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Cooling Capacity (BTU/hr)</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Cooling Capacity (BTU/hr)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The cooling power of your AC unit. A 3-ton unit is 36,000 BTU/hr.</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 36000" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="costPerKwh" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Cost per kWh ($)</FormLabel>
-                        <FormControl><Input type="number" step="0.01" placeholder="e.g., 0.15" {...field} /></FormControl>
+                        <div className="flex items-center gap-1.5"><FormLabel>Cost per kWh ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Found on your electricity bill. The US average is about $0.17.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <FormControl><Input type="number" step="0.01" placeholder="e.g., 0.17" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
@@ -217,7 +218,7 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
                 )}/>
                 <FormField control={form.control} name="unitCost" render={({ field }) => (
                     <FormItem className="md:col-span-3">
-                        <FormLabel>New Unit Cost ($) (Optional)</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>New Unit Installed Cost ($) (Optional)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Enter the total cost of the new unit and installation to calculate the payback period.</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="Enter cost to calculate payback period" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -231,7 +232,7 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
                 AI Assist
               </Button>
               {savingsResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

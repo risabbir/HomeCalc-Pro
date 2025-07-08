@@ -12,8 +12,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   airFlow: z.string().min(1, 'Air Flow (CFM) is required.'),
@@ -41,8 +42,8 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
     const friction = parseFloat(values.frictionLoss);
 
     if (cfm > 0 && friction > 0) {
-      // Simplified calculation for demonstration (Ductulator formula approximation)
-      const diameter = Math.pow((4 * cfm) / (Math.PI * 100 * friction), 1/2.5) * 12;
+      // Simplified Ductulator formula approximation for round metal ducts.
+      const diameter = 1.3 * Math.pow(Math.pow(cfm, 0.9) / friction, 0.2);
       setDuctSizeResult(`Recommended: ${diameter.toFixed(1)}-inch round duct`);
     } else {
       setDuctSizeResult(null);
@@ -90,7 +91,8 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
       `Air Flow: ${values.airFlow} CFM\n` +
       `Friction Loss: ${values.frictionLoss} in. w.g./100 ft\n\n`+
       `--------------------\n` +
-      `Result: ${ductSizeResult}\n`;
+      `Result: ${ductSizeResult}\n\n` +
+      `Disclaimer: This is a simplified estimate for round metal ducts and is not a substitute for professional HVAC design.`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -107,23 +109,36 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Ensure efficient airflow in your HVAC system by calculating the correct duct size. This requires technical inputs like Air Flow (CFM) and Friction Loss Rate. This calculator uses Imperial units and is intended for estimation.
+            Ensure efficient airflow in your HVAC system by calculating the correct duct size. This is a simplified tool and requires technical inputs like Air Flow (CFM) and Friction Loss Rate, which are typically determined by a full HVAC load calculation (Manual J).
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>For Professional Use</AlertTitle>
+                <AlertDescription>
+                 This calculator is intended for HVAC professionals or knowledgeable homeowners. Incorrect duct sizing can lead to poor performance and inefficiency.
+                </AlertDescription>
+            </Alert>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="airFlow" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Air Flow (CFM)</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Air Flow (CFM)</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Cubic Feet per Minute. This is the volume of air the duct needs to move, typically 400 CFM per ton of AC.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 800" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="frictionLoss" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Friction Loss (in. w.g./100 ft)</FormLabel>
+                        <div className="flex items-center gap-1.5">
+                            <FormLabel>Friction Loss (in. w.g./100 ft)</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The resistance to airflow. 0.1 in. w.g. is a common value for residential main trunk lines.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" step="0.01" placeholder="e.g., 0.1" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -137,7 +152,7 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
                 AI Assist
               </Button>
               {ductSizeResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

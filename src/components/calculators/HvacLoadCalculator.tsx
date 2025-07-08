@@ -12,10 +12,12 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Link from 'next/link';
 
 const formSchema = z.object({
   totalArea: z.string().min(1, 'Total area is required.'),
@@ -26,6 +28,11 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+const CLIMATE_FACTORS = {
+    cooling: { '1': 40, '2': 35, '3': 30, '4': 25, '5': 20, '6': 20, '7': 15, '8': 15 },
+    heating: { '1': 15, '2': 20, '3': 25, '4': 30, '5': 40, '6': 45, '7': 50, '8': 55 },
+}
 
 export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
   const [loading, setLoading] = useState(false);
@@ -48,7 +55,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
   const onSubmit = (values: FormValues) => {
     let area = parseFloat(values.totalArea);
     let windows = parseFloat(values.windowsArea);
-    const climateZone = parseFloat(values.climateZone);
+    const climateZone = values.climateZone as keyof typeof CLIMATE_FACTORS.cooling;
     const occupants = parseInt(values.numberOfOccupants);
 
     if (units === 'metric') {
@@ -56,17 +63,16 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
         windows = windows * 10.764; // sq m to sq ft
     }
 
-    if (area > 0 && windows >= 0 && climateZone >= 1 && climateZone <= 8 && occupants > 0) {
-      const climateFactor = 30 - (climateZone * 2);
-      
+    if (area > 0 && windows >= 0 && climateZone && occupants > 0) {
       let insulationMultiplier = 1;
       if (values.insulationQuality === 'poor') insulationMultiplier = 1.2;
       if (values.insulationQuality === 'good') insulationMultiplier = 0.8;
       
-      const occupantLoad = occupants * 400;
+      const occupantLoad = occupants * 400; // BTUs per person
+      const windowLoad = windows * 45; // BTUs per sq ft of window (average)
       
-      const coolingLoad = ((area * climateFactor) + (windows * 100)) * insulationMultiplier + occupantLoad;
-      const heatingLoad = (area * (50 - climateFactor)) * insulationMultiplier;
+      const coolingLoad = ((area * CLIMATE_FACTORS.cooling[climateZone]) + windowLoad) * insulationMultiplier + occupantLoad;
+      const heatingLoad = (area * CLIMATE_FACTORS.heating[climateZone]) * insulationMultiplier;
       
       if (units === 'imperial') {
         const coolingTons = (coolingLoad / 12000).toFixed(1);
@@ -123,7 +129,8 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
       `Number of Occupants: ${values.numberOfOccupants}\n` +
       `Insulation Quality: ${values.insulationQuality}\n\n`+
       `--------------------\n` +
-      `Estimated Load: ${loadResult}\n`;
+      `Estimated Load: ${loadResult}\n` +
+      `Disclaimer: This is a simplified estimate and not a substitute for a professional Manual J calculation.`;
     
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -140,15 +147,22 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            A simplified "Manual J" calculation to determine the heating and cooling load for your entire home, essential for sizing a new HVAC system. Press calculate to see the result.
+            A simplified "Manual J" calculation to determine the heating and cooling load for your entire home. This is essential for correctly sizing a new central HVAC system.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <Alert variant="destructive">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>For Estimation Only</AlertTitle>
+                <AlertDescription>
+                This tool provides a simplified estimate. A professional Manual J calculation considers many more factors like window orientation, air leakage, and local design temperatures.
+                </AlertDescription>
+            </Alert>
             <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
@@ -157,23 +171,36 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="totalArea" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Total Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
+                        <FormLabel>Total Conditioned Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 2000" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                  <FormField control={form.control} name="windowsArea" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Windows Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Total Window Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Sum the area (width x height) of all windows.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 150" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="climateZone" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Climate Zone (US)</FormLabel>
-                        <FormControl><Input type="number" placeholder="e.g., 5" {...field} /></FormControl>
-                        <FormMessage />
+                        <div className="flex items-center gap-1.5">
+                            <FormLabel>U.S. Climate Zone</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Determines your recommended R-value. See our <Link href="/resources/climate-zone-map" className="text-primary underline">Climate Zone Map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                        <SelectContent>
+                          {Object.keys(CLIMATE_FACTORS.cooling).map(zone => (
+                             <SelectItem key={zone} value={zone}>Zone {zone}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="numberOfOccupants" render={({ field }) => (
@@ -188,10 +215,15 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
                   name="insulationQuality"
                   render={({ field }) => (
                     <FormItem className="md:col-span-2">
-                      <FormLabel>Insulation Quality</FormLabel>
+                       <div className="flex items-center gap-1.5">
+                            <FormLabel>Overall Insulation Quality</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent>
+                                <ul className="list-disc pl-4 text-left"><li><b>Good:</b> Meets or exceeds modern code; well-sealed.</li><li><b>Average:</b> Older construction, but reasonably insulated.</li><li><b>Poor:</b> Little to no insulation, drafty.</li></ul>
+                            </TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger><SelectValue placeholder="Select insulation quality" /></SelectTrigger>
+                          <SelectTrigger><SelectValue/></SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="good">Good</SelectItem>
@@ -212,7 +244,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
                 AI Assist
               </Button>
               {loadResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

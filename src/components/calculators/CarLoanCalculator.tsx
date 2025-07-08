@@ -12,8 +12,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   vehiclePrice: z.string().min(1, 'Vehicle price is required.'),
@@ -157,7 +158,7 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-          Estimate your monthly car payment and see the total cost of your loan. Enter the vehicle's price and your loan details. Including a down payment or trade-in value can lower your monthly payment.
+          Estimate your monthly car payment and see the total cost of your loan. Enter the vehicle's price and your loan details. Including a down payment, trade-in, and fees will provide the most accurate result.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -166,35 +167,35 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField control={form.control} name="vehiclePrice" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Vehicle Price ($)</FormLabel>
+                    <div className="flex items-center gap-1.5"><FormLabel>Vehicle Price ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The sticker price or negotiated price of the car.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" placeholder="e.g., 35000" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
                <FormField control={form.control} name="interestRate" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Annual Interest Rate (%)</FormLabel>
+                    <div className="flex items-center gap-1.5"><FormLabel>Annual Interest Rate (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The annual percentage rate (APR) on your loan offer.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" step="0.01" placeholder="e.g., 7.5" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
                <FormField control={form.control} name="downPayment" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Down Payment ($)</FormLabel>
+                    <div className="flex items-center gap-1.5"><FormLabel>Down Payment ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The amount of cash you are paying upfront.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" placeholder="e.g., 5000" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
               <FormField control={form.control} name="tradeInValue" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Trade-in Value ($)</FormLabel>
+                    <div className="flex items-center gap-1.5"><FormLabel>Trade-in Value ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The value the dealership is giving you for your old car.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" placeholder="e.g., 2000" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
               <FormField control={form.control} name="loanTerm" render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <FormLabel>Loan Term (Years)</FormLabel>
+                    <div className="flex items-center gap-1.5"><FormLabel>Loan Term (Years)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The length of the loan in years. Common terms are 3, 4, 5, or 6 years.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" placeholder="e.g., 5" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -205,16 +206,15 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 rounded-md border p-4">
                     <FormField control={form.control} name="salesTaxRate" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Sales Tax Rate (%)</FormLabel>
+                            <div className="flex items-center gap-1.5"><FormLabel>Sales Tax Rate (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Your state or local sales tax rate. Enter 6.5 for 6.5%.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 6.25" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="otherFees" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Other Fees ($)</FormLabel>
+                            <div className="flex items-center gap-1.5"><FormLabel>Other Fees ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Include dealer documentation fees, title, and registration fees.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 500" {...field} /></FormControl>
-                            <FormDescription>Title, registration, etc.</FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}/>
@@ -228,7 +228,7 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
                 AI Assist
               </Button>
               {result && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

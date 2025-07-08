@@ -12,9 +12,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   gardenArea: z.string().min(1, 'Garden area is required.'),
@@ -51,11 +52,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
 
     if (units === 'metric') {
         area = area * 10.764; // sq m to sq ft
-        // Convert kg/100 sq m to lbs/1000 sq ft
-        // 1 kg = 2.20462 lbs. 100 sq m = 1076.4 sq ft.
-        // (X kg / 100 sq m) * (2.20462 lbs/kg) * (1076.4 sq ft / 100 sq m) * (1000/1000)
-        // (X kg / 100 sq m) * (2.20462 lbs/kg) * (10.764) ~= X * 22.5
-        appRate = appRate * 0.2048; // kg/sq m to lbs/sq ft, then scale to rate
+        appRate = appRate * 0.2048; // kg/100 sq m to lbs/1000 sq ft
     }
 
     if (area > 0 && n > 0 && values.phosphorusRatio && values.potassiumRatio) {
@@ -120,7 +117,6 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
     const a = document.createElement('a');
     a.href = url;
     a.download = `${calculator.slug}-results.txt`;
-    document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
@@ -131,7 +127,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Give your garden the right amount of nutrients. Enter your garden's area, your desired application rate, and the N-P-K (Nitrogen-Phosphorus-Potassium) ratio from the fertilizer bag to calculate how much to apply.
+            Give your garden the right amount of nutrients without over-fertilizing. Use recommendations from a soil test for the most accurate application rate.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -139,7 +135,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex justify-start mb-4">
                 <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList>
+                    <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="imperial">Imperial</TabsTrigger>
                         <TabsTrigger value="metric">Metric</TabsTrigger>
                     </TabsList>
@@ -148,23 +144,28 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="gardenArea" render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Garden Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
-                    <FormControl><Input type="number" placeholder="e.g., 500" {...field} /></FormControl>
-                    <FormMessage />
+                        <FormLabel>Garden Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 500" {...field} /></FormControl>
+                        <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="applicationRate" render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Application Rate</FormLabel>
-                    <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
-                     <FormDescription>{units === 'imperial' ? 'Lbs of Nitrogen per 1000 sq ft.' : 'Kg of N per 100 sq m.'}</FormDescription>
-                    <FormMessage />
+                        <div className="flex items-center gap-1.5">
+                            <FormLabel>Application Rate</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The amount of actual nitrogen to apply. A soil test will give you a precise recommendation. 1 lb/1000 sq ft is a common rate for lawns.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
+                        <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
+                        <FormDescription>{units === 'imperial' ? 'Lbs of Nitrogen per 1000 sq ft.' : 'Kg of N per 100 sq m.'}</FormDescription>
+                        <FormMessage />
                     </FormItem>
                 )}/>
             </div>
             <div>
-              <FormLabel>Fertilizer Ratio (N-P-K)</FormLabel>
-              <FormDescription>Enter the N-P-K ratio from the fertilizer bag.</FormDescription>
+                 <div className="flex items-center gap-1.5">
+                    <FormLabel>Fertilizer Ratio (N-P-K)</FormLabel>
+                    <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The three numbers on the fertilizer bag, representing Nitrogen-Phosphorus-Potassium content.</p></TooltipContent></Tooltip></TooltipProvider>
+                </div>
               <div className="grid grid-cols-3 gap-4 mt-2">
                 <FormField control={form.control} name="nitrogenRatio" render={({ field }) => (<FormItem><FormControl><Input type="number" placeholder="N" {...field} /></FormControl><FormMessage/></FormItem>)}/>
                 <FormField control={form.control} name="phosphorusRatio" render={({ field }) => (<FormItem><FormControl><Input type="number" placeholder="P" {...field} /></FormControl><FormMessage/></FormItem>)}/>
@@ -179,7 +180,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
                 AI Assist
               </Button>
               {fertilizerResult && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

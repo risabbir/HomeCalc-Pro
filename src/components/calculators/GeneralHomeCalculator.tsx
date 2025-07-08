@@ -12,8 +12,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getAiAssistance } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Download, Loader2, Wand2, X } from 'lucide-react';
+import { Download, Loader2, Wand2, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const formSchema = z.object({
   loanAmount: z.string().min(1, 'Loan amount is required.'),
@@ -156,7 +157,7 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Estimate your monthly mortgage payment. For a more accurate result, include optional expenses like property taxes, home insurance, and private mortgage insurance (PMI).
+            Estimate your monthly mortgage payment (PITI: Principal, Interest, Taxes, and Insurance). For the most accurate result, include optional expenses like property taxes, home insurance, and private mortgage insurance (PMI).
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -165,21 +166,21 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField control={form.control} name="loanAmount" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Loan Amount ($)</FormLabel>
+                     <div className="flex items-center gap-1.5"><FormLabel>Loan Amount ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The total amount borrowed (home price minus down payment).</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" placeholder="e.g., 300000" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
                <FormField control={form.control} name="interestRate" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Annual Interest Rate (%)</FormLabel>
+                    <div className="flex items-center gap-1.5"><FormLabel>Annual Interest Rate (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The annual percentage rate (APR) from your lender.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" step="0.01" placeholder="e.g., 6.5" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
                <FormField control={form.control} name="loanTerm" render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <FormLabel>Loan Term (Years)</FormLabel>
+                    <div className="flex items-center gap-1.5"><FormLabel>Loan Term (Years)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The length of the mortgage. 15 and 30 years are most common.</p></TooltipContent></Tooltip></TooltipProvider></div>
                     <FormControl><Input type="number" placeholder="e.g., 30" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -190,21 +191,21 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 rounded-md border p-4">
                     <FormField control={form.control} name="propertyTax" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Property Tax ($/yr)</FormLabel>
+                           <div className="flex items-center gap-1.5"><FormLabel>Property Tax ($/yr)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Your estimated annual property tax bill. This is often paid into an escrow account monthly.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 4000" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="homeInsurance" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Insurance ($/yr)</FormLabel>
+                            <div className="flex items-center gap-1.5"><FormLabel>Insurance ($/yr)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Your annual homeowner's insurance premium.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 1500" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="pmi" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>PMI ($/mo)</FormLabel>
+                            <div className="flex items-center gap-1.5"><FormLabel>PMI ($/mo)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Private Mortgage Insurance. Typically required if your down payment is less than 20%.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 100" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
@@ -219,7 +220,7 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
                 AI Assist
               </Button>
               {paymentBreakdown && (
-                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
+                <Button type="button" variant="destructive" onClick={handleClear}>
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>
