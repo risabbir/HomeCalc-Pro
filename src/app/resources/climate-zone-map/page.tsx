@@ -46,12 +46,12 @@ export default function ClimateZoneMapPage() {
                 <main className="lg:col-span-2 space-y-12">
                     <Card className="overflow-hidden border-2">
                              <CardContent className="p-0 bg-white">
-                                <Image 
-                                    src="https://placehold.co/982x759.png"
+                                <Image
+                                    src="https://placehold.co/732x554.png"
                                     data-ai-hint="climate zone map"
                                     alt="U.S. IECC Climate Zone Map showing 8 distinct climate zones across the United States."
-                                    width={982}
-                                    height={759}
+                                    width={732}
+                                    height={554}
                                     className="w-full h-auto object-contain bg-muted"
                                     priority
                                 />
