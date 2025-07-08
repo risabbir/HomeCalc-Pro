@@ -161,7 +161,7 @@ export function HeatPumpCostCalculator({ calculator }: { calculator: Omit<Calcul
                 AI Assist
               </Button>
               {costResult && (
-                <Button type="button" variant="ghost" onClick={handleClear}>
+                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>

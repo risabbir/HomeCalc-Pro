@@ -249,7 +249,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                 AI Assist
               </Button>
               {(result || isSufficient) && (
-                <Button type="button" variant="ghost" onClick={handleClear}>
+                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
                     <X className="mr-2 h-4 w-4" />
                     Clear
                 </Button>

@@ -227,7 +227,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                   AI Assist
               </Button>
               {btuResult && (
-                <Button type="button" variant="ghost" onClick={handleClear}>
+                <Button type="button" variant="ghost" onClick={handleClear} className="text-destructive hover:text-destructive">
                   <X className="mr-2 h-4 w-4" />
                   Clear
                 </Button>
