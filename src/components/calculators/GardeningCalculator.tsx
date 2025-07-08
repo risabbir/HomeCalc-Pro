@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -177,10 +178,12 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
               </Button>
-               <Button type="button" variant="ghost" onClick={handleClear}>
-                <X className="mr-2 h-4 w-4" />
-                Clear
-              </Button>
+              {fertilizerResult && (
+                <Button type="button" variant="ghost" onClick={handleClear}>
+                  <X className="mr-2 h-4 w-4" />
+                  Clear
+                </Button>
+              )}
             </div>
           </form>
         </Form>

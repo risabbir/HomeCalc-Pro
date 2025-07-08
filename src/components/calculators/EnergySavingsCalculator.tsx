@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -190,10 +191,12 @@ export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calcu
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
                 AI Assist
               </Button>
-               <Button type="button" variant="ghost" onClick={handleClear}>
-                <X className="mr-2 h-4 w-4" />
-                Clear
-              </Button>
+              {savingsResult && (
+                <Button type="button" variant="ghost" onClick={handleClear}>
+                  <X className="mr-2 h-4 w-4" />
+                  Clear
+                </Button>
+              )}
             </div>
           </form>
         </Form>
