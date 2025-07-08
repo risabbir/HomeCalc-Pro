@@ -46,12 +46,12 @@ export default function ClimateZoneMapPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12 lg:gap-y-0">
                 <main className="lg:col-span-2 space-y-12">
                     <Card className="overflow-hidden border-2">
-                             <CardContent className="p-0 bg-white">
+                             <CardContent className="p-0">
                                 <Image
-                                    src="https://www.researchgate.net/publication/344063185/figure/fig1/AS:11431281172911558@1688703914687/Map-of-the-United-States-with-selected-cities-identified-Color-shading-indicates-US.png"
-                                    alt="A map of the United States showing the 8 building climate zones as defined by the U.S. Department of Energy."
-                                    width={850}
-                                    height={531}
+                                    src="https://www.energy.gov/sites/default/files/2023-11/better-buildings-climate-map-november-2023.png"
+                                    alt="A map of the United States showing the updated building climate zones as defined by the U.S. Department of Energy."
+                                    width={1920}
+                                    height={1080}
                                     className="w-full h-auto object-contain bg-white"
                                     priority
                                 />
