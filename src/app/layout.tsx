@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
+import { Chatbot } from '@/components/chatbot/Chatbot';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -39,6 +40,7 @@ export default function RootLayout({
             <Footer />
           </div>
           <Toaster />
+          <Chatbot />
         </ThemeProvider>
       </body>
     </html>
