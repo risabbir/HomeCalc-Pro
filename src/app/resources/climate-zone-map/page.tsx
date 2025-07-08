@@ -40,7 +40,7 @@ export default function ClimateZoneMapPage() {
                 <div className="text-center mb-12">
                     <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Understanding U.S. Climate Zones</h1>
                     <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                        The U.S. Department of Energy divides the country into eight distinct climate zones. Knowing your zone is the single most important step for energy-efficient home projects.
+                        The U.S. Department of Energy (DOE), following the International Energy Conservation Code (IECC), divides the country into eight climate zones. Identifying your specific zone is the critical first step for any energy-efficient home project.
                     </p>
                 </div>
 
@@ -69,7 +69,7 @@ export default function ClimateZoneMapPage() {
                             </div>
                             <div>
                                 <h3 className="font-semibold">Accurate HVAC Sizing</h3>
-                                <p className="text-muted-foreground">Your zone dictates how powerful your heating and cooling system needs to be. A system that's too small won't keep you comfortable, while one that's too large will cycle inefficiently, waste energy, and increase your bills. Our calculators use your zone to recommend the right size.</p>
+                                <p className="text-muted-foreground">Your zone determines the precise heating and cooling capacity (size) your HVAC system needs. An undersized system won't keep up on extreme days, while an oversized system will cycle inefficiently, fail to dehumidify properly, and increase energy bills.</p>
                             </div>
                         </div>
                         <div className="flex items-start gap-4">
@@ -78,7 +78,7 @@ export default function ClimateZoneMapPage() {
                             </div>
                             <div>
                                 <h3 className="font-semibold">Proper Insulation (R-Value)</h3>
-                                <p className="text-muted-foreground">Colder zones require much higher R-value insulation in walls, attics, and floors to prevent heat loss. In hot climates, insulation is key to keeping cool air in and reducing AC costs. Using the wrong R-value leads to significant energy waste.</p>
+                                <p className="text-muted-foreground">Colder zones require much higher insulation R-values in walls, attics, and floors to prevent heat loss. In hot climates, insulation is just as crucial for keeping cool, conditioned air inside. Using the wrong R-value leads to significant energy waste and discomfort.</p>
                             </div>
                         </div>
                         <div className="flex items-start gap-4">
@@ -87,7 +87,7 @@ export default function ClimateZoneMapPage() {
                             </div>
                             <div>
                                 <h3 className="font-semibold">Informed Building Material Choices</h3>
-                                <p className="text-muted-foreground">Your choice of windows (e.g., double vs. triple-pane), siding, and roofing should be influenced by your climate zone to maximize energy efficiency and long-term durability against the elements.</p>
+                                <p className="text-muted-foreground">Your choice of windows (e.g., U-factor and SHGC ratings), siding, and roofing should be directly influenced by your climate zone to maximize energy efficiency and long-term durability against the elements.</p>
                             </div>
                         </div>
                     </CardContent>
@@ -96,7 +96,7 @@ export default function ClimateZoneMapPage() {
                 <Card className="mb-12">
                     <CardHeader>
                         <CardTitle>Climate Zone Breakdown</CardTitle>
-                        <CardDescription>To find your zone, perform an online search for "US DOE climate zone for [your county, state]". Then, use the table below to understand its characteristics.</CardDescription>
+                        <CardDescription>To determine your zone with certainty, use the county-by-county lookup tools on the official U.S. Department of Energy or ENERGY STAR websites. A search for "DOE climate zone by county" will provide the most accurate results. Use the table below to understand your zone's general characteristics.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Table>

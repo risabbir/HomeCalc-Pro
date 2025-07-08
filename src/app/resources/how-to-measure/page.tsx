@@ -6,7 +6,6 @@ import type { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Lightbulb } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import React from "react";
 
 export const metadata: Metadata = {
     title: 'How to Measure a Room Accurately For Any Project | HomeCalc Pro',
@@ -110,9 +109,9 @@ export default function HowToMeasurePage() {
                     <AlertDescription>
                         <ul className="list-disc pl-5 mt-2 space-y-1">
                             <li><strong>Measure Twice, Buy Once:</strong> It's an old saying for a reason. Always double-check your measurements before purchasing materials.</li>
-                            <li><strong>Keep the Tape Straight:</strong> Don't let your tape measure bend or sag in the middle, as this will result in an inaccurate, longer measurement.</li>
-                            <li><strong>Note Measurements Consistently:</strong> Write down your measurements in the same format (e.g., feet and inches, or total inches) to avoid confusion later.</li>
-                            <li><strong>Always Add a Waste Factor:</strong> For flooring, tile, and wallpaper, always buy extra material to account for cuts, mistakes, or complex patterns. A 10-15% waste factor is a safe bet for most projects. Our calculators help with this.</li>
+                            <li><strong>Keep the Tape Straight:</strong> For long measurements, a sagging tape measure can add inches to the real dimension. Keep it taut and level. Ask for help if needed.</li>
+                            <li><strong>Note Measurements Consistently:</strong> Decide whether you'll use inches (e.g., 147") or feet and inches (e.g., 12' 3"). Sticking to one format prevents conversion errors.</li>
+                            <li><strong>Always Add a Waste Factor:</strong> For flooring, tile, and wallpaper, always buy extra material. A 10% waste factor is standard for simple layouts. For complex rooms or diagonal installations (like herringbone flooring), increase this to 15-20%.</li>
                         </ul>
                     </AlertDescription>
                 </Alert>

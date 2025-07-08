@@ -1,3 +1,4 @@
+
 export const metadata = {
   title: "Terms of Service | HomeCalc Pro",
   description: "Review the Terms of Service for using the HomeCalc Pro website and tools.",
@@ -9,7 +10,7 @@ export default function LegalPage() {
       <div className="max-w-3xl mx-auto prose dark:prose-invert">
         <h1 className="text-4xl md:text-5xl font-bold font-headline text-center mb-12">Terms of Service</h1>
         
-        <p><strong>Last Updated:</strong> July 7, 2025</p>
+        <p><strong>Last Updated:</strong> July 18, 2024</p>
 
         <section>
           <h2 className="text-2xl font-bold font-headline">1. Acceptance of Terms</h2>

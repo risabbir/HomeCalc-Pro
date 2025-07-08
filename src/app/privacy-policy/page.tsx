@@ -1,3 +1,4 @@
+
 export const metadata = {
   title: "Privacy Policy | HomeCalc Pro",
   description: "Our Privacy Policy describes how your information is collected, used, and shared when you use HomeCalc Pro.",
@@ -9,7 +10,7 @@ export default function PrivacyPolicyPage() {
       <div className="max-w-3xl mx-auto prose dark:prose-invert">
         <h1 className="text-4xl md:text-5xl font-bold font-headline text-center mb-12">Privacy Policy</h1>
 
-        <p><strong>Last Updated:</strong> July 7, 2025</p>
+        <p><strong>Last Updated:</strong> July 18, 2024</p>
 
         <section>
           <h2 className="text-2xl font-bold font-headline">1. Introduction</h2>

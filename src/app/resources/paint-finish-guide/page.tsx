@@ -5,7 +5,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import Image from "next/image";
 import { Lightbulb } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -72,10 +71,9 @@ export default function PaintFinishGuidePage() {
                 <Alert className="mb-12">
                     <Lightbulb className="h-4 w-4" />
                     <AlertTitle>The Golden Rule of Paint Sheen</AlertTitle>
-                    <AlertDescription>
-                        <strong>Higher Sheen = Higher Durability & Shine.</strong> Best for trim, doors, and high-moisture areas like bathrooms.
-                        <br/>
-                        <strong>Lower Sheen = Better at Hiding Imperfections.</strong> Ideal for walls and ceilings that aren't perfectly smooth.
+                    <AlertDescription className="space-y-1">
+                        <p><strong>Higher Sheen = Higher Durability & Shine.</strong> This makes it easy to clean, perfect for high-traffic or high-moisture areas like kitchens, bathrooms, and trim.</p>
+                        <p><strong>Lower Sheen = Better at Hiding Imperfections.</strong> Its non-reflective nature conceals minor flaws in walls, making it ideal for living areas and ceilings.</p>
                     </AlertDescription>
                 </Alert>
 
@@ -105,16 +103,16 @@ export default function PaintFinishGuidePage() {
                         <CardTitle>Ready to Start Painting?</CardTitle>
                          <CardDescription>Now that you've chosen your finish, use our calculator to determine exactly how much paint you'll need for your project.</CardDescription>
                     </CardHeader>
-                    <CardFooter>
+                    <CardContent>
                         {relatedCalculators.map(calc => (
-                            <Button asChild variant="default" className="bg-background text-foreground border-input border hover:bg-accent" key={calc.slug}>
+                            <Button asChild key={calc.slug}>
                                 <Link href={`/calculators/${calc.slug}`}>
-                                    <calc.Icon className="h-5 w-5 text-primary" />
+                                    <calc.Icon className="h-5 w-5 mr-2" />
                                     {calc.name}
                                 </Link>
                             </Button>
                         ))}
-                    </CardFooter>
+                    </CardContent>
                 </Card>
             </div>
         </div>
