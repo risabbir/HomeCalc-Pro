@@ -43,14 +43,14 @@ export default function ClimateZoneMapPage() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12 lg:gap-y-0">
                 <main className="lg:col-span-2 space-y-12">
                     <Card className="overflow-hidden border-2">
                          <CardContent className="p-0">
                             <Image 
-                                src="https://www.energy.gov/sites/default/files/2023-11/FS-BTO-IECC-2021-climate-zone-map-2023-11-28.png"
+                                src="https://building-performance.org/wp-content/uploads/2022/11/IECC-Climate-Zone-Map_Nov-2022_1250x850-1.png"
                                 alt="A map of the United States showing the 8 distinct climate zones as defined by the Department of Energy."
-                                width={1100}
+                                width={1250}
                                 height={850}
                                 className="w-full h-auto object-cover"
                                 priority
