@@ -1,6 +1,7 @@
+
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowRight, ListChecks, Map, Ruler, Paintbrush } from "lucide-react";
+import { ArrowRight, ListChecks, Map, Ruler, Paintbrush, ClipboardCheck, Layers3, LayoutGrid } from "lucide-react";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -32,6 +33,24 @@ const resources = [
         description: "Choose the right paint sheen for any room, from durable semi-gloss for trim to flat for ceilings.",
         href: "/resources/paint-finish-guide",
         Icon: Paintbrush,
+    },
+    {
+        title: "Seasonal HVAC Maintenance Checklist",
+        description: "Keep your system running efficiently and prevent costly repairs with our seasonal HVAC maintenance guide.",
+        href: "/resources/hvac-maintenance-checklist",
+        Icon: ClipboardCheck,
+    },
+    {
+        title: "Homeowner's Guide to Insulation",
+        description: "Learn about fiberglass, spray foam, and more to choose the best insulation for your home.",
+        href: "/resources/insulation-guide",
+        Icon: Layers3,
+    },
+    {
+        title: "Kitchen Layout Planning Guide",
+        description: "Plan a functional and beautiful space by understanding the core principles of kitchen design.",
+        href: "/resources/kitchen-layout-guide",
+        Icon: LayoutGrid,
     },
 ]
 
