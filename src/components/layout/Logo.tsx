@@ -7,7 +7,8 @@ export function Logo({ className }: { className?: string }) {
         HomeCalc
       </span>
       <span
-        className="inline-block rounded-md bg-primary px-2 py-1 text-lg font-bold leading-none text-primary-foreground font-headline shadow-lg"
+        className="inline-block rounded-md bg-primary px-2 py-1 text-lg font-bold leading-none text-primary-foreground font-headline"
+        style={{ boxShadow: 'rgba(1, 149, 223, 0.6) 0px 3px 5px' }}
       >
         Pro
       </span>
