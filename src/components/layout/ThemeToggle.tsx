@@ -16,7 +16,7 @@ export function ThemeToggle() {
   if (!mounted) {
     // To prevent hydration mismatch, we render a placeholder.
     // The size and variant should match the final button to avoid layout shift.
-    return <Button variant="ghost" size="icon" className="h-10 w-10" disabled />
+    return <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full" disabled />
   }
 
   return (
@@ -25,9 +25,10 @@ export function ThemeToggle() {
       size="icon"
       aria-label="Toggle theme"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      className="rounded-full"
     >
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all duration-300 dark:rotate-180 dark:scale-0" />
+      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-180 scale-0 transition-all duration-300 dark:rotate-0 dark:scale-100" />
     </Button>
   )
 }
