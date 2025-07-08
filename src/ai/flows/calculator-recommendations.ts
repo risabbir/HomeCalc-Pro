@@ -38,7 +38,7 @@ const availableCalculators = calculators.map(c => c.name).join(', ');
 
 const prompt = ai.definePrompt({
   name: 'recommendCalculatorsPrompt',
-  model: 'googleai/gemini-2.0-flash',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: RecommendCalculatorsInputSchema},
   output: {schema: RecommendCalculatorsOutputSchema},
   prompt: `You are a helpful assistant that recommends calculators to users based on their past activity.
