@@ -48,7 +48,7 @@ export default function ClimateZoneMapPage() {
                     <Card className="overflow-hidden border-2">
                              <CardContent className="p-0 bg-white">
                                 <Image
-                                    src="https://www.researchgate.net/publication/359387671/figure/fig2/AS:1139834437545984@1648769115133/The-climate-zone-designations-used-by-the-US-Department-of-Energy-Building-America.png"
+                                    src="https://6000-firebase-studio-1751870790151.cluster-ys234awlzbhwoxmkkse6qo3fz6.cloudworkstations.dev/capra/attachedImages/64d6697e-ee29-40b0-adaf-390271442b96/image_da74ad55-b60d-4b8b-89d6-c793ad59d3bf.png"
                                     data-ai-hint="climate zone map"
                                     alt="A map of the United States showing building climate zones, including Subarctic, Cold, Very Cold, Mixed-Humid, Mixed-Dry, Hot-Humid, Hot-Dry, and Marine."
                                     width={850}
@@ -57,9 +57,6 @@ export default function ClimateZoneMapPage() {
                                     priority
                                 />
                         </CardContent>
-                        <CardFooter className="bg-muted/50 p-3 text-xs text-muted-foreground">
-                            <p>Map courtesy of ResearchGate.</p>
-                        </CardFooter>
                     </Card>
 
                     <Card>
