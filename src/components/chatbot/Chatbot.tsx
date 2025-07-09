@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -153,7 +154,7 @@ export function Chatbot() {
               </div>
               <div>
                 <CardTitle className="text-lg">HomeCalc Helper</CardTitle>
-                <CardDescription className="text-xs">Your project planning expert</CardDescription>
+                <CardDescription className="text-xs">Your friendly home project guide</CardDescription>
               </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full text-muted-foreground">
@@ -211,7 +212,7 @@ export function Chatbot() {
                 rows={1}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask about a project..."
+                placeholder="Ask 'how much paint do I need?'..."
                 className="flex-grow overflow-y-auto resize-none py-2.5 no-scrollbar bg-muted border-muted-foreground/20 focus-visible:ring-primary/50"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
