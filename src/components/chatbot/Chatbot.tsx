@@ -27,6 +27,7 @@ const presetQuestions = [
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showHelpBubble, setShowHelpBubble] = useState(true);
   const [showPresets, setShowPresets] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
     { role: 'model', content: "Hi! How can I help you plan your next home project?" }
@@ -95,17 +96,37 @@ export function Chatbot() {
 
   return (
     <>
+      { !isOpen && showHelpBubble && (
+        <div className="fixed bottom-24 right-6 z-40 animate-in fade-in-50 slide-in-from-bottom-4">
+            <Card className="p-3 shadow-xl">
+                 <CardContent className="p-0 flex items-center gap-2">
+                    <p className="text-sm font-medium">How can I help you plan your project?</p>
+                    <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-6 w-6 shrink-0 rounded-full"
+                        onClick={() => setShowHelpBubble(false)}
+                        aria-label="Dismiss"
+                    >
+                        <X className="h-4 w-4" />
+                    </Button>
+                 </CardContent>
+            </Card>
+        </div>
+      )}
+
       <Button
           variant="solid"
           onClick={() => setIsOpen(true)}
           className={cn(
             "fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 shadow-none [&_svg]:size-8",
             "transition-all duration-300 ease-in-out hover:scale-110",
+            "bg-primary text-primary-foreground hover:bg-primary/90",
             isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
           )}
           aria-label="Open chatbot"
       >
-          <MessagesSquare className="text-primary-foreground" />
+          <MessagesSquare className="h-8 w-8 text-primary-foreground" />
       </Button>
 
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
