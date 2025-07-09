@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -135,25 +136,27 @@ export function Chatbot() {
       {/* Chat Window */}
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
         <Card className="w-[380px] h-[600px] flex flex-col shadow-2xl border">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary/10 p-2 rounded-full">
-                <MessagesSquare className="h-6 w-6 text-primary" />
+          <CardHeader>
+            <div className="flex flex-row items-center justify-between w-full">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 p-2 rounded-full">
+                  <MessagesSquare className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">HomeCalc Pro</CardTitle>
+                  <CardDescription>Your AI home assistant.</CardDescription>
+                </div>
               </div>
-              <div>
-                <CardTitle className="text-lg">HomeCalc Pro</CardTitle>
-                <CardDescription>Your AI home assistant.</CardDescription>
+              <div className="flex items-center">
+                  <Button variant="ghost" size="icon" onClick={() => setIsMuted(prev => !prev)}>
+                      {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                      <span className="sr-only">{isMuted ? 'Unmute' : 'Mute'}</span>
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
+                      <X className="h-5 w-5" />
+                      <span className="sr-only">Close chat</span>
+                  </Button>
               </div>
-            </div>
-            <div className="flex items-center">
-                <Button variant="ghost" size="icon" onClick={() => setIsMuted(prev => !prev)}>
-                    {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-                    <span className="sr-only">{isMuted ? 'Unmute' : 'Mute'}</span>
-                </Button>
-                <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-                    <X className="h-5 w-5" />
-                    <span className="sr-only">Close chat</span>
-                </Button>
             </div>
           </CardHeader>
           <CardContent className="flex-grow overflow-hidden p-0">
