@@ -85,7 +85,7 @@ export function Chatbot() {
       const history = [...messages, userMessage].map(({ role, content }) => ({ role, content: content.toString() }));
       const res = await getChatbotResponse({ query: currentInput, history });
       
-      const modelMessage: Message = { role: 'model', content: res.answer, link: res.link ?? null };
+      const modelMessage: Message = { role: 'model', content: res.answer, link: res.link };
       setMessages(prev => [...prev, modelMessage]);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Sorry, I encountered an error. Please try again.';
@@ -213,7 +213,7 @@ export function Chatbot() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Ask about a project..."
-                className="flex-grow overflow-y-auto"
+                className="flex-grow overflow-y-auto resize-none py-3"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
