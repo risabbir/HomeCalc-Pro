@@ -11,7 +11,6 @@ import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { AlertDescription } from '../ui/alert';
 
 interface Message {
   role: 'user' | 'model';
@@ -109,7 +108,7 @@ export function Chatbot() {
         {showCallout && (
            <div className="bg-card text-card-foreground rounded-lg p-4 border w-64 animate-in fade-in-50 slide-in-from-bottom-10 shadow-none">
              <p className="text-sm font-medium leading-relaxed border-none">
-              Need help? Ask me for project advice or a calculator suggestion!
+              Need help? I can find calculators or give project advice!
             </p>
             <Button 
                 variant="ghost"
@@ -199,7 +198,7 @@ export function Chatbot() {
               </div>
             </ScrollArea>
           </CardContent>
-          <CardFooter className="flex-col items-start gap-2 pt-4">
+          <CardFooter className="pt-4">
              <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex w-full items-start gap-2">
               <Textarea
                 value={inputValue}
@@ -218,9 +217,6 @@ export function Chatbot() {
                 <Send className="h-5 w-5" />
               </Button>
             </form>
-             <AlertDescription className="text-xs px-2">
-              AI-generated answers may be inaccurate. Please verify important information.
-            </AlertDescription>
           </CardFooter>
         </Card>
       </div>
