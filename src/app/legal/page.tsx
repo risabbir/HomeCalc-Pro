@@ -1,4 +1,5 @@
 
+
 export const metadata = {
   title: "Terms of Service | HomeCalc Pro",
   description: "Review the Terms of Service for using the HomeCalc Pro website and tools.",

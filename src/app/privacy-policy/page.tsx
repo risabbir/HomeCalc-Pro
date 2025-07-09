@@ -1,4 +1,5 @@
 
+
 export const metadata = {
   title: "Privacy Policy | HomeCalc Pro",
   description: "Our Privacy Policy describes how your information is collected, used, and shared when you use HomeCalc Pro.",
