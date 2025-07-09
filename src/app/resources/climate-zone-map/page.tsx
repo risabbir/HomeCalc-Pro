@@ -59,7 +59,7 @@ export default function ClimateZoneMapPage() {
                                 <AlertDescription>
                                     <ul className="list-disc pl-5 mt-2 space-y-3">
                                         <li>
-                                            <a href="https://www.energystar.gov/products/find_your_climate_zone" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary underline-offset-4 hover:underline">
+                                            <a href="https://www.energystar.gov/products/heating_cooling/heating_cooling_basics/climate_zone_map" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary underline-offset-4 hover:underline">
                                                 ENERGY STAR Climate Zone Finder
                                             </a>
                                             <p className="text-xs text-muted-foreground">The most user-friendly tool. Select your state and county to instantly find your zone.</p>
