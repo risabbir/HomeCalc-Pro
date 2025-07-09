@@ -31,13 +31,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '**.energy.gov',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.researchgate.net',
+        hostname: 'www.energy.gov',
         port: '',
         pathname: '/**',
       },
