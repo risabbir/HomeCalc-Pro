@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, LifeBuoy, Loader2, Send, User, X } from 'lucide-react';
+import { Bot, MessageCircle, Loader2, Send, User, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -83,9 +83,9 @@ export function Chatbot() {
       )}>
         {/* Callout */}
         {showCallout && (
-          <div className="bg-card text-card-foreground rounded-lg p-4 border w-64 relative animate-in fade-in-50 slide-in-from-bottom-10 shadow-lg">
-            <p className="text-sm">
-              Stuck? Ask me for help or a calculator suggestion!
+           <div className="bg-card text-card-foreground rounded-lg p-4 border w-64 relative animate-in fade-in-50 slide-in-from-bottom-10 shadow-lg">
+             <p className="text-sm font-medium leading-relaxed">
+              Need help? Ask me for project advice or a calculator suggestion!
             </p>
             <Button 
                 variant="ghost"
@@ -105,7 +105,7 @@ export function Chatbot() {
             className="h-16 w-16 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0 shrink-0 shadow-lg"
             aria-label="Open chatbot"
         >
-            <LifeBuoy className="h-9 w-9 text-primary-foreground" />
+            <MessageCircle className="h-9 w-9 text-primary-foreground" />
         </Button>
       </div>
 
