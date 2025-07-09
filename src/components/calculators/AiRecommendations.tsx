@@ -80,6 +80,7 @@ export function AiRecommendations() {
                         onChange={(e) => setProjectDescription(e.target.value)}
                         disabled={loading}
                         rows={4}
+                        className="resize-y min-h-[80px]"
                     />
                      {recommendations.length > 0 && (
                         <div className="mt-6">
