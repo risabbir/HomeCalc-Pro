@@ -18,6 +18,13 @@ interface Message {
   link?: string | null;
 }
 
+const presetQuestions = [
+    "How much paint do I need for my living room?",
+    "What's a good SEER rating for a new AC unit?",
+    "Can you help me estimate the cost of a kitchen remodel?",
+];
+
+
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [showCallout, setShowCallout] = useState(true);
@@ -72,18 +79,21 @@ export function Chatbot() {
     }
   }, [messages, isMuted, isOpen]);
 
-  const handleSendMessage = async () => {
-    if (!inputValue.trim() || isLoading) return;
+  const handleSendMessage = async (queryOverride?: string) => {
+    const query = queryOverride || inputValue.trim();
+    if (!query || isLoading) return;
 
-    const userMessage: Message = { role: 'user', content: inputValue };
+    const userMessage: Message = { role: 'user', content: query };
     setMessages(prev => [...prev, userMessage]);
-    const currentInput = inputValue;
-    setInputValue('');
+    
+    if (!queryOverride) {
+        setInputValue('');
+    }
     setIsLoading(true);
 
     try {
       const history = [...messages, userMessage].map(({ role, content }) => ({ role, content: content.toString() }));
-      const res = await getChatbotResponse({ query: currentInput, history });
+      const res = await getChatbotResponse({ query: query, history });
       
       const modelMessage: Message = { role: 'model', content: res.answer, link: res.link };
       setMessages(prev => [...prev, modelMessage]);
@@ -141,7 +151,7 @@ export function Chatbot() {
 
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
         <Card className="w-[380px] h-[600px] flex flex-col shadow-2xl border">
-          <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
+          <CardHeader className="flex flex-row items-center p-4 border-b">
             <div className="flex items-center gap-3">
               <div className="bg-primary/10 p-2 rounded-full">
                 <MessagesSquare className="h-6 w-6 text-primary" />
@@ -151,7 +161,7 @@ export function Chatbot() {
                 <CardDescription>Your AI home project assistant.</CardDescription>
               </div>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center ml-auto">
               <Button variant="ghost" size="icon" onClick={() => setIsMuted(prev => !prev)} className="h-8 w-8 rounded-full text-muted-foreground">
                 {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
                 <span className="sr-only">{isMuted ? 'Unmute' : 'Mute'}</span>
@@ -162,8 +172,8 @@ export function Chatbot() {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="flex-grow overflow-hidden p-0">
-            <ScrollArea className="h-full" ref={scrollAreaRef}>
+          <CardContent className="flex-grow flex flex-col overflow-hidden p-0">
+            <ScrollArea className="flex-grow" ref={scrollAreaRef}>
               <div className="p-4 space-y-4">
                 {messages.map((message, index) => (
                   <div
@@ -204,6 +214,25 @@ export function Chatbot() {
                 )}
               </div>
             </ScrollArea>
+             {messages.length <= 1 && (
+                <div className="p-4 border-t">
+                    <p className="text-sm font-medium mb-2 text-muted-foreground">Or try asking:</p>
+                    <div className="flex flex-col items-start gap-2">
+                        {presetQuestions.map((q, i) => (
+                            <Button 
+                                key={i} 
+                                variant="outline" 
+                                size="sm"
+                                className="h-auto w-full justify-start text-left whitespace-normal"
+                                onClick={() => handleSendMessage(q)}
+                                disabled={isLoading}
+                            >
+                                {q}
+                            </Button>
+                        ))}
+                    </div>
+                </div>
+            )}
           </CardContent>
           <CardFooter className="p-2 border-t">
              <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex w-full items-end gap-2">
@@ -213,7 +242,7 @@ export function Chatbot() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Ask about a project..."
-                className="flex-grow overflow-y-auto resize-none py-3 no-scrollbar"
+                className="flex-grow overflow-y-auto resize-none py-2 no-scrollbar"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
