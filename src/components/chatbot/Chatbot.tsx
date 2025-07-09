@@ -100,7 +100,7 @@ export function Chatbot() {
         <div className="fixed bottom-24 right-6 z-40 animate-in fade-in-50 slide-in-from-bottom-4">
             <Card className="p-3 shadow-xl">
                  <CardContent className="p-0 flex items-center gap-2">
-                    <p className="text-sm font-medium">How can I help you plan your project?</p>
+                    <p className="text-sm font-medium">How can I help with your project?</p>
                     <Button 
                         variant="ghost" 
                         size="icon" 
