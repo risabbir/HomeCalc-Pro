@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, Loader2, Send, User, X, Volume2, VolumeX, MessageCircle, LifeBuoy } from 'lucide-react';
+import { Bot, Loader2, Send, User, X, Volume2, VolumeX, MessagesSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -106,9 +106,9 @@ export function Chatbot() {
       )}>
         {/* Callout */}
         {showCallout && (
-           <div className="relative bg-card text-card-foreground rounded-lg p-4 border w-64 animate-in fade-in-50 slide-in-from-bottom-10 shadow-none border-border/50">
+           <div className="relative bg-card text-card-foreground rounded-lg p-4 border w-64 animate-in fade-in-50 slide-in-from-bottom-10 border-border/50">
              <p className="text-sm font-medium leading-relaxed border-none">
-              Need help? I can find calculators or give project advice!
+              Need a hand? Ask me for project advice or calculator suggestions!
             </p>
             <Button 
                 variant="ghost"
@@ -128,7 +128,7 @@ export function Chatbot() {
             className="gap-1 whitespace-nowrap text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-8 [&_svg]:shrink-0 from-gradient-from to-gradient-to text-primary-foreground [background-size:200%_auto] hover:[background-position:right_center] h-16 w-16 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0 shrink-0"
             aria-label="Open chatbot"
         >
-            <MessageCircle className="h-8 w-8 text-primary-foreground" />
+            <MessagesSquare className="h-8 w-8 text-primary-foreground" />
         </Button>
       </div>
 
@@ -139,14 +139,14 @@ export function Chatbot() {
           <CardHeader className="flex flex-row items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-primary/10 p-2 rounded-full">
-                <Bot className="h-6 w-6 text-primary" />
+                <MessagesSquare className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <CardTitle>HomeCalc Pro</CardTitle>
                 <CardDescription>Your personal AI helper for all your home needs.</CardDescription>
               </div>
             </div>
-            <div>
+            <div className="flex items-center">
                 <Button variant="ghost" size="icon" onClick={() => setIsMuted(prev => !prev)}>
                     {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
                     <span className="sr-only">{isMuted ? 'Unmute' : 'Mute'}</span>
