@@ -6,15 +6,17 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { getAiRecommendations } from '@/lib/actions';
-import { Loader2, Wand2 } from 'lucide-react';
+import { Loader2, Wand2, Info } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { calculators } from '@/lib/calculators';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export function AiRecommendations() {
   const [loading, setLoading] = useState(false);
   const [projectDescription, setProjectDescription] = useState('');
   const [recommendations, setRecommendations] = useState<string[]>([]);
+  const [noResultsMessage, setNoResultsMessage] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,17 +31,16 @@ export function AiRecommendations() {
     }
     setLoading(true);
     setRecommendations([]);
+    setNoResultsMessage(null);
     try {
       const result = await getAiRecommendations(projectDescription);
       if (result && result.recommendations && result.recommendations.length > 0) {
         setRecommendations(result.recommendations);
       } else {
-        toast({
-            title: 'No recommendations found',
-            description: 'We couldn\'t find any specific calculators for your project. Try rephrasing your description.',
-        });
+        setNoResultsMessage("We couldn't find any specific calculators for your project, but our AI assistant might be able to help. Try asking in the chatbot!");
       }
     } catch (error) {
+      setNoResultsMessage("Sorry, an error occurred while getting recommendations. Please try again later.");
       toast({
         title: 'An error occurred',
         description: error instanceof Error ? error.message : 'Failed to get AI recommendations. Please try again.',
@@ -80,24 +81,35 @@ export function AiRecommendations() {
                         disabled={loading}
                     />
                      {recommendations.length > 0 && (
-                        <div className="mt-4">
-                            <h4 className="font-semibold mb-2">Here are our suggestions:</h4>
-                            <ul className="list-disc pl-5 space-y-1">
+                        <div className="mt-6">
+                            <h4 className="font-semibold mb-3">Here are our suggestions:</h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {recommendations.map(rec => {
                                     const slug = getSlugForRecommendation(rec);
-                                    if(slug) {
+                                    const calculator = calculators.find(c => c.slug === slug);
+                                    if(slug && calculator) {
                                        return (
-                                        <li key={rec}>
-                                            <Link href={`/calculators/${slug}`} className="text-primary hover:underline">
-                                                {rec}
-                                            </Link>
-                                        </li>
+                                        <Link href={`/calculators/${slug}`} key={rec} className="group">
+                                            <div className="p-3 border rounded-md hover:bg-accent hover:border-primary/50 transition-colors flex items-center gap-3 h-full">
+                                                <calculator.Icon className="h-6 w-6 text-primary shrink-0" />
+                                                <span className="font-medium">{rec}</span>
+                                            </div>
+                                        </Link>
                                        )
                                     }
                                     return null;
                                 })}
-                            </ul>
+                            </div>
                         </div>
+                    )}
+                    {noResultsMessage && (
+                        <Alert className="mt-6">
+                            <Info className="h-4 w-4" />
+                            <AlertTitle>No specific calculators found</AlertTitle>
+                            <AlertDescription>
+                                {noResultsMessage}
+                            </AlertDescription>
+                        </Alert>
                     )}
                 </CardContent>
                 <CardFooter>

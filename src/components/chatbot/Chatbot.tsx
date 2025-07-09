@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, Loader2, Send, User, X, Volume2, VolumeX, MessagesSquare } from 'lucide-react';
+import { Bot, Send, User, X, Volume2, VolumeX, MessagesSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -28,6 +28,8 @@ export function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const { toast } = useToast();
+  
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const prevMessagesLength = useRef(messages.length);
@@ -44,8 +46,16 @@ export function Chatbot() {
   }, [isMuted]);
 
   useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      const scrollHeight = textarea.scrollHeight;
+      textarea.style.height = `${Math.min(scrollHeight, 128)}px`;
+    }
+  }, [inputValue]);
+
+  useEffect(() => {
     if (typeof window !== 'undefined' && !audioRef.current) {
-        // A silent WAV file to avoid errors, and to allow for programmatic play() calls.
         audioRef.current = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABgAZGF0YQAAAAA=');
     }
 
@@ -98,13 +108,11 @@ export function Chatbot() {
 
   return (
     <>
-      {/* FAB and Callout container */}
       <div className={cn(
         "fixed bottom-6 right-6 z-50 flex items-end gap-4",
         "transition-all duration-300 ease-in-out",
         isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
       )}>
-        {/* Callout */}
         {showCallout && (
            <div className="relative bg-card text-card-foreground rounded-lg p-4 border w-64 animate-in fade-in-50 slide-in-from-bottom-10">
              <p className="text-sm font-medium leading-relaxed">
@@ -122,7 +130,6 @@ export function Chatbot() {
           </div>
         )}
         
-        {/* FAB */}
         <Button
             onClick={handleOpenChat}
             className="gap-1 whitespace-nowrap text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-8 [&_svg]:shrink-0 from-gradient-from to-gradient-to text-primary-foreground [background-size:200%_auto] hover:[background-position:right_center] h-16 w-16 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0 shrink-0"
@@ -132,8 +139,6 @@ export function Chatbot() {
         </Button>
       </div>
 
-
-      {/* Chat Window */}
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
         <Card className="w-[380px] h-[600px] flex flex-col shadow-2xl border">
           <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
@@ -142,8 +147,8 @@ export function Chatbot() {
                 <MessagesSquare className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-lg">HomeCalc Pro</CardTitle>
-                <CardDescription>Your AI home project assistant.</CardDescription>
+                <CardTitle className="text-lg">HomeCalc Helper</CardTitle>
+                <CardDescription>Your AI project assistant</CardDescription>
               </div>
             </div>
             <div className="flex items-center">
@@ -190,21 +195,25 @@ export function Chatbot() {
                 {isLoading && (
                   <div className="flex justify-start gap-3 text-sm">
                       <Bot className="h-6 w-6 shrink-0 text-primary" />
-                      <div className="rounded-lg px-4 py-2 bg-muted flex items-center">
-                          <Loader2 className="h-5 w-5 animate-spin" />
+                      <div className="rounded-lg px-4 py-3 bg-muted flex items-center space-x-1.5">
+                        <span className="h-2 w-2 bg-muted-foreground/70 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                        <span className="h-2 w-2 bg-muted-foreground/70 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                        <span className="h-2 w-2 bg-muted-foreground/70 rounded-full animate-bounce"></span>
                       </div>
                   </div>
                 )}
               </div>
             </ScrollArea>
           </CardContent>
-          <CardFooter className="pt-4 border-t">
-             <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex w-full items-start gap-2">
+          <CardFooter className="p-2 border-t">
+             <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex w-full items-end gap-2">
               <Textarea
+                ref={textareaRef}
+                rows={1}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Ask about a project..."
-                className="min-h-0 h-12 resize-none"
+                className="flex-grow resize-none overflow-y-auto"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -213,7 +222,7 @@ export function Chatbot() {
                 }}
                 disabled={isLoading}
               />
-              <Button type="submit" size="icon" className="h-12 w-12 shrink-0" disabled={isLoading}>
+              <Button type="submit" size="icon" className="h-10 w-10 shrink-0" disabled={isLoading || !inputValue.trim()}>
                 <Send className="h-5 w-5" />
               </Button>
             </form>
