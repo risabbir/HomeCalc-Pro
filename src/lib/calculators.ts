@@ -4,32 +4,8 @@ import {
   ThermometerSun, Wrench, Sprout, Home, Wind, PlugZap, Building2, AirVent, 
   Heater, Snowflake, Gauge, Square, Wallpaper as WallpaperIcon, Shovel,
   CookingPot, Construction, Layers, Warehouse, Fan, TrendingUp, Lightbulb,
-  Car
+  Car, CircleDollarSign
 } from 'lucide-react';
-
-const SavingsPotIcon = ({ className }: { className?: string }) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    {/* Pot */}
-    <path d="M5 9a7 7 0 1 1 14 0" />
-    <path d="M3.5 9h17" />
-    <path d="M5 9v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9" />
-    <path d="M8 21h8" />
-
-    {/* Coins inside the pot opening, suggesting a heap */}
-    <circle cx="12" cy="8" r="1.5" />
-    <circle cx="9.5" cy="8.5" r="1.5" />
-    <circle cx="14.5" cy="8.5" r="1.5" />
-  </svg>
-);
-
 
 export interface Calculator {
   slug: string;
@@ -191,7 +167,7 @@ export const calculators: Calculator[] = [
     slug: 'savings-calculator',
     name: 'Savings Calculator',
     description: 'Estimate the future value of your savings or investments.',
-    Icon: SavingsPotIcon,
+    Icon: CircleDollarSign,
     category: 'Other',
   },
   {
