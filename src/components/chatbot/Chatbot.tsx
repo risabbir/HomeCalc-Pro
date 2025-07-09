@@ -18,42 +18,11 @@ interface Message {
   link?: string | null;
 }
 
-const defaultPresetQuestions = [
-    "What's the best type of paint for a bathroom?",
-    "How do I estimate the cost of a kitchen remodel?",
-    "Find a reliable plumber near me.",
+const presetQuestions = [
+  "What's the best type of paint for a bathroom?",
+  "How do I estimate the cost of a kitchen remodel?",
+  "What size AC unit do I need for a 2000 sq ft house?",
 ];
-
-const northAmericaPresetQuestions = [
-    "What size central AC unit do I need for a 2000 sq ft house?",
-    "How much does a new gas furnace installation cost?",
-    "Calculate materials for a wood deck.",
-];
-
-const europePresetQuestions = [
-    "How much does it cost to run an electric radiator?",
-    "What are the benefits of a heat pump in a temperate climate?",
-    "Calculate insulation needed for solid brick walls.",
-];
-
-const southAsiaPresetQuestions = [
-    "What size mini-split AC is best for a humid room?",
-    "How to calculate materials for a concrete roof slab?",
-    "Estimate the cost of running an AC unit all day.",
-];
-
-const regionMap: Record<string, string[]> = {
-    // North America
-    'US': northAmericaPresetQuestions,
-    'CA': northAmericaPresetQuestions,
-    'MX': northAmericaPresetQuestions,
-    // Europe
-    'GB': europePresetQuestions, 'DE': europePresetQuestions, 'FR': europePresetQuestions, 'IT': europePresetQuestions, 'ES': europePresetQuestions, 'PL': europePresetQuestions, 'NL': europePresetQuestions, 'BE': europePresetQuestions, 'SE': europePresetQuestions, 'CH': europePresetQuestions, 'AT': europePresetQuestions, 'NO': europePresetQuestions, 'DK': europePresetQuestions, 'FI': europePresetQuestions, 'IE': europePresetQuestions,
-    // South Asia
-    'BD': southAsiaPresetQuestions, 'IN': southAsiaPresetQuestions, 'PK': southAsiaPresetQuestions, 'LK': southAsiaPresetQuestions,
-};
-
-const PRESET_QUESTIONS_SESSION_KEY = 'homecalc_preset_questions';
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,43 +33,10 @@ export function Chatbot() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [presetQuestions, setPresetQuestions] = useState<string[]>(defaultPresetQuestions);
   const { toast } = useToast();
   
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const fetchLocationAndSetPresets = async () => {
-        try {
-            const storedPresets = sessionStorage.getItem(PRESET_QUESTIONS_SESSION_KEY);
-            if (storedPresets) {
-                setPresetQuestions(JSON.parse(storedPresets));
-                return;
-            }
-
-            const response = await fetch('https://ip-api.com/json/?fields=status,countryCode');
-            let finalPresets = defaultPresetQuestions;
-            if (response.ok) {
-                const data = await response.json();
-                if (data.status === 'success' && data.countryCode) {
-                    const specificPresets = regionMap[data.countryCode];
-                    if (specificPresets) {
-                        finalPresets = specificPresets;
-                    }
-                }
-            }
-            setPresetQuestions(finalPresets);
-            sessionStorage.setItem(PRESET_QUESTIONS_SESSION_KEY, JSON.stringify(finalPresets));
-        } catch (error) {
-            console.warn('Could not fetch location-based presets:', error);
-            // On error, use defaults and store them so we don't try again this session
-            sessionStorage.setItem(PRESET_QUESTIONS_SESSION_KEY, JSON.stringify(defaultPresetQuestions));
-            // No need to call setPresetQuestions, it already defaults to this
-        }
-    };
-    fetchLocationAndSetPresets();
-  }, []);
 
   useEffect(() => {
     const textarea = textareaRef.current;
