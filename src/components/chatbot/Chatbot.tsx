@@ -46,6 +46,7 @@ export function Chatbot() {
 
   useEffect(() => {
     if (typeof window !== 'undefined' && !audioRef.current) {
+        // A silent WAV file to avoid errors, and to allow for programmatic play() calls.
         audioRef.current = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABgAZGF0YQAAAAA=');
     }
 
@@ -106,7 +107,7 @@ export function Chatbot() {
       )}>
         {/* Callout */}
         {showCallout && (
-           <div className="bg-card text-card-foreground rounded-lg p-4 border w-64 relative animate-in fade-in-50 slide-in-from-bottom-10">
+           <div className="bg-card text-card-foreground rounded-lg p-4 border w-64 animate-in fade-in-50 slide-in-from-bottom-10 shadow-none">
              <p className="text-sm font-medium leading-relaxed border-none">
               Need help? Ask me for project advice or a calculator suggestion!
             </p>
@@ -125,7 +126,7 @@ export function Chatbot() {
         {/* FAB */}
         <Button
             onClick={handleOpenChat}
-            className="h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 [&_svg]:size-9 bg-primary hover:bg-primary/90"
+            className="h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 [&_svg]:size-9 bg-primary hover:bg-primary/90 shadow-none"
             aria-label="Open chatbot"
         >
             <MessagesSquare className="text-primary-foreground" />
