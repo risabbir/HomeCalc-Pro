@@ -99,13 +99,13 @@ export function Chatbot() {
           variant="solid"
           onClick={() => setIsOpen(true)}
           className={cn(
-            "fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 shadow-lg",
+            "fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 shadow-none [&_svg]:size-8",
             "transition-all duration-300 ease-in-out hover:scale-110",
             isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
           )}
           aria-label="Open chatbot"
       >
-          <MessagesSquare className="h-8 w-8 text-primary-foreground" />
+          <MessagesSquare className="text-primary-foreground" />
       </Button>
 
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
