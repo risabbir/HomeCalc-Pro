@@ -148,7 +148,7 @@ export function Chatbot() {
               </div>
               <div>
                 <CardTitle className="text-lg">HomeCalc Pro</CardTitle>
-                <CardDescription>Your AI home assistant.</CardDescription>
+                <CardDescription>Your AI home project assistant.</CardDescription>
               </div>
             </div>
             <div className="flex items-center">
@@ -213,7 +213,7 @@ export function Chatbot() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Ask about a project..."
-                className="flex-grow overflow-y-auto resize-none py-3"
+                className="flex-grow overflow-y-auto resize-none py-3 no-scrollbar"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
