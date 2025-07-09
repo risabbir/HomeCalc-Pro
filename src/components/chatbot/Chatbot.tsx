@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -19,8 +18,8 @@ interface Message {
 }
 
 const presetQuestions = [
-    "How much paint do I need?",
-    "Estimate kitchen remodel cost",
+    "How much paint do I need for a room?",
+    "Give me a cost estimate for a kitchen remodel",
     "What size AC unit do I need?",
 ];
 
@@ -189,19 +188,17 @@ export function Chatbot() {
             </ScrollArea>
              {messages.length <= 1 && (
                 <div className="p-4 border-t">
-                    <p className="text-sm font-medium mb-2 text-muted-foreground">Or try asking:</p>
-                    <div className="flex flex-wrap items-start gap-2">
+                    <p className="text-sm font-medium text-muted-foreground mb-3">Or try asking:</p>
+                    <div className="space-y-2">
                         {presetQuestions.map((q, i) => (
-                            <Button 
-                                key={i} 
-                                variant="outline" 
-                                size="sm"
-                                className="h-auto whitespace-normal rounded-full"
+                            <button
+                                key={i}
                                 onClick={() => handleSendMessage(q)}
                                 disabled={isLoading}
+                                className="w-full text-left p-2 rounded-md bg-muted/50 hover:bg-muted text-sm text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {q}
-                            </Button>
+                            </button>
                         ))}
                     </div>
                 </div>
@@ -215,7 +212,7 @@ export function Chatbot() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Ask about a project..."
-                className="flex-grow overflow-y-auto resize-none py-2 no-scrollbar"
+                className="flex-grow overflow-y-auto resize-none py-2.5 no-scrollbar"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
