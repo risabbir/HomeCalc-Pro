@@ -108,7 +108,7 @@ export function Chatbot() {
         {showCallout && (
            <div className="relative bg-card text-card-foreground rounded-lg p-4 border w-64 animate-in fade-in-50 slide-in-from-bottom-10">
              <p className="text-sm font-medium leading-relaxed">
-              Need help? Ask me anything!
+              Need help? Just ask!
             </p>
             <Button 
                 variant="ghost"
@@ -135,7 +135,7 @@ export function Chatbot() {
 
       {/* Chat Window */}
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
-        <Card className="w-[380px] h-[600px] flex flex-col shadow-2xl border">
+        <Card className="relative w-[380px] h-[600px] flex flex-col shadow-2xl border">
           <CardHeader>
             <div className="flex flex-row items-start justify-between w-full">
               <div className="flex items-center gap-3">
@@ -147,16 +147,10 @@ export function Chatbot() {
                   <CardDescription>Your AI home assistant.</CardDescription>
                 </div>
               </div>
-              <div className="flex flex-row items-center">
-                  <Button variant="ghost" size="icon" onClick={() => setIsMuted(prev => !prev)}>
-                      {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-                      <span className="sr-only">{isMuted ? 'Unmute' : 'Mute'}</span>
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-                      <X className="h-5 w-5" />
-                      <span className="sr-only">Close chat</span>
-                  </Button>
-              </div>
+              <Button variant="ghost" size="icon" onClick={() => setIsMuted(prev => !prev)}>
+                  {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                  <span className="sr-only">{isMuted ? 'Unmute' : 'Mute'}</span>
+              </Button>
             </div>
           </CardHeader>
           <CardContent className="flex-grow overflow-hidden p-0">
@@ -220,6 +214,10 @@ export function Chatbot() {
               </Button>
             </form>
           </CardFooter>
+          <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="absolute top-4 right-4 h-8 w-8 rounded-full opacity-70 transition-opacity hover:opacity-100">
+              <X className="h-5 w-5" />
+              <span className="sr-only">Close chat</span>
+          </Button>
         </Card>
       </div>
     </>
