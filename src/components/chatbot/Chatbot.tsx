@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, Send, User, X, Volume2, VolumeX, MessagesSquare } from 'lucide-react';
+import { Bot, Send, User, X, MessagesSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -19,9 +19,9 @@ interface Message {
 }
 
 const presetQuestions = [
-    "How much paint do I need for my living room?",
-    "What's a good SEER rating for a new AC unit?",
-    "Can you help me estimate the cost of a kitchen remodel?",
+    "How much paint do I need?",
+    "Estimate kitchen remodel cost",
+    "What size AC unit do I need?",
 ];
 
 
@@ -33,24 +33,10 @@ export function Chatbot() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
   const { toast } = useToast();
   
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const prevMessagesLength = useRef(messages.length);
-
-  useEffect(() => {
-    const savedMuteState = localStorage.getItem('chatbotMuted');
-    if (savedMuteState !== null) {
-      setIsMuted(JSON.parse(savedMuteState));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('chatbotMuted', JSON.stringify(isMuted));
-  }, [isMuted]);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -62,22 +48,13 @@ export function Chatbot() {
   }, [inputValue]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && !audioRef.current) {
-        audioRef.current = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABgAZGF0YQAAAAA=');
-    }
-
-    if (messages.length > prevMessagesLength.current && messages[messages.length - 1].role === 'model' && !isMuted) {
-        audioRef.current?.play().catch(e => console.error("Error playing sound:", e));
-    }
-    prevMessagesLength.current = messages.length;
-
     if (isOpen && scrollAreaRef.current) {
       scrollAreaRef.current.scrollTo({
         top: scrollAreaRef.current.scrollHeight,
         behavior: 'smooth',
       });
     }
-  }, [messages, isMuted, isOpen]);
+  }, [messages, isOpen]);
 
   const handleSendMessage = async (queryOverride?: string) => {
     const query = queryOverride || inputValue.trim();
@@ -151,7 +128,7 @@ export function Chatbot() {
 
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
         <Card className="w-[380px] h-[600px] flex flex-col shadow-2xl border">
-          <CardHeader className="flex flex-row items-center p-4 border-b">
+          <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
             <div className="flex items-center gap-3">
               <div className="bg-primary/10 p-2 rounded-full">
                 <MessagesSquare className="h-6 w-6 text-primary" />
@@ -161,11 +138,7 @@ export function Chatbot() {
                 <CardDescription>Your AI home project assistant.</CardDescription>
               </div>
             </div>
-            <div className="flex items-center ml-auto">
-              <Button variant="ghost" size="icon" onClick={() => setIsMuted(prev => !prev)} className="h-8 w-8 rounded-full text-muted-foreground">
-                {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-                <span className="sr-only">{isMuted ? 'Unmute' : 'Mute'}</span>
-              </Button>
+            <div className="flex items-center">
               <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full text-muted-foreground">
                 <X className="h-5 w-5" />
                 <span className="sr-only">Close chat</span>
@@ -217,13 +190,13 @@ export function Chatbot() {
              {messages.length <= 1 && (
                 <div className="p-4 border-t">
                     <p className="text-sm font-medium mb-2 text-muted-foreground">Or try asking:</p>
-                    <div className="flex flex-col items-start gap-2">
+                    <div className="flex flex-wrap items-start gap-2">
                         {presetQuestions.map((q, i) => (
                             <Button 
                                 key={i} 
                                 variant="outline" 
                                 size="sm"
-                                className="h-auto w-full justify-start text-left whitespace-normal"
+                                className="h-auto whitespace-normal rounded-full"
                                 onClick={() => handleSendMessage(q)}
                                 disabled={isLoading}
                             >
