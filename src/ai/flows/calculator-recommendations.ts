@@ -13,10 +13,10 @@ import {z} from 'genkit';
 import { calculators } from '@/lib/calculators';
 
 const RecommendCalculatorsInputSchema = z.object({
-  pastActivity: z
+  projectDescription: z
     .string()
     .describe(
-      'A description of the user past activity, including calculators used and any input provided to those calculators.'
+      'A description of the user\'s project or task.'
     ),
 });
 export type RecommendCalculatorsInput = z.infer<typeof RecommendCalculatorsInputSchema>;
@@ -34,28 +34,29 @@ export async function recommendCalculators(
   return recommendCalculatorsFlow(input);
 }
 
-const availableCalculators = calculators.map(c => c.name).join(', ');
+const availableCalculatorsForPrompt = calculators.map(c => `- ${c.name}: ${c.description}`).join('\n');
 
 const prompt = ai.definePrompt({
   name: 'recommendCalculatorsPrompt',
   model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: RecommendCalculatorsInputSchema},
   output: {schema: RecommendCalculatorsOutputSchema},
-  prompt: `You are a helpful assistant that recommends calculators to users based on their past activity.
+  prompt: `You are an expert AI assistant for HomeCalc Pro, a website with a suite of home-related calculators. Your task is to intelligently recommend the most relevant calculators based on a user's project description.
 
-  Given the following user activity:
-  "{{{pastActivity}}}"
-
-  The available calculators are: ${availableCalculators}
-
-  Recommend a list of calculators that the user might find helpful. Only return the exact names of the calculators from the list provided.
+  Analyze the user's project description below. Think about the steps, materials, and tasks involved in their project, and identify which of the available calculators would be most helpful.
   
-  Your response MUST be a valid JSON object that conforms to the specified output schema.
-  Do not include any explanatory text, markdown formatting, or anything else outside of the JSON structure.
+  User's project description:
+  "{{{projectDescription}}}"
   
-  Specifically, you must return a JSON object with a single key "recommendations" which is an array of strings.
-  For example: {"recommendations": ["Paint Coverage Calculator", "Flooring Calculator"]}
-  If no calculators are relevant, return an empty array: {"recommendations": []}
+  Here is the list of available calculators:
+  ${availableCalculatorsForPrompt}
+  
+  **RULES:**
+  - Only recommend calculators from the list provided.
+  - Return only the exact names of the calculators. Your spelling must be perfect.
+  - Your response MUST be a valid JSON object that conforms to the specified output schema.
+  - If the project description is vague or no calculators are relevant, return an empty array: {"recommendations": []}.
+  - For example, if the user says "I am building a new deck and patio", you should recommend ["Decking Materials Calculator", "Concrete Slab Calculator"].
   `,
 });
 

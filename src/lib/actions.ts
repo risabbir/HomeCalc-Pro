@@ -12,10 +12,10 @@ function checkApiKey() {
   }
 }
 
-export async function getAiRecommendations(pastActivity: string) {
+export async function getAiRecommendations(projectDescription: string) {
   checkApiKey();
   try {
-    const result = await recommendCalculators({ pastActivity });
+    const result = await recommendCalculators({ projectDescription });
     return result;
   } catch (error) {
     console.error('Error getting AI recommendations:', error);

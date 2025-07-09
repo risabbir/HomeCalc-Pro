@@ -13,16 +13,16 @@ import { calculators } from '@/lib/calculators';
 
 export function AiRecommendations() {
   const [loading, setLoading] = useState(false);
-  const [activity, setActivity] = useState('');
+  const [projectDescription, setProjectDescription] = useState('');
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activity) {
+    if (!projectDescription) {
         toast({
             title: 'Input needed',
-            description: 'Please describe your project or activity.',
+            description: 'Please describe your project.',
             variant: 'destructive',
         });
         return;
@@ -30,13 +30,13 @@ export function AiRecommendations() {
     setLoading(true);
     setRecommendations([]);
     try {
-      const result = await getAiRecommendations(activity);
+      const result = await getAiRecommendations(projectDescription);
       if (result && result.recommendations && result.recommendations.length > 0) {
         setRecommendations(result.recommendations);
       } else {
         toast({
             title: 'No recommendations found',
-            description: 'We couldn\'t find any recommendations for your activity. Please try a different description.',
+            description: 'We couldn\'t find any specific calculators for your project. Try rephrasing your description.',
         });
       }
     } catch (error) {
@@ -69,14 +69,14 @@ export function AiRecommendations() {
                         AI Calculator Recommendations
                     </CardTitle>
                     <CardDescription>
-                        Tell us what you're working on. For example, "I'm planning to build a new deck" or "my energy bills are too high".
+                        Tell us what you're working on. The more detail you provide, the better the recommendations will be.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Textarea
-                        placeholder="Describe your activity..."
-                        value={activity}
-                        onChange={(e) => setActivity(e.target.value)}
+                        placeholder="Describe your project, e.g., 'I'm building a deck and want to paint my living room.'"
+                        value={projectDescription}
+                        onChange={(e) => setProjectDescription(e.target.value)}
                         disabled={loading}
                     />
                      {recommendations.length > 0 && (

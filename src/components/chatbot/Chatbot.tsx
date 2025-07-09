@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, MessagesSquare, Loader2, Send, User, X, LifeBuoy, MessageCircle } from 'lucide-react';
+import { Bot, MessagesSquare, Loader2, Send, User, X, Volume2, VolumeX } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -23,21 +23,44 @@ export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [showCallout, setShowCallout] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', content: "Need help? Ask me for project advice or a calculator suggestion!" }
+    { role: 'model', content: "Hi there! How can I help with your home project today?" }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const prevMessagesLength = useRef(messages.length);
 
   useEffect(() => {
+    const savedMuteState = localStorage.getItem('chatbotMuted');
+    if (savedMuteState !== null) {
+      setIsMuted(JSON.parse(savedMuteState));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('chatbotMuted', JSON.stringify(isMuted));
+  }, [isMuted]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !audioRef.current) {
+        audioRef.current = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABgAZGF0YQAAAAA=');
+    }
+
+    if (messages.length > prevMessagesLength.current && messages[messages.length - 1].role === 'model' && !isMuted) {
+        audioRef.current?.play().catch(e => console.error("Error playing sound:", e));
+    }
+    prevMessagesLength.current = messages.length;
+
     if (isOpen && scrollAreaRef.current) {
       scrollAreaRef.current.scrollTo({
         top: scrollAreaRef.current.scrollHeight,
         behavior: 'smooth',
       });
     }
-  }, [messages, isOpen]);
+  }, [messages, isMuted, isOpen]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -83,8 +106,8 @@ export function Chatbot() {
       )}>
         {/* Callout */}
         {showCallout && (
-           <div className="bg-card text-card-foreground rounded-lg p-4 border w-64 relative animate-in fade-in-50 slide-in-from-bottom-10 shadow-none">
-             <p className="text-sm font-medium leading-relaxed border-none shadow-none">
+           <div className="bg-card text-card-foreground rounded-lg p-4 border w-64 relative animate-in fade-in-50 slide-in-from-bottom-10">
+             <p className="text-sm font-medium leading-relaxed border-none">
               Need help? Ask me for project advice or a calculator suggestion!
             </p>
             <Button 
@@ -102,7 +125,7 @@ export function Chatbot() {
         {/* FAB */}
         <Button
             onClick={handleOpenChat}
-            className="h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 [&_svg]:size-9"
+            className="h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 [&_svg]:size-9 bg-primary hover:bg-primary/90"
             aria-label="Open chatbot"
         >
             <MessagesSquare className="text-primary-foreground" />
@@ -123,9 +146,16 @@ export function Chatbot() {
                 <CardDescription>AI Assistant</CardDescription>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-              <X className="h-5 w-5" />
-            </Button>
+            <div>
+                <Button variant="ghost" size="icon" onClick={() => setIsMuted(prev => !prev)}>
+                    {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                    <span className="sr-only">{isMuted ? 'Unmute' : 'Mute'}</span>
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
+                    <X className="h-5 w-5" />
+                    <span className="sr-only">Close chat</span>
+                </Button>
+            </div>
           </CardHeader>
           <CardContent className="flex-grow overflow-hidden p-0">
             <ScrollArea className="h-full" ref={scrollAreaRef}>
