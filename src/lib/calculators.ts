@@ -166,7 +166,7 @@ export const calculators: Calculator[] = [
     slug: 'savings-calculator',
     name: 'Savings Calculator',
     description: 'Estimate the future value of your savings or investments.',
-    Icon: LineChart,
+    Icon: PiggyBank,
     category: 'Other',
   },
   {
