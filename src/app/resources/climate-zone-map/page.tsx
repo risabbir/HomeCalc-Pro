@@ -48,7 +48,8 @@ export default function ClimateZoneMapPage() {
                     <Card className="overflow-hidden border-2">
                              <CardContent className="p-0 bg-white">
                                 <Image
-                                    src="https://www.energy.gov/sites/default/files/2023-09/building-america-climate-zone-map.png"
+                                    src="https://6000-firebase-studio-1751870790151.cluster-ys234awlzbhwoxmkkse6qo3fz6.cloudworkstations.dev/capra/attachedImages/64d6697e-ee29-40b0-adaf-390271442b96/image_da74ad55-b60d-4b8b-89d6-c793ad59d3bf.png"
+                                    data-ai-hint="climate zone map"
                                     alt="A map of the United States showing building climate zones, including Subarctic, Cold, Very Cold, Mixed-Humid, Mixed-Dry, Hot-Humid, Hot-Dry, and Marine."
                                     width={1200}
                                     height={861}
