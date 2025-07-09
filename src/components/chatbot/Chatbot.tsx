@@ -133,7 +133,7 @@ export function Chatbot() {
           <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
             <div className="flex items-center gap-3">
               <div className="bg-primary/10 p-2 rounded-full">
-                <Sparkle className="h-6 w-6 text-primary" />
+                <MessagesSquare className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <CardTitle className="text-lg">HomeCalc Helper</CardTitle>
@@ -156,7 +156,7 @@ export function Chatbot() {
                       message.role === 'user' ? 'justify-end' : 'justify-start'
                     )}
                   >
-                    {message.role === 'model' && <Sparkle className="h-6 w-6 shrink-0 text-primary" />}
+                    {message.role === 'model' && <MessagesSquare className="h-6 w-6 shrink-0 text-primary" />}
                     <div
                       className={cn(
                         'rounded-lg px-4 py-2.5 max-w-[85%] break-words',
@@ -196,7 +196,7 @@ export function Chatbot() {
 
                 {isLoading && (
                   <div className="flex justify-start gap-3 text-sm">
-                      <Sparkle className="h-6 w-6 shrink-0 text-primary" />
+                      <MessagesSquare className="h-6 w-6 shrink-0 text-primary" />
                       <div className="rounded-lg px-4 py-3 bg-muted flex items-center space-x-1.5">
                         <span className="h-2 w-2 bg-muted-foreground/70 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                         <span className="h-2 w-2 bg-muted-foreground/70 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
