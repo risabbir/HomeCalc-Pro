@@ -25,7 +25,7 @@ export type ChatbotInput = z.infer<typeof ChatbotInputSchema>;
 
 const ChatbotOutputSchema = z.object({
   answer: z.string().describe("The chatbot's response to the user."),
-  link: z.string().nullable().optional().describe('The URL slug of a relevant calculator, if any. e.g., "paint-coverage"'),
+  link: z.string().optional().describe('The URL slug of a relevant calculator, if any. e.g., "paint-coverage"'),
 });
 export type ChatbotOutput = z.infer<typeof ChatbotOutputSchema>;
 
@@ -74,7 +74,8 @@ ${availableCalculators}
 
 **Response Rules:**
 - Your response MUST be a valid JSON object that conforms to the specified output schema. Do not include any explanatory text, markdown formatting, or anything else outside of the JSON structure.
-- When recommending a calculator from the list, you MUST provide its slug in the 'link' field of your JSON response. If multiple calculators could be relevant, pick the most important one for the link, but you can mention others in your text answer.
+- When recommending a calculator from the list, you MUST provide its slug in the 'link' field of your JSON response. If no calculator is relevant, you MUST omit the 'link' field.
+- If multiple calculators could be relevant, pick the most important one for the link, but you can mention others in your text answer.
 - If a question is completely unrelated to home improvement, DIY, gardening, or finance, politely state that you cannot help with that topic.
 - Use the conversation history and the user's provided location to understand context and provide more relevant follow-up answers.
 
