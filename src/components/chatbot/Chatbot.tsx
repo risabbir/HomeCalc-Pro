@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -5,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, User, X, MessagesSquare, ArrowRight } from 'lucide-react';
+import { Send, User, X, MessagesSquare, ArrowRight, LifeBuoy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -17,11 +18,40 @@ interface Message {
   link?: string | null;
 }
 
-const presetQuestions = [
-    "What size HVAC system do I need for my house?",
-    "How much could I save with a new AC unit?",
-    "How much does it cost to run my TV all day?",
+const defaultPresetQuestions = [
+    "What's the best type of paint for a bathroom?",
+    "How do I estimate the cost of a kitchen remodel?",
+    "Find a reliable plumber near me.",
 ];
+
+const northAmericaPresetQuestions = [
+    "What size central AC unit do I need for a 2000 sq ft house?",
+    "How much does a new gas furnace installation cost?",
+    "Calculate materials for a wood deck.",
+];
+
+const europePresetQuestions = [
+    "How much does it cost to run an electric radiator?",
+    "What are the benefits of a heat pump in a temperate climate?",
+    "Calculate insulation needed for solid brick walls.",
+];
+
+const southAsiaPresetQuestions = [
+    "What size mini-split AC is best for a humid room?",
+    "How to calculate materials for a concrete roof slab?",
+    "Estimate the cost of running an AC unit all day.",
+];
+
+const regionMap: Record<string, string[]> = {
+    // North America
+    'US': northAmericaPresetQuestions,
+    'CA': northAmericaPresetQuestions,
+    'MX': northAmericaPresetQuestions,
+    // Europe
+    'GB': europePresetQuestions, 'DE': europePresetQuestions, 'FR': europePresetQuestions, 'IT': europePresetQuestions, 'ES': europePresetQuestions, 'PL': europePresetQuestions, 'NL': europePresetQuestions, 'BE': europePresetQuestions, 'SE': europePresetQuestions, 'CH': europePresetQuestions, 'AT': europePresetQuestions, 'NO': europePresetQuestions, 'DK': europePresetQuestions, 'FI': europePresetQuestions, 'IE': europePresetQuestions,
+    // South Asia
+    'BD': southAsiaPresetQuestions, 'IN': southAsiaPresetQuestions, 'PK': southAsiaPresetQuestions, 'LK': southAsiaPresetQuestions,
+};
 
 
 export function Chatbot() {
@@ -33,10 +63,34 @@ export function Chatbot() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [presetQuestions, setPresetQuestions] = useState(defaultPresetQuestions);
   const { toast } = useToast();
   
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fetchLocationAndSetPresets = async () => {
+        try {
+            const response = await fetch('https://ip-api.com/json/?fields=status,countryCode');
+            if (!response.ok) {
+                // Keep default questions if API fails
+                return;
+            }
+            const data = await response.json();
+            if (data.status === 'success' && data.countryCode) {
+                const specificPresets = regionMap[data.countryCode];
+                if (specificPresets) {
+                    setPresetQuestions(specificPresets);
+                }
+            }
+        } catch (error) {
+            console.warn('Could not fetch location-based presets:', error);
+            // Defaults will be used
+        }
+    };
+    fetchLocationAndSetPresets();
+  }, []);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -124,7 +178,7 @@ export function Chatbot() {
           )}
           aria-label="Open chatbot"
       >
-          <MessagesSquare />
+          <LifeBuoy />
       </Button>
 
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
@@ -132,7 +186,7 @@ export function Chatbot() {
           <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
             <div className="flex items-center gap-3">
               <div className="bg-primary/10 p-2 rounded-full">
-                <MessagesSquare className="h-6 w-6 text-primary" />
+                <LifeBuoy className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <CardTitle className="text-lg">HomeCalc Helper</CardTitle>
@@ -155,7 +209,7 @@ export function Chatbot() {
                       message.role === 'user' ? 'justify-end' : 'justify-start'
                     )}
                   >
-                    {message.role === 'model' && <MessagesSquare className="h-6 w-6 shrink-0 text-primary" />}
+                    {message.role === 'model' && <LifeBuoy className="h-6 w-6 shrink-0 text-primary" />}
                     <div
                       className={cn(
                         'rounded-lg px-4 py-2.5 max-w-[85%] break-words',
@@ -195,7 +249,7 @@ export function Chatbot() {
 
                 {isLoading && (
                   <div className="flex justify-start gap-3 text-sm">
-                      <MessagesSquare className="h-6 w-6 shrink-0 text-primary" />
+                      <LifeBuoy className="h-6 w-6 shrink-0 text-primary" />
                       <div className="rounded-lg px-4 py-3 bg-muted flex items-center space-x-1.5">
                         <span className="h-2 w-2 bg-muted-foreground/70 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                         <span className="h-2 w-2 bg-muted-foreground/70 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
