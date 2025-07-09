@@ -53,6 +53,7 @@ const regionMap: Record<string, string[]> = {
     'BD': southAsiaPresetQuestions, 'IN': southAsiaPresetQuestions, 'PK': southAsiaPresetQuestions, 'LK': southAsiaPresetQuestions,
 };
 
+const PRESET_QUESTIONS_SESSION_KEY = 'homecalc_preset_questions';
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -63,7 +64,7 @@ export function Chatbot() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [presetQuestions, setPresetQuestions] = useState(defaultPresetQuestions);
+  const [presetQuestions, setPresetQuestions] = useState<string[]>(defaultPresetQuestions);
   const { toast } = useToast();
   
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -72,21 +73,30 @@ export function Chatbot() {
   useEffect(() => {
     const fetchLocationAndSetPresets = async () => {
         try {
-            const response = await fetch('https://ip-api.com/json/?fields=status,countryCode');
-            if (!response.ok) {
-                // Keep default questions if API fails
+            const storedPresets = sessionStorage.getItem(PRESET_QUESTIONS_SESSION_KEY);
+            if (storedPresets) {
+                setPresetQuestions(JSON.parse(storedPresets));
                 return;
             }
-            const data = await response.json();
-            if (data.status === 'success' && data.countryCode) {
-                const specificPresets = regionMap[data.countryCode];
-                if (specificPresets) {
-                    setPresetQuestions(specificPresets);
+
+            const response = await fetch('https://ip-api.com/json/?fields=status,countryCode');
+            let finalPresets = defaultPresetQuestions;
+            if (response.ok) {
+                const data = await response.json();
+                if (data.status === 'success' && data.countryCode) {
+                    const specificPresets = regionMap[data.countryCode];
+                    if (specificPresets) {
+                        finalPresets = specificPresets;
+                    }
                 }
             }
+            setPresetQuestions(finalPresets);
+            sessionStorage.setItem(PRESET_QUESTIONS_SESSION_KEY, JSON.stringify(finalPresets));
         } catch (error) {
             console.warn('Could not fetch location-based presets:', error);
-            // Defaults will be used
+            // On error, use defaults and store them so we don't try again this session
+            sessionStorage.setItem(PRESET_QUESTIONS_SESSION_KEY, JSON.stringify(defaultPresetQuestions));
+            // No need to call setPresetQuestions, it already defaults to this
         }
     };
     fetchLocationAndSetPresets();
