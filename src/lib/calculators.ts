@@ -3,7 +3,7 @@ import {
   ThermometerSun, Wrench, Sprout, Home, Wind, PlugZap, Building2, AirVent, 
   Heater, Snowflake, Gauge, Square, Wallpaper as WallpaperIcon, Shovel,
   CookingPot, Construction, Layers, Warehouse, Fan, TrendingUp, Lightbulb,
-  PiggyBank, Car
+  PiggyBank, Car, LineChart
 } from 'lucide-react';
 
 export interface Calculator {
@@ -166,7 +166,7 @@ export const calculators: Calculator[] = [
     slug: 'savings-calculator',
     name: 'Savings Calculator',
     description: 'Estimate the future value of your savings or investments.',
-    Icon: PiggyBank,
+    Icon: LineChart,
     category: 'Other',
   },
   {
