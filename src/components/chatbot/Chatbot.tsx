@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, MessagesSquare, Loader2, Send, User, X, Volume2, VolumeX, MessageCircle } from 'lucide-react';
+import { Bot, Loader2, Send, User, X, Volume2, VolumeX, MessageCircle, LifeBuoy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -128,22 +128,22 @@ export function Chatbot() {
             className="gap-1 whitespace-nowrap text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-8 [&_svg]:shrink-0 from-gradient-from to-gradient-to text-primary-foreground [background-size:200%_auto] hover:[background-position:right_center] h-16 w-16 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0 shrink-0"
             aria-label="Open chatbot"
         >
-            <MessagesSquare className="text-primary-foreground" />
+            <MessageCircle className="h-8 w-8 text-primary-foreground" />
         </Button>
       </div>
 
 
       {/* Chat Window */}
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
-        <Card className="w-[380px] h-[600px] flex flex-col shadow-2xl">
+        <Card className="w-[380px] h-[600px] flex flex-col shadow-2xl border-none">
           <CardHeader className="flex flex-row items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-primary/10 p-2 rounded-full">
                 <Bot className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle>HomeCalc Helper</CardTitle>
-                <CardDescription>AI Assistant</CardDescription>
+                <CardTitle>HomeCalc Pro</CardTitle>
+                <CardDescription>Your personal AI helper for all your home needs.</CardDescription>
               </div>
             </div>
             <div>
