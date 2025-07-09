@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, MessageCircle, Loader2, Send, User, X } from 'lucide-react';
+import { Bot, MessagesSquare, Loader2, Send, User, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -105,7 +105,7 @@ export function Chatbot() {
             className="h-16 w-16 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0 shrink-0 shadow-lg"
             aria-label="Open chatbot"
         >
-            <MessageCircle className="h-9 w-9 text-primary-foreground" />
+            <MessagesSquare className="h-8 w-8 text-primary-foreground" />
         </Button>
       </div>
 
