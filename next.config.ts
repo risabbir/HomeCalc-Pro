@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'www.energy.gov',
+        hostname: '**.energy.gov',
         port: '',
         pathname: '/**',
       },
