@@ -19,8 +19,8 @@ interface Message {
 }
 
 const presetQuestions = [
-  "What's the best type of paint for a bathroom?",
-  "How do I estimate the cost of a kitchen remodel?",
+  "How much money can I save with a smart thermostat?",
+  "What do I need to know before building a deck?",
   "What size AC unit do I need for a 2000 sq ft house?",
 ];
 
