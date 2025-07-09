@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -153,8 +152,8 @@ export function Chatbot() {
                 <Bot className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-lg">AI Assistant</CardTitle>
-                <CardDescription className="text-xs">Powered by HomeCalc Pro</CardDescription>
+                <CardTitle className="text-lg">HomeCalc Helper</CardTitle>
+                <CardDescription className="text-xs">Your project planning expert</CardDescription>
               </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full text-muted-foreground">
