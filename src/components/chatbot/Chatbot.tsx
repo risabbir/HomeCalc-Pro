@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, MessagesSquare, Loader2, Send, User, X } from 'lucide-react';
+import { Bot, MessagesSquare, Loader2, Send, User, X, LifeBuoy, MessageCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -23,7 +23,7 @@ export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [showCallout, setShowCallout] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', content: "Hello! I'm the HomeCalc Helper. How can I assist you with your home projects today?" }
+    { role: 'model', content: "Need help? Ask me for project advice or a calculator suggestion!" }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -83,9 +83,9 @@ export function Chatbot() {
       )}>
         {/* Callout */}
         {showCallout && (
-           <div className="bg-card text-card-foreground rounded-lg p-4 border w-64 relative animate-in fade-in-50 slide-in-from-bottom-10">
-             <p className="text-sm font-medium leading-relaxed">
-              Stuck on a project? Ask me for help or a calculator suggestion!
+           <div className="bg-card text-card-foreground rounded-lg p-4 border w-64 relative animate-in fade-in-50 slide-in-from-bottom-10 shadow-none">
+             <p className="text-sm font-medium leading-relaxed border-none shadow-none">
+              Need help? Ask me for project advice or a calculator suggestion!
             </p>
             <Button 
                 variant="ghost"
@@ -102,10 +102,10 @@ export function Chatbot() {
         {/* FAB */}
         <Button
             onClick={handleOpenChat}
-            className="h-16 w-16 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0 shrink-0"
+            className="h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 [&_svg]:size-9"
             aria-label="Open chatbot"
         >
-            <MessagesSquare className="h-9 w-9 text-primary-foreground" />
+            <MessagesSquare className="text-primary-foreground" />
         </Button>
       </div>
 
