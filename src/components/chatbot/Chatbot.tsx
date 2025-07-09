@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -6,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Sparkle, Send, User, X, MessagesSquare, ArrowRight } from 'lucide-react';
+import { Send, User, X, MessagesSquare, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -140,7 +139,7 @@ export function Chatbot() {
                 <CardDescription className="text-xs">Your friendly home project guide</CardDescription>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full text-muted-foreground">
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-9 w-9 rounded-full text-muted-foreground">
               <X className="h-5 w-5" />
               <span className="sr-only">Close chat</span>
             </Button>
