@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -143,7 +142,7 @@ export function Chatbot() {
               </div>
               <div>
                 <CardTitle className="text-lg">HomeCalc Pro</CardTitle>
-                <CardDescription>Your AI home project assistant.</CardDescription>
+                <CardDescription>Your AI home assistant.</CardDescription>
               </div>
             </div>
             <div className="flex items-center">
