@@ -106,9 +106,9 @@ export function Chatbot() {
       )}>
         {/* Callout */}
         {showCallout && (
-           <div className="relative bg-card text-card-foreground rounded-lg p-4 border w-64 animate-in fade-in-50 slide-in-from-bottom-10 border-border/50">
-             <p className="text-sm font-medium leading-relaxed border-none">
-              Need a hand? Ask me for project advice or calculator suggestions!
+           <div className="relative bg-card text-card-foreground rounded-lg p-4 border w-64 animate-in fade-in-50 slide-in-from-bottom-10">
+             <p className="text-sm font-medium leading-relaxed">
+              Need help? Ask me anything!
             </p>
             <Button 
                 variant="ghost"
@@ -135,15 +135,15 @@ export function Chatbot() {
 
       {/* Chat Window */}
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
-        <Card className="w-[380px] h-[600px] flex flex-col shadow-2xl border-none">
+        <Card className="w-[380px] h-[600px] flex flex-col shadow-2xl border">
           <CardHeader className="flex flex-row items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-primary/10 p-2 rounded-full">
                 <MessagesSquare className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle>HomeCalc Pro</CardTitle>
-                <CardDescription>Your personal AI helper for all your home needs.</CardDescription>
+                <CardTitle className="text-lg">HomeCalc Pro</CardTitle>
+                <CardDescription>Your AI home project assistant.</CardDescription>
               </div>
             </div>
             <div className="flex items-center">
