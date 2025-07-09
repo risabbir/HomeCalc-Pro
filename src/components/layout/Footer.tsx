@@ -3,33 +3,47 @@ import { Logo } from './Logo';
 
 export function Footer() {
   return (
-    <footer className="bg-secondary text-secondary-foreground">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-4 md:col-span-1">
-            <Link href="/" className="inline-block">
+    <footer className="bg-secondary text-secondary-foreground border-t">
+      <div className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="lg:col-span-1">
+            <Link href="/" className="inline-block mb-4">
               <Logo />
             </Link>
-            <p className="text-sm text-muted-foreground">Your trusted partner for home project calculations.</p>
+            <p className="text-sm text-muted-foreground max-w-xs">
+              Empowering your home projects with precision calculators and expert resources.
+            </p>
           </div>
-          <div className="md:col-start-3">
-            <h4 className="font-semibold text-foreground mb-4">Navigation</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/" className="text-muted-foreground hover:text-primary">Home</Link></li>
-              <li><Link href="/#calculators" className="text-muted-foreground hover:text-primary">Calculators</Link></li>
-              <li><Link href="/resources" className="text-muted-foreground hover:text-primary">Resources</Link></li>
-              <li><Link href="/faq" className="text-muted-foreground hover:text-primary">FAQ</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold text-foreground mb-4">Legal</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
-              <li><Link href="/legal" className="text-muted-foreground hover:text-primary">Terms of Service</Link></li>
-            </ul>
+          <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-8">
+            <div>
+              <h4 className="font-semibold text-foreground mb-4">Calculators</h4>
+              <ul className="space-y-3 text-sm">
+                <li><Link href="/#hvac" className="text-muted-foreground hover:text-primary transition-colors">HVAC</Link></li>
+                <li><Link href="/#home-improvement" className="text-muted-foreground hover:text-primary transition-colors">Home Improvement</Link></li>
+                <li><Link href="/#gardening" className="text-muted-foreground hover:text-primary transition-colors">Gardening</Link></li>
+                <li><Link href="/#calculators" className="text-muted-foreground hover:text-primary transition-colors">All Calculators</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground mb-4">Resources</h4>
+              <ul className="space-y-3 text-sm">
+                <li><Link href="/resources/deck-checklist" className="text-muted-foreground hover:text-primary transition-colors">Deck Checklist</Link></li>
+                <li><Link href="/resources/paint-finish-guide" className="text-muted-foreground hover:text-primary transition-colors">Paint Guide</Link></li>
+                <li><Link href="/resources/kitchen-layout-guide" className="text-muted-foreground hover:text-primary transition-colors">Kitchen Layouts</Link></li>
+                 <li><Link href="/resources" className="text-muted-foreground hover:text-primary transition-colors">All Resources</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground mb-4">Company</h4>
+              <ul className="space-y-3 text-sm">
+                <li><Link href="/faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</Link></li>
+                <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/legal" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div className="border-t mt-8 pt-6 text-center text-sm text-muted-foreground">
+        <div className="border-t mt-12 pt-8 text-center text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} HomeCalc Pro. All Rights Reserved.</p>
         </div>
       </div>
