@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, MessagesSquare, Loader2, Send, User, X, Volume2, VolumeX } from 'lucide-react';
+import { Bot, MessagesSquare, Loader2, Send, User, X, Volume2, VolumeX, MessageCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -22,7 +22,7 @@ export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [showCallout, setShowCallout] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', content: "Hi there! How can I help with your home project today?" }
+    { role: 'model', content: "Hi! How can I help you plan your next home project?" }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -106,7 +106,7 @@ export function Chatbot() {
       )}>
         {/* Callout */}
         {showCallout && (
-           <div className="bg-card text-card-foreground rounded-lg p-4 border w-64 animate-in fade-in-50 slide-in-from-bottom-10 shadow-none">
+           <div className="relative bg-card text-card-foreground rounded-lg p-4 border w-64 animate-in fade-in-50 slide-in-from-bottom-10 shadow-none border-border/50">
              <p className="text-sm font-medium leading-relaxed border-none">
               Need help? I can find calculators or give project advice!
             </p>
@@ -125,7 +125,7 @@ export function Chatbot() {
         {/* FAB */}
         <Button
             onClick={handleOpenChat}
-            className="h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 [&_svg]:size-9 bg-primary hover:bg-primary/90 shadow-none"
+            className="gap-1 whitespace-nowrap text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-8 [&_svg]:shrink-0 from-gradient-from to-gradient-to text-primary-foreground [background-size:200%_auto] hover:[background-position:right_center] h-16 w-16 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0 shrink-0"
             aria-label="Open chatbot"
         >
             <MessagesSquare className="text-primary-foreground" />
@@ -198,7 +198,7 @@ export function Chatbot() {
               </div>
             </ScrollArea>
           </CardContent>
-          <CardFooter className="pt-4">
+          <CardFooter className="pt-4 border-t">
              <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex w-full items-start gap-2">
               <Textarea
                 value={inputValue}
