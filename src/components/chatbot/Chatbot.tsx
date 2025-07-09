@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -5,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, Send, User, X, MessagesSquare } from 'lucide-react';
+import { Bot, Send, User, X, MessagesSquare, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -20,13 +21,13 @@ interface Message {
 const presetQuestions = [
     "How much paint do I need for a room?",
     "Give me a cost estimate for a kitchen remodel",
-    "What size AC unit do I need?",
+    "What's the best type of insulation for an attic?",
 ];
 
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [showCallout, setShowCallout] = useState(true);
+  const [showPresets, setShowPresets] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
     { role: 'model', content: "Hi! How can I help you plan your next home project?" }
   ]);
@@ -87,38 +88,55 @@ export function Chatbot() {
     }
   };
 
-  const handleOpenChat = () => {
+  const handlePresetClick = (question: string) => {
+    setShowPresets(false);
     setIsOpen(true);
-    setShowCallout(false);
+    // Wait a moment for the chatbox to open before sending the message
+    setTimeout(() => {
+        handleSendMessage(question);
+    }, 100);
   };
 
   return (
     <>
       <div className={cn(
-        "fixed bottom-6 right-6 z-50 flex items-end gap-4",
+        "fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3",
         "transition-all duration-300 ease-in-out",
         isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
       )}>
-        {showCallout && (
-           <div className="relative bg-card text-card-foreground rounded-lg p-4 border w-64 animate-in fade-in-50 slide-in-from-bottom-10">
-             <p className="text-sm font-medium leading-relaxed">
-              Need help? Just ask!
-            </p>
-            <Button 
-                variant="ghost"
-                size="icon"
-                onClick={(e) => { e.stopPropagation(); setShowCallout(false); }} 
-                className="absolute top-1 right-1 h-6 w-6"
-                aria-label="Dismiss message"
-            >
-                <X className="h-4 w-4" />
-            </Button>
-          </div>
+        {showPresets && (
+           <Card className="w-72 animate-in fade-in-50 slide-in-from-bottom-10">
+            <CardHeader className="p-4 flex-row items-center justify-between">
+                <CardTitle className="text-base">Quick Questions</CardTitle>
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => setShowPresets(false)} 
+                    className="h-6 w-6"
+                >
+                    <X className="h-4 w-4" />
+                </Button>
+            </CardHeader>
+             <CardContent className="p-4 pt-0">
+               <div className="space-y-2">
+                 {presetQuestions.map((q, i) => (
+                   <button
+                     key={i}
+                     onClick={() => handlePresetClick(q)}
+                     className="w-full text-left p-2 rounded-md bg-muted/50 hover:bg-muted text-sm text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed group flex items-center justify-between"
+                   >
+                     <span>{q}</span>
+                     <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all"/>
+                   </button>
+                 ))}
+               </div>
+             </CardContent>
+           </Card>
         )}
         
         <Button
-            onClick={handleOpenChat}
-            className="gap-1 whitespace-nowrap text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-8 [&_svg]:shrink-0 from-gradient-from to-gradient-to text-primary-foreground [background-size:200%_auto] hover:[background-position:right_center] h-16 w-16 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0 shrink-0"
+            onClick={() => setIsOpen(true)}
+            className="h-16 w-16 rounded-full bg-primary shadow-lg hover:bg-primary/90 flex items-center justify-center p-0 shrink-0"
             aria-label="Open chatbot"
         >
             <MessagesSquare className="h-8 w-8 text-primary-foreground" />
@@ -130,19 +148,17 @@ export function Chatbot() {
           <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
             <div className="flex items-center gap-3">
               <div className="bg-primary/10 p-2 rounded-full">
-                <MessagesSquare className="h-6 w-6 text-primary" />
+                <Bot className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-lg">HomeCalc Pro</CardTitle>
-                <CardDescription>Your AI home project assistant.</CardDescription>
+                <CardTitle className="text-lg">AI Assistant</CardTitle>
+                <CardDescription className="text-xs">Powered by HomeCalc Pro</CardDescription>
               </div>
             </div>
-            <div className="flex items-center">
-              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full text-muted-foreground">
-                <X className="h-5 w-5" />
-                <span className="sr-only">Close chat</span>
-              </Button>
-            </div>
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full text-muted-foreground">
+              <X className="h-5 w-5" />
+              <span className="sr-only">Close chat</span>
+            </Button>
           </CardHeader>
           <CardContent className="flex-grow flex flex-col overflow-hidden p-0">
             <ScrollArea className="flex-grow" ref={scrollAreaRef}>
@@ -158,7 +174,7 @@ export function Chatbot() {
                     {message.role === 'model' && <Bot className="h-6 w-6 shrink-0 text-primary" />}
                     <div
                       className={cn(
-                        'rounded-lg px-4 py-2 max-w-[80%]',
+                        'rounded-lg px-4 py-2.5 max-w-[85%] break-words',
                         message.role === 'user'
                           ? 'bg-primary text-primary-foreground'
                           : 'bg-muted'
@@ -171,7 +187,7 @@ export function Chatbot() {
                         </Button>
                       )}
                     </div>
-                     {message.role === 'user' && <User className="h-6 w-6 shrink-0" />}
+                     {message.role === 'user' && <User className="h-6 w-6 shrink-0 rounded-full bg-secondary text-secondary-foreground p-0.5" />}
                   </div>
                 ))}
                 {isLoading && (
@@ -186,25 +202,8 @@ export function Chatbot() {
                 )}
               </div>
             </ScrollArea>
-             {messages.length <= 1 && (
-                <div className="p-4 border-t">
-                    <p className="text-sm font-medium text-muted-foreground mb-3">Or try asking:</p>
-                    <div className="space-y-2">
-                        {presetQuestions.map((q, i) => (
-                            <button
-                                key={i}
-                                onClick={() => handleSendMessage(q)}
-                                disabled={isLoading}
-                                className="w-full text-left p-2 rounded-md bg-muted/50 hover:bg-muted text-sm text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {q}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            )}
           </CardContent>
-          <CardFooter className="p-2 border-t">
+          <CardFooter className="p-2 border-t bg-background">
              <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex w-full items-end gap-2">
               <Textarea
                 ref={textareaRef}
@@ -212,7 +211,7 @@ export function Chatbot() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Ask about a project..."
-                className="flex-grow overflow-y-auto resize-none py-2.5 no-scrollbar"
+                className="flex-grow overflow-y-auto resize-none py-2.5 no-scrollbar bg-muted border-muted-foreground/20 focus-visible:ring-primary/50"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
