@@ -138,10 +138,10 @@ export function Chatbot() {
         <Button
             variant="solid"
             onClick={() => setIsOpen(true)}
-            className="h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 shadow-none"
+            className="h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 shadow-none [&_svg]:size-10"
             aria-label="Open chatbot"
         >
-            <MessagesSquare className="h-10 w-10 text-primary-foreground" />
+            <MessagesSquare className="text-primary-foreground" />
         </Button>
       </div>
 
