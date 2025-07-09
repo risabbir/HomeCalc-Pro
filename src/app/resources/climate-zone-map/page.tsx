@@ -48,7 +48,7 @@ export default function ClimateZoneMapPage() {
                     <Card className="overflow-hidden border-2">
                              <CardContent className="p-0 bg-white">
                                 <Image
-                                    src="https://placehold.co/1200x927.png"
+                                    src="https://www.energy.gov/sites/default/files/2023-10/BSI_23_018447_US-climate-zone-map_v2_10-23-23-01.png"
                                     data-ai-hint="climate zone map"
                                     alt="A map of the United States showing the 8 building climate zones as defined by the U.S. Department of Energy."
                                     width={1200}
