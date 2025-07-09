@@ -25,7 +25,7 @@ export type ChatbotInput = z.infer<typeof ChatbotInputSchema>;
 
 const ChatbotOutputSchema = z.object({
   answer: z.string().describe("The chatbot's response to the user."),
-  link: z.string().optional().describe('The URL slug of a relevant calculator, if any. e.g., "paint-coverage"'),
+  link: z.string().nullable().optional().describe('The URL slug of a relevant calculator, if any. e.g., "paint-coverage"'),
 });
 export type ChatbotOutput = z.infer<typeof ChatbotOutputSchema>;
 
