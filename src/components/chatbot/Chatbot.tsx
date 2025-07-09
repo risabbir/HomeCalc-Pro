@@ -54,7 +54,7 @@ export function Chatbot() {
         behavior: 'smooth',
       });
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, showPresets]);
 
   const handleSendMessage = async (queryOverride?: string) => {
     const query = queryOverride || inputValue.trim();
@@ -90,60 +90,23 @@ export function Chatbot() {
   };
 
   const handlePresetClick = (question: string) => {
-    setShowPresets(false);
-    setIsOpen(true);
-    // Wait a moment for the chatbox to open before sending the message
-    setTimeout(() => {
-        handleSendMessage(question);
-    }, 100);
+    handleSendMessage(question);
   };
 
   return (
     <>
-      <div className={cn(
-        "fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3",
-        "transition-all duration-300 ease-in-out",
-        isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
-      )}>
-        {showPresets && (
-           <Card className="w-72 animate-in fade-in-50 slide-in-from-bottom-10">
-            <CardHeader className="p-4 flex-row items-center justify-between">
-                <CardTitle className="text-base">Quick Questions</CardTitle>
-                <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={(e) => { e.stopPropagation(); setShowPresets(false); }}
-                    className="h-6 w-6"
-                >
-                    <X className="h-4 w-4" />
-                </Button>
-            </CardHeader>
-             <CardContent className="p-4 pt-0">
-               <div className="space-y-2">
-                 {presetQuestions.map((q, i) => (
-                   <button
-                     key={i}
-                     onClick={() => handlePresetClick(q)}
-                     className="w-full text-left p-2 rounded-md bg-muted/50 hover:bg-muted text-sm text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed group flex items-center justify-between"
-                   >
-                     <span>{q}</span>
-                     <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all"/>
-                   </button>
-                 ))}
-               </div>
-             </CardContent>
-           </Card>
-        )}
-        
-        <Button
-            variant="solid"
-            onClick={() => setIsOpen(true)}
-            className="h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 shadow-none [&_svg]:size-10"
-            aria-label="Open chatbot"
-        >
-            <MessagesSquare className="text-primary-foreground" />
-        </Button>
-      </div>
+      <Button
+          variant="solid"
+          onClick={() => setIsOpen(true)}
+          className={cn(
+            "fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 shadow-lg",
+            "transition-all duration-300 ease-in-out hover:scale-110",
+            isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
+          )}
+          aria-label="Open chatbot"
+      >
+          <MessagesSquare className="h-8 w-8 text-primary-foreground" />
+      </Button>
 
       <div className={cn("fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out", isOpen ? 'translate-y-0 opacity-100' : 'translate-y-16 opacity-0 pointer-events-none')}>
         <Card className="w-[380px] h-[600px] flex flex-col shadow-2xl border">
@@ -192,6 +155,25 @@ export function Chatbot() {
                      {message.role === 'user' && <User className="h-6 w-6 shrink-0 rounded-full bg-secondary text-secondary-foreground p-0.5" />}
                   </div>
                 ))}
+                
+                {showPresets && (
+                  <div className="pt-2 animate-in fade-in-50">
+                    <p className="text-xs text-muted-foreground mb-2 px-1">Or, ask one of these questions:</p>
+                    <div className="space-y-2">
+                      {presetQuestions.map((q, i) => (
+                        <button
+                          key={i}
+                          onClick={() => handlePresetClick(q)}
+                          className="w-full text-left p-2.5 rounded-lg border bg-background hover:bg-accent hover:border-primary/30 text-sm font-medium text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed group flex items-center justify-between"
+                        >
+                          <span>{q}</span>
+                          <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all"/>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {isLoading && (
                   <div className="flex justify-start gap-3 text-sm">
                       <Bot className="h-6 w-6 shrink-0 text-primary" />
