@@ -19,9 +19,9 @@ interface Message {
 }
 
 const presetQuestions = [
-    "How much paint do I need for a room?",
-    "Give me a cost estimate for a kitchen remodel",
-    "What's the best type of insulation for an attic?",
+    "What size HVAC system do I need for my house?",
+    "How much could I save with a new AC unit?",
+    "How much does it cost to run my TV all day?",
 ];
 
 
@@ -212,7 +212,7 @@ export function Chatbot() {
                 rows={1}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask 'how much paint do I need?'..."
+                placeholder="Ask about project costs or materials..."
                 className="flex-grow overflow-y-auto resize-none py-2.5 no-scrollbar bg-muted border-muted-foreground/20 focus-visible:ring-primary/50"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
