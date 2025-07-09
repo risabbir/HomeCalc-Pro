@@ -1,10 +1,10 @@
 import type { LucideIcon } from 'lucide-react';
 import React from 'react';
 import { 
-  ThermometerSun, Wrench, Sprout, Home, Wind, PlugZap, Building2, AirVent, 
+  ThermometerSun, Sprout, Home, Wind, PlugZap, Building2, AirVent, 
   Heater, Snowflake, Gauge, Square, Wallpaper as WallpaperIcon, Shovel,
-  CookingPot, Construction, Layers, Warehouse, Fan, TrendingUp, Lightbulb,
-  Car, CircleDollarSign
+  CookingPot, Construction, Layers, Fan, TrendingUp, Lightbulb,
+  Car, CircleDollarSign, Paintbrush, Layers3
 } from 'lucide-react';
 
 export interface Calculator {
@@ -77,7 +77,7 @@ export const calculators: Calculator[] = [
     slug: 'attic-insulation',
     name: 'Attic Insulation Calculator',
     description: 'Determine the R-value and amount of insulation needed for your attic.',
-    Icon: Warehouse,
+    Icon: Layers3,
     category: 'HVAC',
   },
 
@@ -86,7 +86,7 @@ export const calculators: Calculator[] = [
     slug: 'paint-coverage',
     name: 'Paint Coverage Calculator',
     description: 'Calculate how many gallons of paint you need for your project.',
-    Icon: Wrench,
+    Icon: Paintbrush,
     category: 'Home Improvement',
   },
   {
