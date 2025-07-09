@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 
 const resources = [
     {
-        title: "U.S. Climate Zone Map",
-        description: "Find your climate zone to get accurate recommendations for HVAC and insulation calculators.",
+        title: "U.S. Climate Zone Guide",
+        description: "Use official resources to find your climate zone for accurate HVAC and insulation planning.",
         href: "/resources/climate-zone-map",
         Icon: Map,
     },

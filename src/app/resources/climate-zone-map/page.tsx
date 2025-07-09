@@ -3,14 +3,14 @@ import { calculators } from "@/lib/calculators";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import Image from "next/image";
-import { Heater, Layers3, Building } from 'lucide-react';
+import { Heater, Layers3, Building, AlertTriangle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const metadata: Metadata = {
-    title: 'U.S. Climate Zone Map for HVAC & Insulation | HomeCalc Pro',
-    description: 'Find your U.S. climate zone using our accurate map. Essential for correctly sizing your HVAC system, choosing insulation, and planning energy-efficient home projects.',
+    title: 'U.S. Climate Zone Guide for Homeowners | HomeCalc Pro',
+    description: 'Use official government resources to find your U.S. climate zone. Essential for correctly sizing your HVAC system, choosing insulation, and planning energy-efficient home projects.',
 };
 
 const relevantCalculators = [
@@ -37,25 +37,42 @@ export default function ClimateZoneMapPage() {
     return (
         <div className="container mx-auto px-4 py-16">
             <div className="text-center mb-12">
-                <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Understanding U.S. Climate Zones</h1>
+                <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">U.S. Climate Zone Guide for Homeowners</h1>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                    The U.S. Department of Energy (DOE), following the International Energy Conservation Code (IECC), divides the country into eight climate zones. Identifying your specific zone is the critical first step for any energy-efficient home project.
+                    The U.S. Department of Energy (DOE) divides the country into eight climate zones. Identifying your specific zone is the critical first step for any energy-efficient home project.
                 </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12 lg:gap-y-0">
                 <main className="lg:col-span-2 space-y-12">
-                    <Card className="overflow-hidden border-2">
-                             <CardContent className="p-0 bg-white">
-                                <Image
-                                    src="https://6000-firebase-studio-1751870790151.cluster-ys234awlzbhwoxmkkse6qo3fz6.cloudworkstations.dev/capra/attachedImages/64d6697e-ee29-40b0-adaf-390271442b96/image_da74ad55-b60d-4b8b-89d6-c793ad59d3bf.png"
-                                    data-ai-hint="climate zone map"
-                                    alt="A map of the United States showing building climate zones, including Subarctic, Cold, Very Cold, Mixed-Humid, Mixed-Dry, Hot-Humid, Hot-Dry, and Marine."
-                                    width={1200}
-                                    height={861}
-                                    className="w-full h-auto object-contain"
-                                    priority
-                                />
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Find Your Exact Climate Zone</CardTitle>
+                            <CardDescription>
+                                The most reliable way to find your climate zone is by using the official county-by-county lookup tools provided by U.S. government agencies.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <Alert>
+                                <AlertTriangle className="h-4 w-4" />
+                                <AlertTitle>Official Government Resources</AlertTitle>
+                                <AlertDescription>
+                                    <ul className="list-disc pl-5 mt-2 space-y-3">
+                                        <li>
+                                            <a href="https://www.energystar.gov/products/find_your_climate_zone" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary underline-offset-4 hover:underline">
+                                                ENERGY STAR Climate Zone Finder
+                                            </a>
+                                            <p className="text-xs text-muted-foreground">The most user-friendly tool. Select your state and county to instantly find your zone.</p>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.energy.gov/eere/buildings/building-energy-codes-program" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary underline-offset-4 hover:underline">
+                                                U.S. Department of Energy (DOE)
+                                            </a>
+                                            <p className="text-xs text-muted-foreground">Provides detailed maps and information about building energy codes for each state.</p>
+                                        </li>
+                                    </ul>
+                                </AlertDescription>
+                            </Alert>
                         </CardContent>
                     </Card>
 
@@ -98,7 +115,7 @@ export default function ClimateZoneMapPage() {
                     <Card>
                         <CardHeader>
                             <CardTitle>Climate Zone Breakdown</CardTitle>
-                            <CardDescription>To determine your zone with certainty, use the county-by-county lookup tools on the official U.S. Department of Energy or ENERGY STAR websites. A search for "DOE climate zone by county" will provide the most accurate results. Use the table below to understand your zone's general characteristics.</CardDescription>
+                            <CardDescription>To determine your zone with certainty, use the county-by-county lookup tools on the official U.S. Department of Energy or ENERGY STAR websites. The table below provides a general overview.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <Table>
