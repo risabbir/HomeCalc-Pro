@@ -60,6 +60,7 @@ export function Chatbot() {
     const query = queryOverride || inputValue.trim();
     if (!query || isLoading) return;
 
+    setShowPresets(false);
     const userMessage: Message = { role: 'user', content: query };
     setMessages(prev => [...prev, userMessage]);
     
@@ -111,7 +112,7 @@ export function Chatbot() {
                 <Button 
                     variant="ghost" 
                     size="icon" 
-                    onClick={() => setShowPresets(false)} 
+                    onClick={(e) => { e.stopPropagation(); setShowPresets(false); }}
                     className="h-6 w-6"
                 >
                     <X className="h-4 w-4" />
@@ -136,7 +137,7 @@ export function Chatbot() {
         
         <Button
             onClick={() => setIsOpen(true)}
-            className="h-16 w-16 rounded-full bg-primary shadow-lg hover:bg-primary/90 flex items-center justify-center p-0 shrink-0"
+            className="h-16 w-16 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center p-0 shrink-0"
             aria-label="Open chatbot"
         >
             <MessagesSquare className="h-8 w-8 text-primary-foreground" />
