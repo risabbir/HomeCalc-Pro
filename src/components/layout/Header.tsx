@@ -13,16 +13,26 @@ import { useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AnimatedHamburgerIcon } from './AnimatedHamburgerIcon';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 export function Header() {
   const [isMegaMenuOpen, setMegaMenuOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
   
   const categories = ['HVAC', 'Home Improvement', 'Gardening', 'Other'];
   const calculatorsByCategory = categories.map(category => ({
     name: category,
     calculators: calculators.filter(calc => calc.category === category),
   })).filter(c => c.calculators.length > 0);
+
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/ai-recommendations', label: 'AI Assistant' },
+    { href: '/resources', label: 'Resources' },
+    { href: '/faq', label: 'FAQ' },
+  ];
 
   return (
     <header className="bg-background/90 sticky top-0 z-50 backdrop-blur-sm border-b">
@@ -34,14 +44,18 @@ export function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-2 text-base font-medium">
-             <Button variant="ghost" asChild><Link href="/">Home</Link></Button>
+            {navLinks.map((link) => (
+              <Button key={link.href} variant="ghost" asChild className={cn(pathname === link.href && "text-primary bg-accent")}>
+                <Link href={link.href}>{link.label}</Link>
+              </Button>
+            ))}
              
              <div 
                onMouseEnter={() => setMegaMenuOpen(true)}
                onMouseLeave={() => setMegaMenuOpen(false)}
                className="relative"
              >
-                <Button variant="ghost">
+                <Button variant="ghost" className={cn(pathname.startsWith('/calculators') && "text-primary bg-accent")}>
                     Calculators
                     <ChevronDown className="h-4 w-4 ml-1 transition-transform" />
                 </Button>
@@ -75,9 +89,6 @@ export function Header() {
                   </div>
                 </div>
              </div>
-            <Button variant="ghost" asChild><Link href="/ai-recommendations">AI Assistant</Link></Button>
-            <Button variant="ghost" asChild><Link href="/resources">Resources</Link></Button>
-            <Button variant="ghost" asChild><Link href="/faq">FAQ</Link></Button>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -102,11 +113,28 @@ export function Header() {
                     </div>
                     <ScrollArea className='flex-1'>
                       <div className="flex flex-col gap-1 p-6 text-lg">
-                          <SheetClose asChild><Link href="/" className="py-2.5 text-xl font-medium">Home</Link></SheetClose>
+                          {navLinks.map((link) => (
+                              <SheetClose asChild key={link.href}>
+                                  <Link 
+                                    href={link.href}
+                                    className={cn(
+                                        "py-2.5 text-xl font-medium rounded-md px-3",
+                                        pathname === link.href ? "text-primary bg-accent" : "hover:bg-accent"
+                                    )}
+                                  >
+                                      {link.label}
+                                  </Link>
+                              </SheetClose>
+                          ))}
                           <Accordion type="single" collapsible className="w-full">
                               <AccordionItem value="calculators" className="border-b-0">
-                                  <AccordionTrigger className="py-2.5 text-xl font-medium hover:no-underline">Calculators</AccordionTrigger>
-                                  <AccordionContent className="pl-2">
+                                  <AccordionTrigger className={cn(
+                                      "py-2.5 text-xl font-medium hover:no-underline rounded-md px-3",
+                                      pathname.startsWith('/calculators') ? "text-primary bg-accent" : "hover:bg-accent"
+                                  )}>
+                                    Calculators
+                                  </AccordionTrigger>
+                                  <AccordionContent className="pl-5">
                                       <div className="flex flex-col gap-1">
                                       {calculatorsByCategory.map((category) => (
                                           <div key={category.name}>
@@ -114,7 +142,15 @@ export function Header() {
                                               <div className="flex flex-col gap-2">
                                               {category.calculators.map(calc => (
                                                   <SheetClose asChild key={calc.slug}>
-                                                      <Link href={`/calculators/${calc.slug}`} className="text-foreground hover:text-primary py-2 text-lg">{calc.name}</Link>
+                                                      <Link 
+                                                        href={`/calculators/${calc.slug}`}
+                                                        className={cn(
+                                                            "hover:text-primary py-2 text-lg rounded-md px-2",
+                                                            pathname === `/calculators/${calc.slug}` ? "text-primary bg-accent" : "hover:bg-accent"
+                                                        )}
+                                                      >
+                                                        {calc.name}
+                                                      </Link>
                                                   </SheetClose>
                                               ))}
                                               </div>
@@ -124,9 +160,6 @@ export function Header() {
                                   </AccordionContent>
                               </AccordionItem>
                           </Accordion>
-                          <SheetClose asChild><Link href="/ai-recommendations" className="py-2.5 text-xl font-medium flex items-center gap-2">AI Assistant <Wand2 className="h-5 w-5 text-primary"/></Link></SheetClose>
-                          <SheetClose asChild><Link href="/resources" className="py-2.5 text-xl font-medium">Resources</Link></SheetClose>
-                          <SheetClose asChild><Link href="/faq" className="py-2.5 text-xl font-medium">FAQ</Link></SheetClose>
                       </div>
                     </ScrollArea>
                 </SheetContent>
