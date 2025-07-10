@@ -12,7 +12,7 @@ export function CalculatorCard({ calculator }: CalculatorCardProps) {
   const { slug, name, description, Icon, category } = calculator;
   return (
     <Link href={`/calculators/${slug}`} className="group flex">
-      <Card className="h-full w-full bg-card transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 border-2 border-transparent hover:border-primary/50 flex flex-col">
+      <Card className="h-full w-full bg-card transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 border hover:border-primary/50 flex flex-col">
         <CardHeader className="flex flex-col h-full">
           <div className="flex justify-between items-start mb-4">
             <div className="bg-secondary p-3 rounded-lg">
