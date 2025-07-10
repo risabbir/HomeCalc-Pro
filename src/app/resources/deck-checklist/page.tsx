@@ -81,7 +81,7 @@ export default function DeckChecklistPage() {
                 </p>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12 lg:gap-y-0">
                 <main className="lg:col-span-2 space-y-8">
                     <Alert className="mb-12 border-l-4 border-primary bg-primary/5">
                          <FileWarning className="h-4 w-4 text-primary" />
