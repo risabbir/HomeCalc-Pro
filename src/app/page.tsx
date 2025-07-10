@@ -2,7 +2,7 @@ import { CalculatorDirectory } from '@/components/calculators/CalculatorDirector
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowRight, Wand2, ListChecks, Paintbrush, LayoutGrid } from 'lucide-react';
+import { ArrowRight, Wand2, Calculator, ListChecks } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Home() {
@@ -34,18 +34,40 @@ export default function Home() {
         <Separator className="my-24" />
 
         <section className="bg-secondary rounded-xl p-8 md:p-16 border">
-            <div className="text-center max-w-3xl mx-auto">
-                <Wand2 className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h2 className="text-3xl font-bold font-headline mb-4">Not Sure Where to Start?</h2>
-                <p className="text-muted-foreground text-lg mb-8">
-                    Describe your project, and our AI assistant will recommend the most relevant calculators for the job. It's the perfect way to discover tools you might not have known you needed.
-                </p>
-                <Button size="lg" asChild className="group">
-                    <Link href="/ai-recommendations">
-                        Ask our AI Assistant
-                        <ArrowRight className="transition-transform group-hover:translate-x-1" />
+            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+                <div className="text-center md:text-left">
+                    <Wand2 className="h-12 w-12 text-primary mx-auto md:mx-0 mb-4" />
+                    <h2 className="text-3xl font-bold font-headline mb-4">Not Sure Where to Start?</h2>
+                    <p className="text-muted-foreground text-lg mb-8">
+                        Describe your project, and our AI assistant will recommend the most relevant calculators for the job. It's the perfect way to discover tools you might not have known you needed.
+                    </p>
+                    <Button size="lg" asChild className="group">
+                        <Link href="/ai-recommendations">
+                            Ask our AI Assistant
+                            <ArrowRight className="transition-transform group-hover:translate-x-1" />
+                        </Link>
+                    </Button>
+                </div>
+                <div className="space-y-3">
+                    <Link href="/ai-recommendations?prompt=I want to build a deck" className="group block">
+                        <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between">
+                            <span className="font-medium">"I want to build a new deck"</span>
+                            <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
+                        </div>
                     </Link>
-                </Button>
+                     <Link href="/ai-recommendations?prompt=I need to repaint my living room" className="group block">
+                        <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between">
+                            <span className="font-medium">"I need to repaint my living room"</span>
+                            <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
+                        </div>
+                    </Link>
+                     <Link href="/ai-recommendations?prompt=How much will it cost to remodel my kitchen?" className="group block">
+                        <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between">
+                            <span className="font-medium">"How much will it cost to remodel my kitchen?"</span>
+                            <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
+                        </div>
+                    </Link>
+                </div>
             </div>
         </section>
 
@@ -53,57 +75,40 @@ export default function Home() {
 
         <section>
           <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold font-headline mb-4">Plan Like a Pro</h2>
+            <h2 className="text-3xl font-bold font-headline mb-4">Everything You Need to Plan and Build</h2>
             <p className="text-muted-foreground text-lg mb-12">
-              Beyond the numbers, our in-depth guides and checklists provide the expert knowledge you need to tackle any project with confidence.
+              From initial estimates to final details, we provide the tools for confident project planning.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="flex flex-col">
-              <CardHeader>
-                <ListChecks className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>Deck Building Checklist</CardTitle>
-                <CardDescription>From foundation to finishing, our step-by-step checklist ensures you don't miss a single detail for a safe and sturdy deck.</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow flex items-end">
-                <Button variant="outline" asChild className="w-full">
-                  <Link href="/resources/deck-checklist">View Checklist</Link>
-                </Button>
-              </CardContent>
+            <Card className="text-center border-0 bg-secondary/50 p-8">
+                <div className="flex justify-center mb-4">
+                    <div className="bg-background p-4 rounded-full border">
+                         <Calculator className="h-8 w-8 text-primary" />
+                    </div>
+                </div>
+                <CardTitle className="text-xl">Comprehensive Calculators</CardTitle>
+                <CardDescription className="mt-2">Access a wide range of tools for HVAC, home improvement, gardening, and more, all in one place.</CardDescription>
             </Card>
-            <Card className="flex flex-col">
-              <CardHeader>
-                <Paintbrush className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>Paint Finish Guide</CardTitle>
-                <CardDescription>Matte, eggshell, or semi-gloss? Understand the pros and cons of each paint sheen to pick the perfect finish for any room.</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow flex items-end">
-                <Button variant="outline" asChild className="w-full">
-                  <Link href="/resources/paint-finish-guide">Choose a Finish</Link>
-                </Button>
-              </CardContent>
+            <Card className="text-center border-0 bg-secondary/50 p-8">
+                 <div className="flex justify-center mb-4">
+                    <div className="bg-background p-4 rounded-full border">
+                        <Wand2 className="h-8 w-8 text-primary" />
+                    </div>
+                </div>
+                <CardTitle className="text-xl">AI-Powered Assistance</CardTitle>
+                <CardDescription className="mt-2">Let our smart assistant recommend the right tools and help you fill in the blanks on complex calculations.</CardDescription>
             </Card>
-            <Card className="flex flex-col">
-              <CardHeader>
-                <LayoutGrid className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>Kitchen Layout Guide</CardTitle>
-                <CardDescription>Explore the classic work triangle, common layouts, and key measurements for a functional and beautiful kitchen design.</CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow flex items-end">
-                <Button variant="outline" asChild className="w-full">
-                  <Link href="/resources/kitchen-layout-guide">Plan Your Layout</Link>
-                </Button>
-              </CardContent>
+            <Card className="text-center border-0 bg-secondary/50 p-8">
+                 <div className="flex justify-center mb-4">
+                    <div className="bg-background p-4 rounded-full border">
+                        <ListChecks className="h-8 w-8 text-primary" />
+                    </div>
+                </div>
+                <CardTitle className="text-xl">Expert Guides & Checklists</CardTitle>
+                <CardDescription className="mt-2">Go beyond the numbers with our detailed guides and checklists to ensure your project is a success.</CardDescription>
             </Card>
           </div>
-           <div className="text-center mt-12">
-                <Button size="lg" asChild className="group">
-                    <Link href="/resources">
-                        Explore All Resources
-                        <ArrowRight className="transition-transform group-hover:translate-x-1" />
-                    </Link>
-                </Button>
-            </div>
         </section>
       </div>
     </>
