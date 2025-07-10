@@ -1,29 +1,29 @@
-import { Github, MessageSquareHeart } from 'lucide-react';
+import { Github } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
-import { Button } from '../ui/button';
 
 export function ReportAnIssue() {
     return (
-        <Card className="mt-16 bg-secondary/50 border-dashed">
+        <Card className="mt-16 bg-secondary/50">
             <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-                    <div className="flex-shrink-0">
-                        <MessageSquareHeart className="h-12 w-12 text-primary" />
+                <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 mt-1">
+                        <Github className="h-6 w-6 text-primary" />
                     </div>
                     <div className="flex-grow">
-                        <h4 className="font-bold text-lg mb-1 text-foreground">Your Feedback Matters</h4>
-                        <p className="text-sm text-muted-foreground">
-                            We're always working to make HomeCalc Pro the best tool for your home projects. If you find it helpful, giving us a star on GitHub helps a lot! For any feature requests, new calculator ideas, or issues you find, please let us know there.
-                        </p>
-                    </div>
-                    <div className="flex-shrink-0">
-                        <Button asChild>
-                            {/* TODO: Replace with your actual GitHub repository link */}
-                            <Link href="https://github.com/your-username/your-repo" target="_blank" rel="noopener noreferrer">
-                                <Github className="mr-2 h-4 w-4" /> Provide Feedback on GitHub
+                        <h4 className="font-bold text-lg text-foreground">Community & Support</h4>
+                        <p className="text-sm text-muted-foreground mt-2">
+                           For technical issues or new calculator ideas, please head over to our{' '}
+                            <Link
+                                href="https://github.com/your-username/your-repo"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-medium text-primary underline-offset-4 hover:underline"
+                            >
+                                GitHub repository
                             </Link>
-                        </Button>
+                            . If you enjoy using HomeCalc Pro, consider giving it a star—it helps a lot! ⭐
+                        </p>
                     </div>
                 </div>
             </CardContent>
