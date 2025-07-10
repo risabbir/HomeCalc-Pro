@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,11 +18,22 @@ interface Message {
   link?: string | null;
 }
 
-const presetQuestions = [
+const allPresetQuestions = [
   "How much money can I save with a smart thermostat?",
   "What do I need to know before building a deck?",
   "What size AC unit do I need for a 2000 sq ft house?",
+  "What's the best type of paint for a bathroom?",
+  "How do I estimate the cost of a kitchen remodel?",
+  "How much soil do I need for a raised garden bed?",
+  "What's the difference between SEER and SEER2?",
+  "Can you help me calculate my monthly mortgage payment?",
 ];
+
+// Function to shuffle an array and get the first N items
+const getShuffledItems = (arr: string[], num: number) => {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, num);
+}
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +48,10 @@ export function Chatbot() {
   
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  // Get 3 random preset questions on component mount
+  const presetQuestions = useMemo(() => getShuffledItems(allPresetQuestions, 3), []);
+
 
   useEffect(() => {
     const textarea = textareaRef.current;
