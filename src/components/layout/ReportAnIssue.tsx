@@ -13,7 +13,7 @@ export function ReportAnIssue() {
                     <div className="flex-grow">
                         <h4 className="font-bold text-lg text-foreground">Suggestions &amp; Feedback</h4>
                         <p className="text-sm text-muted-foreground mt-2">
-                           Have an idea for a new calculator or found a bug? We rely on community feedback to improve. Consider giving our project a star or submitting your thoughts on our{' '}
+                           Have an idea for a new calculator or found an issue? Your feedback helps us a lot in making this tool better for everyone. Please consider submitting your thoughts on our{' '}
                             <Link
                                 href="https://github.com/your-username/your-repo"
                                 target="_blank"
