@@ -207,9 +207,9 @@ export function Chatbot() {
             </ScrollArea>
           </CardContent>
           <CardFooter className="p-2 border-t">
-             <form 
+            <form 
               onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} 
-              className="flex w-full items-end gap-2 p-1 rounded-full border bg-secondary/50 focus-within:ring-2 focus-within:ring-primary/50 focus-within:bg-background transition-all"
+              className="flex w-full items-end gap-2"
             >
               <Textarea
                 ref={textareaRef}
@@ -217,7 +217,7 @@ export function Chatbot() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Ask a question..."
-                className="flex-grow overflow-y-auto resize-none py-2.5 px-3 no-scrollbar bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                className="flex-grow overflow-y-auto resize-none py-2.5 px-3 no-scrollbar bg-secondary/50 border-input rounded-md focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -226,7 +226,7 @@ export function Chatbot() {
                 }}
                 disabled={isLoading}
               />
-              <Button type="submit" size="icon" className="h-9 w-9 shrink-0" disabled={isLoading || !inputValue.trim()}>
+              <Button type="submit" size="icon" className="h-10 w-10 shrink-0" disabled={isLoading || !inputValue.trim()}>
                 <Send className="h-5 w-5" />
               </Button>
             </form>
