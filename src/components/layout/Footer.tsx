@@ -10,8 +10,8 @@ export function Footer() {
             <Link href="/" className="inline-block mb-4">
               <Logo />
             </Link>
-            <p className="text-sm text-muted-foreground max-w-xs">
-              Empowering your home projects with precision calculators and expert resources.
+            <p className="text-base text-muted-foreground max-w-sm">
+              From DIY tasks to major renovations, get accurate estimates with our free calculators for home improvement, HVAC, gardening, and more.
             </p>
           </div>
           <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-8">
