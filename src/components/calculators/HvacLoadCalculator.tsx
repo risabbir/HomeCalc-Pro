@@ -11,13 +11,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle, AlertTriangle } from 'lucide-react';
+import { Download, X, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Link from 'next/link';
 import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   totalArea: z.string().min(1, 'Total area is required.'),
@@ -158,7 +158,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
                         <FormItem>
                             <div className="flex items-center gap-1.5">
                                 <FormLabel>Total Window Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
-                                <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Sum the area (width x height) of all windows.</p></PopoverContent></Popover>
+                                <HelpInfo>Sum the area (width x height) of all windows.</HelpInfo>
                             </div>
                             <FormControl><Input type="number" placeholder="e.g., 150" {...field} /></FormControl>
                             <FormMessage />
@@ -168,7 +168,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
                         <FormItem>
                             <div className="flex items-center gap-1.5">
                                 <FormLabel>U.S. Climate Zone</FormLabel>
-                                <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Determines your recommended R-value. See our <Link href="/resources/climate-zone-map" className="text-primary underline">Climate Zone Map</Link> to find yours.</p></PopoverContent></Popover>
+                                <HelpInfo>Determines your recommended R-value. See our <Link href="/resources/climate-zone-map" className="text-primary underline">Climate Zone Map</Link> to find yours.</HelpInfo>
                             </div>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -195,9 +195,9 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
                         <FormItem className="md:col-span-2">
                         <div className="flex items-center gap-1.5">
                                 <FormLabel>Overall Insulation Quality</FormLabel>
-                                <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent>
+                                <HelpInfo>
                                     <ul className="list-disc pl-4 text-left"><li><b>Good:</b> Meets or exceeds modern code; well-sealed.</li><li><b>Average:</b> Older construction, but reasonably insulated.</li><li><b>Poor:</b> Little to no insulation, drafty.</li></ul>
-                                </PopoverContent></Popover>
+                                </HelpInfo>
                             </div>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>

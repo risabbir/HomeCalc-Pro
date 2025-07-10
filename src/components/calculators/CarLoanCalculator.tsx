@@ -11,8 +11,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Download, X } from 'lucide-react';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   vehiclePrice: z.string().min(1, 'Vehicle price is required.'),
@@ -140,35 +140,35 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField control={form.control} name="vehiclePrice" render={({ field }) => (
                   <FormItem>
-                    <div className="flex items-center gap-1.5"><FormLabel>Vehicle Price ($)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The sticker price or negotiated price of the car.</p></PopoverContent></Popover></div>
+                    <div className="flex items-center gap-1.5"><FormLabel>Vehicle Price ($)</FormLabel><HelpInfo>The sticker price or negotiated price of the car.</HelpInfo></div>
                     <FormControl><Input type="number" placeholder="e.g., 35000" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
                <FormField control={form.control} name="interestRate" render={({ field }) => (
                   <FormItem>
-                    <div className="flex items-center gap-1.5"><FormLabel>Annual Interest Rate (%)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The annual percentage rate (APR) on your loan offer.</p></PopoverContent></Popover></div>
+                    <div className="flex items-center gap-1.5"><FormLabel>Annual Interest Rate (%)</FormLabel><HelpInfo>The annual percentage rate (APR) on your loan offer.</HelpInfo></div>
                     <FormControl><Input type="number" step="0.01" placeholder="e.g., 7.5" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
                <FormField control={form.control} name="downPayment" render={({ field }) => (
                   <FormItem>
-                    <div className="flex items-center gap-1.5"><FormLabel>Down Payment ($)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The amount of cash you are paying upfront.</p></PopoverContent></Popover></div>
+                    <div className="flex items-center gap-1.5"><FormLabel>Down Payment ($)</FormLabel><HelpInfo>The amount of cash you are paying upfront.</HelpInfo></div>
                     <FormControl><Input type="number" placeholder="e.g., 5000" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
               <FormField control={form.control} name="tradeInValue" render={({ field }) => (
                   <FormItem>
-                    <div className="flex items-center gap-1.5"><FormLabel>Trade-in Value ($)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The value the dealership is giving you for your old car.</p></PopoverContent></Popover></div>
+                    <div className="flex items-center gap-1.5"><FormLabel>Trade-in Value ($)</FormLabel><HelpInfo>The value the dealership is giving you for your old car.</HelpInfo></div>
                     <FormControl><Input type="number" placeholder="e.g., 2000" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
               )}/>
               <FormField control={form.control} name="loanTerm" render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <div className="flex items-center gap-1.5"><FormLabel>Loan Term (Years)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The length of the loan in years. Common terms are 3, 4, 5, or 6 years.</p></PopoverContent></Popover></div>
+                    <div className="flex items-center gap-1.5"><FormLabel>Loan Term (Years)</FormLabel><HelpInfo>The length of the loan in years. Common terms are 3, 4, 5, or 6 years.</HelpInfo></div>
                     <FormControl><Input type="number" placeholder="e.g., 5" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
@@ -179,14 +179,14 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 rounded-md border p-4">
                     <FormField control={form.control} name="salesTaxRate" render={({ field }) => (
                         <FormItem>
-                            <div className="flex items-center gap-1.5"><FormLabel>Sales Tax Rate (%)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Your state or local sales tax rate. Enter 6.5 for 6.5%.</p></PopoverContent></Popover></div>
+                            <div className="flex items-center gap-1.5"><FormLabel>Sales Tax Rate (%)</FormLabel><HelpInfo>Your state or local sales tax rate. Enter 6.5 for 6.5%.</HelpInfo></div>
                             <FormControl><Input type="number" placeholder="e.g., 6.25" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="otherFees" render={({ field }) => (
                         <FormItem>
-                            <div className="flex items-center gap-1.5"><FormLabel>Other Fees ($)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Include dealer documentation fees, title, and registration fees.</p></PopoverContent></Popover></div>
+                            <div className="flex items-center gap-1.5"><FormLabel>Other Fees ($)</FormLabel><HelpInfo>Include dealer documentation fees, title, and registration fees.</HelpInfo></div>
                             <FormControl><Input type="number" placeholder="e.g., 500" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>

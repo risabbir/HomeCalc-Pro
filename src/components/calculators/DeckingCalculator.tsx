@@ -11,11 +11,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Link from 'next/link';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   deckWidth: z.string().min(1, 'Deck width is required.'),
@@ -137,21 +137,21 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="deckWidth" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Deck Width ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The dimension perpendicular to the direction your deck boards will run.</p></PopoverContent></Popover></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Deck Width ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><HelpInfo>The dimension perpendicular to the direction your deck boards will run.</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 12" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="deckLength" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Deck Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The dimension parallel to the direction your deck boards will run.</p></PopoverContent></Popover></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Deck Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><HelpInfo>The dimension parallel to the direction your deck boards will run.</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 16" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="boardWidth" render={({ field }) => (
                      <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Deck Board Width ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The actual measured width of a single deck board. (e.g., a "1x6" board is actually 5.5 inches wide).</p></PopoverContent></Popover></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Deck Board Width ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><HelpInfo>The actual measured width of a single deck board. (e.g., a "1x6" board is actually 5.5 inches wide).</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 5.5" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -173,7 +173,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
                 )}/>
                  <FormField control={form.control} name="joistSpacing" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Joist Spacing</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The distance from the center of one joist to the center of the next. 16" (40cm) is standard.</p></PopoverContent></Popover></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Joist Spacing</FormLabel><HelpInfo>The distance from the center of one joist to the center of the next. 16" (40cm) is standard.</HelpInfo></div>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                             <SelectContent>
@@ -187,7 +187,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
                 )}/>
                 <FormField control={form.control} name="wasteFactor" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Waste Factor (%)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Accounts for cuts, mistakes, and unusable board sections. 10-15% is standard.</p></PopoverContent></Popover></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Waste Factor (%)</FormLabel><HelpInfo>Accounts for cuts, mistakes, and unusable board sections. 10-15% is standard.</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>

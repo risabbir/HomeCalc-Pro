@@ -11,10 +11,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Link from 'next/link';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   roomWidth: z.string().min(1, 'Room width is required.'),
@@ -148,14 +148,9 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Waste Factor (%)</FormLabel>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button>
-                                </PopoverTrigger>
-                                <PopoverContent>
-                                    <p className="max-w-xs">Standard layouts: 10%. Complex rooms or diagonal/herringbone patterns: 15-20%.</p>
-                                </PopoverContent>
-                            </Popover>
+                            <HelpInfo>
+                                Standard layouts: 10%. Complex rooms or diagonal/herringbone patterns: 15-20%.
+                            </HelpInfo>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
@@ -166,12 +161,7 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
                 <FormItem>
                     <div className="flex items-center gap-1.5">
                         <FormLabel>Box Coverage ({units === 'imperial' ? 'sq ft' : 'sq m'}) (Optional)</FormLabel>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button>
-                            </PopoverTrigger>
-                            <PopoverContent><p>Enter the area coverage listed on the flooring box to estimate how many you need to buy.</p></PopoverContent>
-                        </Popover>
+                        <HelpInfo>Enter the area coverage listed on the flooring box to estimate how many you need to buy.</HelpInfo>
                     </div>
                     <FormControl><Input type="number" placeholder={units === 'imperial' ? "e.g., 22.5" : "e.g., 2.1"} {...field} /></FormControl>
                     <FormMessage />

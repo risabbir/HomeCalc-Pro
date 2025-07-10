@@ -11,9 +11,9 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   gardenArea: z.string().min(1, 'Garden area is required.'),
@@ -126,7 +126,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>Application Rate</FormLabel>
-                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The amount of actual nitrogen to apply. A soil test will give you a precise recommendation. 1 lb/1000 sq ft is a common rate for lawns.</p></PopoverContent></Popover>
+                            <HelpInfo>The amount of actual nitrogen to apply. A soil test will give you a precise recommendation. 1 lb/1000 sq ft is a common rate for lawns.</HelpInfo>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
                         <FormDescription>{units === 'imperial' ? 'Lbs of Nitrogen per 1000 sq ft.' : 'Kg of N per 100 sq m.'}</FormDescription>
@@ -137,7 +137,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
             <div>
                  <div className="flex items-center gap-1.5">
                     <FormLabel>Fertilizer Ratio (N-P-K)</FormLabel>
-                    <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The three numbers on the fertilizer bag, representing Nitrogen-Phosphorus-Potassium content.</p></PopoverContent></Popover>
+                    <HelpInfo>The three numbers on the fertilizer bag, representing Nitrogen-Phosphorus-Potassium content.</HelpInfo>
                 </div>
               <div className="grid grid-cols-3 gap-4 mt-2">
                 <FormField control={form.control} name="nitrogenRatio" render={({ field }) => (<FormItem><FormControl><Input type="number" placeholder="N" {...field} /></FormControl><FormMessage/></FormItem>)}/>

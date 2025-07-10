@@ -11,9 +11,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   homeSize: z.string().min(1, 'Home size is required.'),
@@ -119,7 +119,7 @@ export function HeatPumpCostCalculator({ calculator }: { calculator: Omit<Calcul
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Unit Size ({units === 'imperial' ? 'Tons' : 'kW'})</FormLabel>
-                             <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The cooling/heating capacity of the unit. 1 Ton = 12,000 BTU/hr ≈ 3.5 kW.</p></PopoverContent></Popover>
+                             <HelpInfo>The cooling/heating capacity of the unit. 1 Ton = 12,000 BTU/hr ≈ 3.5 kW.</HelpInfo>
                         </div>
                         <FormControl><Input type="number" step="0.5" placeholder="e.g., 3" {...field} /></FormControl>
                         <FormMessage />
@@ -129,7 +129,7 @@ export function HeatPumpCostCalculator({ calculator }: { calculator: Omit<Calcul
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>SEER2 Rating</FormLabel>
-                             <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The unit's efficiency rating (SEER2 is the new standard). Higher is more efficient but costs more upfront.</p></PopoverContent></Popover>
+                             <HelpInfo>The unit's efficiency rating (SEER2 is the new standard). Higher is more efficient but costs more upfront.</HelpInfo>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 16" {...field} /></FormControl>
                         <FormMessage />

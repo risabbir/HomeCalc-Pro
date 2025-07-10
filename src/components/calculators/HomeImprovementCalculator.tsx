@@ -11,11 +11,11 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Link from 'next/link';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   roomLength: z.string().min(1, 'Room length is required.'),
@@ -165,21 +165,21 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 rounded-md border p-4">
                     <FormField control={form.control} name="numDoors" render={({ field }) => (
                         <FormItem>
-                             <div className="flex items-center gap-1.5"><FormLabel># of Doors</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>We subtract 21 sq ft (2 sq m) per door.</p></PopoverContent></Popover></div>
+                             <div className="flex items-center gap-1.5"><FormLabel># of Doors</FormLabel><HelpInfo>We subtract 21 sq ft (2 sq m) per door.</HelpInfo></div>
                             <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="numWindows" render={({ field }) => (
                         <FormItem>
-                             <div className="flex items-center gap-1.5"><FormLabel># of Windows</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>We subtract 15 sq ft (1.4 sq m) per window.</p></PopoverContent></Popover></div>
+                             <div className="flex items-center gap-1.5"><FormLabel># of Windows</FormLabel><HelpInfo>We subtract 15 sq ft (1.4 sq m) per window.</HelpInfo></div>
                             <FormControl><Input type="number" placeholder="e.g., 2" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="coats" render={({ field }) => (
                         <FormItem>
-                             <div className="flex items-center gap-1.5"><FormLabel>Coats of Paint</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Two coats are recommended for best coverage, especially when changing colors.</p></PopoverContent></Popover></div>
+                             <div className="flex items-center gap-1.5"><FormLabel>Coats of Paint</FormLabel><HelpInfo>Two coats are recommended for best coverage, especially when changing colors.</HelpInfo></div>
                             <FormControl><Input type="number" placeholder="e.g., 2" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>

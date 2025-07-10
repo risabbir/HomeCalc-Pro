@@ -11,8 +11,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Download, X } from 'lucide-react';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   wattage: z.string().min(1, 'Wattage is required.'),
@@ -98,12 +98,7 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>Appliance Wattage (W)</FormLabel>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button>
-                                </PopoverTrigger>
-                                <PopoverContent><p>Check the label on the back or bottom of the appliance. If you see Amps and Volts, multiply them together to get Watts.</p></PopoverContent>
-                            </Popover>
+                            <HelpInfo>Check the label on the back or bottom of the appliance. If you see Amps and Volts, multiply them together to get Watts.</HelpInfo>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 1500" {...field} /></FormControl>
                         <FormMessage />
@@ -113,12 +108,7 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Hours Used Per Day</FormLabel>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button>
-                                </PopoverTrigger>
-                                <PopoverContent><p>Enter the average number of hours the appliance runs in a 24-hour period.</p></PopoverContent>
-                            </Popover>
+                            <HelpInfo>Enter the average number of hours the appliance runs in a 24-hour period.</HelpInfo>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 2" {...field} /></FormControl>
                         <FormMessage />
@@ -128,12 +118,7 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Cost per kWh ($)</FormLabel>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button>
-                                </PopoverTrigger>
-                                <PopoverContent><p>Found on your electricity bill, this is your rate per kilowatt-hour. The US average is about $0.17.</p></PopoverContent>
-                            </Popover>
+                            <HelpInfo>Found on your electricity bill, this is your rate per kilowatt-hour. The US average is about $0.17.</HelpInfo>
                         </div>
                         <FormControl><Input type="number" step="0.01" placeholder="e.g., 0.17" {...field} /></FormControl>
                         <FormMessage />

@@ -11,10 +11,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Link from 'next/link';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   roomPerimeter: z.string().min(1, 'Room perimeter is required.'),
@@ -131,7 +131,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="roomPerimeter" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Room Perimeter ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The total length of all walls to be papered. (Length1 + Width1 + Length2...).</p></PopoverContent></Popover></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Room Perimeter ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><HelpInfo>The total length of all walls to be papered. (Length1 + Width1 + Length2...).</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 40" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -159,14 +159,14 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
                 )}/>
                  <FormField control={form.control} name="patternRepeat" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Pattern Repeat ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Found on the wallpaper label. The vertical distance before the pattern repeats. Enter 0 for solid colors.</p></PopoverContent></Popover></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Pattern Repeat ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><HelpInfo>Found on the wallpaper label. The vertical distance before the pattern repeats. Enter 0 for solid colors.</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 18" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                  <FormField control={form.control} name="wasteFactor" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Waste Factor (%)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Accounts for mistakes and cuts around windows/doors. 15% is standard.</p></PopoverContent></Popover></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Waste Factor (%)</FormLabel><HelpInfo>Accounts for mistakes and cuts around windows/doors. 15% is standard.</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 15" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>

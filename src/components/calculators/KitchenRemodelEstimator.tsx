@@ -11,11 +11,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Link from 'next/link';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   kitchenSize: z.string().min(1, 'Kitchen size is required.'),
@@ -131,7 +131,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Cabinet Quality</FormLabel>
-                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Stock: Off-the-shelf. Semi-custom: Some modifications. Custom: Built to order.</p></PopoverContent></Popover>
+                            <HelpInfo>Stock: Off-the-shelf. Semi-custom: Some modifications. Custom: Built to order.</HelpInfo>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -148,7 +148,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>Countertop Material</FormLabel>
-                             <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Laminate: Most affordable. Solid Surface: Mid-range. Granite/Quartz: Premium.</p></PopoverContent></Popover>
+                             <HelpInfo>Laminate: Most affordable. Solid Surface: Mid-range. Granite/Quartz: Premium.</HelpInfo>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -165,7 +165,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
                     <FormItem className="md:col-span-2">
                         <div className="flex items-center gap-1.5">
                             <FormLabel>Appliance Tier</FormLabel>
-                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Basic: Standard models. Mid-range: Better features and brands. High-end: Luxury and professional-grade appliances.</p></PopoverContent></Popover>
+                            <HelpInfo>Basic: Standard models. Mid-range: Better features and brands. High-end: Luxury and professional-grade appliances.</HelpInfo>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>

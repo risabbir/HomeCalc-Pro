@@ -11,9 +11,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   length: z.string().min(1, 'Length is required.'),
@@ -149,7 +149,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Slab Thickness ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
-                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Standard residential slabs are often 4 inches (10 cm) thick.</p></PopoverContent></Popover>
+                            <HelpInfo>Standard residential slabs are often 4 inches (10 cm) thick.</HelpInfo>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 4" {...field} /></FormControl>
                         <FormMessage />
@@ -159,7 +159,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>Waste Factor (%)</FormLabel>
-                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Accounts for uneven ground and spillage. 5-10% is standard.</p></PopoverContent></Popover>
+                            <HelpInfo>Accounts for uneven ground and spillage. 5-10% is standard.</HelpInfo>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />

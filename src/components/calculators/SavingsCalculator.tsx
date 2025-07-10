@@ -11,9 +11,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Download, X } from 'lucide-react';
 import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   initialDeposit: z.string().min(1, 'Initial deposit is required.'),
@@ -135,7 +135,7 @@ export function SavingsCalculator({ calculator }: { calculator: Omit<Calculator,
                 )}/>
                 <FormField control={form.control} name="interestRate" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Annual Interest Rate (%)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Your estimated annual rate of return. The historical average for the S&P 500 is ~10%.</p></PopoverContent></Popover></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Annual Interest Rate (%)</FormLabel><HelpInfo>Your estimated annual rate of return. The historical average for the S&P 500 is ~10%.</HelpInfo></div>
                         <FormControl><Input type="number" step="0.01" placeholder="e.g., 7" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>

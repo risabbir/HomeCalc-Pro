@@ -11,9 +11,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X, HelpCircle } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { HelpInfo } from '../layout/HelpInfo';
 
 const formSchema = z.object({
   annualHvacCost: z.string().min(1, 'Annual HVAC cost is required.'),
@@ -101,21 +101,21 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="annualHvacCost" render={({ field }) => (
                     <FormItem>
-                         <div className="flex items-center gap-1.5"><FormLabel>Annual HVAC Cost ($)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Your total estimated yearly cost for heating and cooling.</p></PopoverContent></Popover></div>
+                         <div className="flex items-center gap-1.5"><FormLabel>Annual HVAC Cost ($)</FormLabel><HelpInfo>Your total estimated yearly cost for heating and cooling.</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 1500" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="setbackDegrees" render={({ field }) => (
                     <FormItem>
-                         <div className="flex items-center gap-1.5"><FormLabel>Avg. Setback ({units === 'imperial' ? '°F' : 'C'})</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The number of degrees you turn your thermostat up (in summer) or down (in winter).</p></PopoverContent></Popover></div>
+                         <div className="flex items-center gap-1.5"><FormLabel>Avg. Setback ({units === 'imperial' ? '°F' : 'C'})</FormLabel><HelpInfo>The number of degrees you turn your thermostat up (in summer) or down (in winter).</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                  <FormField control={form.control} name="setbackHours" render={({ field }) => (
                     <FormItem>
-                         <div className="flex items-center gap-1.5"><FormLabel>Setback Hours/Day</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The number of hours per day the thermostat is at the setback temperature (e.g., while at work or asleep).</p></PopoverContent></Popover></div>
+                         <div className="flex items-center gap-1.5"><FormLabel>Setback Hours/Day</FormLabel><HelpInfo>The number of hours per day the thermostat is at the setback temperature (e.g., while at work or asleep).</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
