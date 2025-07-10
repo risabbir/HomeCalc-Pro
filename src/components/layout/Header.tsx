@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './ThemeToggle';
 import { calculators } from '@/lib/calculators';
-import { ChevronDown, Menu } from 'lucide-react';
+import { ChevronDown, Menu, Wand2 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import * as React from 'react';
 import { useState } from 'react';
@@ -71,6 +71,7 @@ export function Header() {
                   </div>
                 </div>
              </div>
+            <Button variant="ghost" asChild><Link href="/ai-recommendations">AI Assistant</Link></Button>
             <Button variant="ghost" asChild><Link href="/resources">Resources</Link></Button>
             <Button variant="ghost" asChild><Link href="/faq">FAQ</Link></Button>
           </nav>
@@ -116,6 +117,7 @@ export function Header() {
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion>
+                         <SheetClose asChild><Link href="/ai-recommendations" className="text-lg font-medium flex items-center gap-2">AI Assistant <Wand2 className="h-5 w-5 text-primary"/></Link></SheetClose>
                         <SheetClose asChild><Link href="/resources" className="text-lg font-medium">Resources</Link></SheetClose>
                         <SheetClose asChild><Link href="/faq" className="text-lg font-medium">FAQ</Link></SheetClose>
                     </div>
