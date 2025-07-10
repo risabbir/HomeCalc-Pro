@@ -67,7 +67,7 @@ export default function ResourcesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {resources.map((resource) => (
               <Link href={resource.href} key={resource.title} className="group flex">
-                  <Card className="h-full w-full bg-card transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 border-2 border-transparent hover:border-primary/50 flex flex-col justify-between">
+                  <Card className="h-full w-full bg-card transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1 border hover:border-primary/50 flex flex-col justify-between">
                       <CardHeader>
                           <div className="flex justify-between items-start mb-4">
                               <div className="bg-secondary p-3 rounded-lg">
