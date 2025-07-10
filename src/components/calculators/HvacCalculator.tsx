@@ -14,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X, HelpCircle } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
 
 const formSchema = z.object({
@@ -157,9 +157,9 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                       <FormItem>
                         <div className="flex items-center gap-1.5">
                               <FormLabel>Insulation Quality</FormLabel>
-                              <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent>
+                              <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent>
                                   <ul className="list-disc pl-4 text-left max-w-xs"><li><b>Good:</b> Well-insulated walls, ceiling, and floor; double-pane windows.</li><li><b>Average:</b> Standard insulation; some leakage.</li><li><b>Poor:</b> Little to no insulation; single-pane windows.</li></ul>
-                              </TooltipContent></Tooltip></TooltipProvider>
+                              </PopoverContent></Popover>
                           </div>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
@@ -182,7 +182,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                       <FormItem>
                         <div className="flex items-center gap-1.5">
                           <FormLabel>Sun Exposure</FormLabel>
-                          <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Choose "Sunny" if the room gets significant direct sunlight, especially in the afternoon.</p></TooltipContent></Tooltip></TooltipProvider>
+                          <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Choose "Sunny" if the room gets significant direct sunlight, especially in the afternoon.</p></PopoverContent></Popover>
                         </div>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>

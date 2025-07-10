@@ -14,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X, HelpCircle } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 const formSchema = z.object({
   oldSeer: z.string().min(1, 'Old SEER rating is required.'),
@@ -149,49 +149,49 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="oldSeer" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Old Unit SEER/SEER2</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Enter the SEER or SEER2 rating of your current AC unit.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Old Unit SEER/SEER2</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Enter the SEER or SEER2 rating of your current AC unit.</p></PopoverContent></Popover></div>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="newSeer" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>New Unit SEER/SEER2</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Enter the SEER or SEER2 rating of the new unit you're considering.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>New Unit SEER/SEER2</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Enter the SEER or SEER2 rating of the new unit you're considering.</p></PopoverContent></Popover></div>
                         <FormControl><Input type="number" placeholder="e.g., 16" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="coolingBtu" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Cooling Capacity (BTU/hr)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The cooling power of your AC unit. A 3-ton unit is 36,000 BTU/hr.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Cooling Capacity (BTU/hr)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The cooling power of your AC unit. A 3-ton unit is 36,000 BTU/hr.</p></PopoverContent></Popover></div>
                         <FormControl><Input type="number" placeholder="e.g., 36000" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="costPerKwh" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Cost per kWh ($)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Found on your electricity bill. The US average is about $0.17.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Cost per kWh ($)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Found on your electricity bill. The US average is about $0.17.</p></PopoverContent></Popover></div>
                         <FormControl><Input type="number" step="0.01" placeholder="e.g., 0.17" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="hoursPerDay" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Hours of use / day</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Your average daily runtime during the cooling season.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Hours of use / day</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Your average daily runtime during the cooling season.</p></PopoverContent></Popover></div>
                         <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="daysPerYear" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Days of use / year</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The number of days you typically run your air conditioner per year.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Days of use / year</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The number of days you typically run your air conditioner per year.</p></PopoverContent></Popover></div>
                         <FormControl><Input type="number" placeholder="e.g., 120" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="unitCost" render={({ field }) => (
                     <FormItem className="md:col-span-3">
-                        <div className="flex items-center gap-1.5"><FormLabel>New Unit Installed Cost ($) (Optional)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Enter the total cost of the new unit and installation to calculate the payback period.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>New Unit Installed Cost ($) (Optional)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Enter the total cost of the new unit and installation to calculate the payback period.</p></PopoverContent></Popover></div>
                         <FormControl><Input type="number" placeholder="Enter cost to calculate payback period" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>

@@ -15,7 +15,7 @@ import { Download, Info, X, HelpCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -175,7 +175,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Attic Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
-                             <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Calculate the length times width of your attic floor.</p></TooltipContent></Tooltip></TooltipProvider>
+                             <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Calculate the length times width of your attic floor.</p></PopoverContent></Popover>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 1000" {...field} /></FormControl>
                         <FormMessage />
@@ -185,7 +185,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>U.S. Climate Zone</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Determines your recommended R-value. See our <Link href="/resources/climate-zone-map" className="text-primary underline">Climate Zone Map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Determines your recommended R-value. See our <Link href="/resources/climate-zone-map" className="text-primary underline">Climate Zone Map</Link> to find yours.</p></PopoverContent></Popover>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -202,7 +202,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Existing Insulation Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Use a ruler to measure the depth of your current insulation at its most level point. Enter 0 if none.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Use a ruler to measure the depth of your current insulation at its most level point. Enter 0 if none.</p></PopoverContent></Popover>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 5" {...field} /></FormControl>
                         <FormMessage />
@@ -212,7 +212,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>New Insulation Type</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Cellulose generally has a higher R-value per inch than fiberglass. Choose the type you plan to add. Check our <Link href="/resources/insulation-guide" className="text-primary underline">Insulation Guide</Link> for details.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Cellulose generally has a higher R-value per inch than fiberglass. Choose the type you plan to add. Check our <Link href="/resources/insulation-guide" className="text-primary underline">Insulation Guide</Link> for details.</p></PopoverContent></Popover>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>

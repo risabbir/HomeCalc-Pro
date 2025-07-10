@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Download, X, HelpCircle } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 const formSchema = z.object({
   length: z.string().min(1, 'Length is required.'),
@@ -147,7 +147,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                 )}/>
                 <FormField control={form.control} name="depth" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Soil Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Recommended depth for most vegetable gardens is 6-12 inches (15-30 cm).</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Soil Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Recommended depth for most vegetable gardens is 6-12 inches (15-30 cm).</p></PopoverContent></Popover></div>
                         <FormControl><Input type="number" placeholder="e.g., 6" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -156,7 +156,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
 
             <FormField control={form.control} name="bagSize" render={({ field }) => (
                 <FormItem>
-                    <div className="flex items-center gap-1.5"><FormLabel>Bag Size ({units === 'imperial' ? 'cu ft' : 'liters'}) (Optional)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Enter the volume of the bags you plan to buy to estimate the required quantity.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                    <div className="flex items-center gap-1.5"><FormLabel>Bag Size ({units === 'imperial' ? 'cu ft' : 'liters'}) (Optional)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Enter the volume of the bags you plan to buy to estimate the required quantity.</p></PopoverContent></Popover></div>
                     <FormControl><Input type="number" placeholder={units === 'imperial' ? "e.g., 1.5" : "e.g., 50"} {...field} /></FormControl>
                     <FormMessage />
                 </FormItem>

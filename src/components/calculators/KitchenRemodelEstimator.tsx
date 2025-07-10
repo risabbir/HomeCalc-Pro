@@ -14,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X, HelpCircle } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -131,7 +131,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Cabinet Quality</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Stock: Off-the-shelf. Semi-custom: Some modifications. Custom: Built to order.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Stock: Off-the-shelf. Semi-custom: Some modifications. Custom: Built to order.</p></PopoverContent></Popover>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -148,7 +148,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>Countertop Material</FormLabel>
-                             <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Laminate: Most affordable. Solid Surface: Mid-range. Granite/Quartz: Premium.</p></TooltipContent></Tooltip></TooltipProvider>
+                             <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Laminate: Most affordable. Solid Surface: Mid-range. Granite/Quartz: Premium.</p></PopoverContent></Popover>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -165,7 +165,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
                     <FormItem className="md:col-span-2">
                         <div className="flex items-center gap-1.5">
                             <FormLabel>Appliance Tier</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Basic: Standard models. Mid-range: Better features and brands. High-end: Luxury and professional-grade appliances.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Basic: Standard models. Mid-range: Better features and brands. High-end: Luxury and professional-grade appliances.</p></PopoverContent></Popover>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>

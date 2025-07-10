@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Download, X, HelpCircle } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 const formSchema = z.object({
   zones: z.string().min(1, 'Number of zones is required.'),
@@ -110,7 +110,7 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel># of Zones</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The number of indoor units (heads) you need. One per room is typical.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The number of indoor units (heads) you need. One per room is typical.</p></PopoverContent></Popover>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
                         <FormMessage />
@@ -120,7 +120,7 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Total Capacity ({units === 'imperial' ? 'BTU/hr' : 'Watts'})</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The total cooling/heating capacity of the outdoor unit. This should match the needs of all zones combined.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The total cooling/heating capacity of the outdoor unit. This should match the needs of all zones combined.</p></PopoverContent></Popover>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 12000" {...field} /></FormControl>
                         <FormMessage />
@@ -130,7 +130,7 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>SEER2 Rating</FormLabel>
-                             <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The unit's efficiency rating (SEER2 is the new standard). Higher is more efficient but costs more upfront.</p></TooltipContent></Tooltip></TooltipProvider>
+                             <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The unit's efficiency rating (SEER2 is the new standard). Higher is more efficient but costs more upfront.</p></PopoverContent></Popover>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 20" {...field} /></FormControl>
                         <FormMessage />

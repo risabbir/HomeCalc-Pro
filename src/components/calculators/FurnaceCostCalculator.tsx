@@ -14,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X, HelpCircle } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -134,7 +134,7 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>U.S. Climate Zone</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Colder zones require more powerful (and expensive) furnaces. See our <Link href="/resources/climate-zone-map" className="text-primary underline">map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Colder zones require more powerful (and expensive) furnaces. See our <Link href="/resources/climate-zone-map" className="text-primary underline">map</Link> to find yours.</p></PopoverContent></Popover>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -151,7 +151,7 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>Furnace Type</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Gas is most common, electric is cheaper to install but more expensive to run, and oil is used in fewer regions.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Gas is most common, electric is cheaper to install but more expensive to run, and oil is used in fewer regions.</p></PopoverContent></Popover>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -168,7 +168,7 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
                     <FormItem>
                       <div className="flex items-center gap-1.5">
                         <FormLabel>Efficiency (AFUE)</FormLabel>
-                        <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Annual Fuel Utilization Efficiency. High-efficiency (95%+) units cost more upfront but save money on fuel over time.</p></TooltipContent></Tooltip></TooltipProvider>
+                        <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Annual Fuel Utilization Efficiency. High-efficiency (95%+) units cost more upfront but save money on fuel over time.</p></PopoverContent></Popover>
                       </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>

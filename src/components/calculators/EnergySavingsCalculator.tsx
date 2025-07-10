@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Download, X, HelpCircle } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 const formSchema = z.object({
   costPerKwh: z.string().min(1, 'Cost per kWh is required.'),
@@ -117,7 +117,7 @@ export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calcu
                     <FormItem className="max-w-xs mx-auto">
                         <div className="flex items-center justify-center gap-1.5">
                             <FormLabel>Your Electricity Cost per kWh ($)</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Found on your electricity bill. The US average is about $0.17.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Found on your electricity bill. The US average is about $0.17.</p></PopoverContent></Popover>
                         </div>
                         <FormControl><Input type="number" step="0.01" placeholder="e.g., 0.17" {...field} /></FormControl>
                         <FormMessage />
@@ -130,14 +130,14 @@ export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calcu
                     <h3 className='text-lg font-semibold text-center'>Current Appliance</h3>
                     <FormField control={form.control} name="current_wattage" render={({ field }) => (
                         <FormItem>
-                            <div className="flex items-center gap-1.5"><FormLabel>Appliance Wattage (W)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Check the label on the appliance. An old refrigerator might use 700 watts.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                            <div className="flex items-center gap-1.5"><FormLabel>Appliance Wattage (W)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Check the label on the appliance. An old refrigerator might use 700 watts.</p></PopoverContent></Popover></div>
                             <FormControl><Input type="number" placeholder="e.g., 700" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="current_hours" render={({ field }) => (
                         <FormItem>
-                            <div className="flex items-center gap-1.5"><FormLabel>Hours Used Per Day</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>A refrigerator runs about 8 hours a day. A light bulb might run for 5.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                            <div className="flex items-center gap-1.5"><FormLabel>Hours Used Per Day</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>A refrigerator runs about 8 hours a day. A light bulb might run for 5.</p></PopoverContent></Popover></div>
                             <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
@@ -147,14 +147,14 @@ export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calcu
                     <h3 className='text-lg font-semibold text-center'>New Appliance</h3>
                     <FormField control={form.control} name="new_wattage" render={({ field }) => (
                         <FormItem>
-                            <div className="flex items-center gap-1.5"><FormLabel>Appliance Wattage (W)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Check the label on the new appliance. An Energy Star refrigerator might use 200 watts.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                            <div className="flex items-center gap-1.5"><FormLabel>Appliance Wattage (W)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Check the label on the new appliance. An Energy Star refrigerator might use 200 watts.</p></PopoverContent></Popover></div>
                             <FormControl><Input type="number" placeholder="e.g., 200" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="new_hours" render={({ field }) => (
                         <FormItem>
-                            <div className="flex items-center gap-1.5"><FormLabel>Hours Used Per Day</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Usage hours will likely be the same for the new appliance.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                            <div className="flex items-center gap-1.5"><FormLabel>Hours Used Per Day</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Usage hours will likely be the same for the new appliance.</p></PopoverContent></Popover></div>
                             <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>

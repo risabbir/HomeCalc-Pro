@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Download, X, HelpCircle, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 const formSchema = z.object({
   airFlow: z.string().min(1, 'Air Flow (CFM) is required.'),
@@ -98,7 +98,7 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>Air Flow (CFM)</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Cubic Feet per Minute. This is the volume of air the duct needs to move, typically 400 CFM per ton of AC.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Cubic Feet per Minute. This is the volume of air the duct needs to move, typically 400 CFM per ton of AC.</p></PopoverContent></Popover>
                         </div>
                         <FormControl><Input type="number" placeholder="e.g., 800" {...field} /></FormControl>
                         <FormMessage />
@@ -108,7 +108,7 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
                     <FormItem>
                         <div className="flex items-center gap-1.5">
                             <FormLabel>Friction Loss (in. w.g./100 ft)</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The resistance to airflow. 0.1 in. w.g. is a common value for residential main trunk lines.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The resistance to airflow. 0.1 in. w.g. is a common value for residential main trunk lines.</p></PopoverContent></Popover>
                         </div>
                         <FormControl><Input type="number" step="0.01" placeholder="e.g., 0.1" {...field} /></FormControl>
                         <FormMessage />

@@ -14,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X, HelpCircle } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Link from 'next/link';
 
 const formSchema = z.object({
@@ -137,21 +137,21 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="deckWidth" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Deck Width ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The dimension perpendicular to the direction your deck boards will run.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Deck Width ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The dimension perpendicular to the direction your deck boards will run.</p></PopoverContent></Popover></div>
                         <FormControl><Input type="number" placeholder="e.g., 12" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="deckLength" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Deck Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The dimension parallel to the direction your deck boards will run.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Deck Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The dimension parallel to the direction your deck boards will run.</p></PopoverContent></Popover></div>
                         <FormControl><Input type="number" placeholder="e.g., 16" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="boardWidth" render={({ field }) => (
                      <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Deck Board Width ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The actual measured width of a single deck board. (e.g., a "1x6" board is actually 5.5 inches wide).</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Deck Board Width ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The actual measured width of a single deck board. (e.g., a "1x6" board is actually 5.5 inches wide).</p></PopoverContent></Popover></div>
                         <FormControl><Input type="number" placeholder="e.g., 5.5" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -173,7 +173,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
                 )}/>
                  <FormField control={form.control} name="joistSpacing" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Joist Spacing</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The distance from the center of one joist to the center of the next. 16" (40cm) is standard.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Joist Spacing</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>The distance from the center of one joist to the center of the next. 16" (40cm) is standard.</p></PopoverContent></Popover></div>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                             <SelectContent>
@@ -187,7 +187,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
                 )}/>
                 <FormField control={form.control} name="wasteFactor" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Waste Factor (%)</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Accounts for cuts, mistakes, and unusable board sections. 10-15% is standard.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Waste Factor (%)</FormLabel><Popover><PopoverTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 rounded-full" type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></Button></PopoverTrigger><PopoverContent><p>Accounts for cuts, mistakes, and unusable board sections. 10-15% is standard.</p></PopoverContent></Popover></div>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
