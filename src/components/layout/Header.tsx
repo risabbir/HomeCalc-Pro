@@ -29,9 +29,26 @@ export function Header() {
 
   const navLinks = [
     { href: '/', label: 'Home' },
+    { href: '/ai-recommendations', label: 'AI Assistant', Icon: Wand2 },
     { href: '/resources', label: 'Resources' },
     { href: '/faq', label: 'FAQ' },
   ];
+
+  const getNavLinkClass = (href: string, isStartsWith = false) => {
+    const isActive = isStartsWith ? pathname.startsWith(href) : pathname === href;
+    return cn(
+      "text-foreground/80 hover:text-primary",
+      isActive && "text-primary font-semibold"
+    );
+  };
+
+  const getMobileNavLinkClass = (href: string, isStartsWith = false) => {
+      const isActive = isStartsWith ? pathname.startsWith(href) : pathname === href;
+      return cn(
+          "py-2.5 text-xl font-medium rounded-md px-3 hover:text-primary text-foreground/80",
+          isActive ? "text-primary bg-accent" : "hover:bg-accent"
+      );
+  };
 
   return (
     <header className="bg-background/90 sticky top-0 z-50 backdrop-blur-sm border-b">
@@ -43,8 +60,8 @@ export function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-2 text-base font-medium">
-            <Button variant="ghost" asChild className={cn(pathname === '/' && "text-primary bg-accent")}>
-              <Link href="/">Home</Link>
+             <Button variant="ghost" asChild>
+                <Link href="/" className={getNavLinkClass('/')}>Home</Link>
             </Button>
             
             <div 
@@ -52,7 +69,7 @@ export function Header() {
               onMouseLeave={() => setMegaMenuOpen(false)}
               className="relative"
             >
-              <Button variant="ghost" className={cn(pathname.startsWith('/calculators') && "text-primary bg-accent")}>
+              <Button variant="ghost" className={getNavLinkClass('/calculators', true)}>
                   Calculators
                   <ChevronDown className="h-4 w-4 ml-1 transition-transform" />
               </Button>
@@ -87,9 +104,12 @@ export function Header() {
               </div>
             </div>
 
-            {navLinks.slice(1).map((link) => ( // Slice to skip 'Home' as it's handled separately
-              <Button key={link.href} variant="ghost" asChild className={cn(pathname === link.href && "text-primary bg-accent")}>
-                <Link href={link.href}>{link.label}</Link>
+            {navLinks.slice(1).map((link) => (
+              <Button key={link.href} variant="ghost" asChild>
+                <Link href={link.href} className={getNavLinkClass(link.href)}>
+                  {link.Icon && <link.Icon className="mr-1.5 h-4 w-4" />}
+                  {link.label}
+                </Link>
               </Button>
             ))}
           </nav>
@@ -119,10 +139,7 @@ export function Header() {
                           <SheetClose asChild>
                               <Link 
                                 href="/"
-                                className={cn(
-                                    "py-2.5 text-xl font-medium rounded-md px-3",
-                                    pathname === '/' ? "text-primary bg-accent" : "hover:bg-accent hover:text-primary"
-                                )}
+                                className={getMobileNavLinkClass('/')}
                               >
                                   Home
                               </Link>
@@ -131,8 +148,8 @@ export function Header() {
                           <Accordion type="single" collapsible className="w-full">
                               <AccordionItem value="calculators" className="border-b-0">
                                   <AccordionTrigger className={cn(
-                                      "py-2.5 text-xl font-medium hover:no-underline rounded-md px-3",
-                                      pathname.startsWith('/calculators') ? "text-primary bg-accent" : "hover:bg-accent hover:text-primary"
+                                      "py-2.5 text-xl font-medium hover:no-underline rounded-md px-3 hover:text-primary",
+                                      pathname.startsWith('/calculators') ? "text-primary bg-accent" : "text-foreground/80 hover:bg-accent"
                                   )}>
                                     Calculators
                                   </AccordionTrigger>
@@ -167,10 +184,7 @@ export function Header() {
                               <SheetClose asChild key={link.href}>
                                   <Link 
                                     href={link.href}
-                                    className={cn(
-                                        "py-2.5 text-xl font-medium rounded-md px-3",
-                                        pathname === link.href ? "text-primary bg-accent" : "hover:bg-accent hover:text-primary"
-                                    )}
+                                    className={getMobileNavLinkClass(link.href)}
                                   >
                                       {link.label}
                                   </Link>
