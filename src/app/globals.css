@@ -34,6 +34,7 @@
     --border: 220 13% 91%;
     --input: 220 13% 91%;
     --ring: 200 99% 44%;
+    --radius: 0.5rem;
     --gradient-from: 205 99% 40%;
     --gradient-to: 200 99% 44%;
   }
@@ -58,6 +59,7 @@
     --border: 215 27.9% 12.9%;
     --input: 215 27.9% 16.9%;
     --ring: 200 99% 44%;
+    --radius: 0.5rem;
     --gradient-from: 205 99% 40%;
     --gradient-to: 200 99% 44%;
   }
