@@ -29,7 +29,6 @@ export function Header() {
 
   const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/ai-recommendations', label: 'AI Assistant' },
     { href: '/resources', label: 'Resources' },
     { href: '/faq', label: 'FAQ' },
   ];
@@ -44,51 +43,55 @@ export function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-2 text-base font-medium">
-            {navLinks.map((link) => (
+            <Button variant="ghost" asChild className={cn(pathname === '/' && "text-primary bg-accent")}>
+              <Link href="/">Home</Link>
+            </Button>
+            
+            <div 
+              onMouseEnter={() => setMegaMenuOpen(true)}
+              onMouseLeave={() => setMegaMenuOpen(false)}
+              className="relative"
+            >
+              <Button variant="ghost" className={cn(pathname.startsWith('/calculators') && "text-primary bg-accent")}>
+                  Calculators
+                  <ChevronDown className="h-4 w-4 ml-1 transition-transform" />
+              </Button>
+              <div 
+                data-state={isMegaMenuOpen ? 'open' : 'closed'}
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max max-w-5xl origin-top transition-all duration-300 data-[state=closed]:opacity-0 data-[state=closed]:-translate-y-2 data-[state=open]:opacity-100 data-[state=open]:translate-y-0 data-[state=closed]:pointer-events-none"
+              >
+                <div
+                  className="bg-popover text-popover-foreground rounded-lg border p-6 grid grid-cols-4 gap-x-12 gap-y-6"
+                  style={{boxShadow: 'rgba(0, 0, 0, 0.04) 0px 3px 5px'}}
+                >
+                  {calculatorsByCategory.map((category) => (
+                    <div key={category.name}>
+                      <h3 className="font-semibold text-foreground mb-4">{category.name}</h3>
+                      <ul className="space-y-3">
+                        {category.calculators.map(calc => (
+                          <li key={calc.slug}>
+                            <Link 
+                              href={`/calculators/${calc.slug}`} 
+                              className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
+                              onClick={() => setMegaMenuOpen(false)}
+                            >
+                              <calc.Icon className="h-4 w-4 shrink-0 text-primary/80" />
+                              <span>{calc.name}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {navLinks.slice(1).map((link) => ( // Slice to skip 'Home' as it's handled separately
               <Button key={link.href} variant="ghost" asChild className={cn(pathname === link.href && "text-primary bg-accent")}>
                 <Link href={link.href}>{link.label}</Link>
               </Button>
             ))}
-             
-             <div 
-               onMouseEnter={() => setMegaMenuOpen(true)}
-               onMouseLeave={() => setMegaMenuOpen(false)}
-               className="relative"
-             >
-                <Button variant="ghost" className={cn(pathname.startsWith('/calculators') && "text-primary bg-accent")}>
-                    Calculators
-                    <ChevronDown className="h-4 w-4 ml-1 transition-transform" />
-                </Button>
-                <div 
-                  data-state={isMegaMenuOpen ? 'open' : 'closed'}
-                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-max max-w-5xl origin-top transition-all duration-300 data-[state=closed]:opacity-0 data-[state=closed]:-translate-y-2 data-[state=open]:opacity-100 data-[state=open]:translate-y-0 data-[state=closed]:pointer-events-none"
-                >
-                  <div
-                    className="bg-popover text-popover-foreground rounded-lg border p-6 grid grid-cols-4 gap-x-12 gap-y-6"
-                    style={{boxShadow: 'rgba(0, 0, 0, 0.04) 0px 3px 5px'}}
-                  >
-                    {calculatorsByCategory.map((category) => (
-                      <div key={category.name}>
-                        <h3 className="font-semibold text-foreground mb-4">{category.name}</h3>
-                        <ul className="space-y-3">
-                          {category.calculators.map(calc => (
-                            <li key={calc.slug}>
-                              <Link 
-                                href={`/calculators/${calc.slug}`} 
-                                className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
-                                onClick={() => setMegaMenuOpen(false)}
-                              >
-                                <calc.Icon className="h-4 w-4 shrink-0 text-primary/80" />
-                                <span>{calc.name}</span>
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-             </div>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -113,24 +116,23 @@ export function Header() {
                     </div>
                     <ScrollArea className='flex-1'>
                       <div className="flex flex-col gap-1 p-6 text-lg">
-                          {navLinks.map((link) => (
-                              <SheetClose asChild key={link.href}>
-                                  <Link 
-                                    href={link.href}
-                                    className={cn(
-                                        "py-2.5 text-xl font-medium rounded-md px-3",
-                                        pathname === link.href ? "text-primary bg-accent" : "hover:bg-accent"
-                                    )}
-                                  >
-                                      {link.label}
-                                  </Link>
-                              </SheetClose>
-                          ))}
+                          <SheetClose asChild>
+                              <Link 
+                                href="/"
+                                className={cn(
+                                    "py-2.5 text-xl font-medium rounded-md px-3",
+                                    pathname === '/' ? "text-primary bg-accent" : "hover:bg-accent hover:text-primary"
+                                )}
+                              >
+                                  Home
+                              </Link>
+                          </SheetClose>
+
                           <Accordion type="single" collapsible className="w-full">
                               <AccordionItem value="calculators" className="border-b-0">
                                   <AccordionTrigger className={cn(
                                       "py-2.5 text-xl font-medium hover:no-underline rounded-md px-3",
-                                      pathname.startsWith('/calculators') ? "text-primary bg-accent" : "hover:bg-accent"
+                                      pathname.startsWith('/calculators') ? "text-primary bg-accent" : "hover:bg-accent hover:text-primary"
                                   )}>
                                     Calculators
                                   </AccordionTrigger>
@@ -160,6 +162,20 @@ export function Header() {
                                   </AccordionContent>
                               </AccordionItem>
                           </Accordion>
+                          
+                          {navLinks.slice(1).map((link) => (
+                              <SheetClose asChild key={link.href}>
+                                  <Link 
+                                    href={link.href}
+                                    className={cn(
+                                        "py-2.5 text-xl font-medium rounded-md px-3",
+                                        pathname === link.href ? "text-primary bg-accent" : "hover:bg-accent hover:text-primary"
+                                    )}
+                                  >
+                                      {link.label}
+                                  </Link>
+                              </SheetClose>
+                          ))}
                       </div>
                     </ScrollArea>
                 </SheetContent>
