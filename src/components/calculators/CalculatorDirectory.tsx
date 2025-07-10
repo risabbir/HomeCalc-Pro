@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -41,13 +42,13 @@ export function CalculatorDirectory() {
   return (
     <div id="calculators">
       <div className="mb-16 max-w-3xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-center gap-2 w-full bg-secondary/50 p-2 rounded-full border shadow-sm transition-all focus-within:ring-2 focus-within:ring-ring">
-          <div className="relative flex-grow w-full">
+        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-2 sm:w-full sm:bg-secondary/50 sm:p-2 sm:rounded-full sm:border sm:shadow-sm transition-all sm:focus-within:ring-2 sm:focus-within:ring-ring">
+          <div className="relative w-full">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search calculators by name or keyword..."
-              className="w-full pl-12 pr-4 h-12 text-base rounded-full border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="w-full pl-12 pr-4 h-14 text-base sm:h-12 rounded-full border sm:border-0 bg-background sm:bg-transparent focus-visible:ring-1 sm:focus-visible:ring-0 focus-visible:ring-ring sm:focus-visible:ring-offset-0"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               aria-label="Search for a calculator"
@@ -55,7 +56,7 @@ export function CalculatorDirectory() {
           </div>
           <Separator orientation="vertical" className="h-6 hidden sm:block bg-border" />
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-full sm:w-auto sm:min-w-[180px] h-12 rounded-full border-0 bg-transparent font-semibold text-foreground focus:ring-0 focus:ring-offset-0">
+            <SelectTrigger className="w-full sm:w-auto sm:min-w-[180px] h-14 text-base sm:h-12 rounded-full border sm:border-0 bg-background sm:bg-transparent font-semibold text-foreground focus:ring-1 sm:focus:ring-0 focus:ring-ring sm:focus:ring-offset-0">
                 <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
