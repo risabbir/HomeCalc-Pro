@@ -54,7 +54,7 @@ export default function ClimateZoneMapPage() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                              <Alert>
-                                <AlertTriangle className="h-4 w-4" />
+                                <Building className="h-4 w-4" />
                                 <AlertTitle>Official Government Lookup Tools</AlertTitle>
                                 <AlertDescription>
                                     <p className="mb-3">The most reliable way to find your building zone is by using an official county-by-county or zip code lookup tool. The general map can be misleading.</p>
@@ -86,7 +86,7 @@ export default function ClimateZoneMapPage() {
                         </CardHeader>
                         <CardContent>
                              <Alert>
-                                <AlertTriangle className="h-4 w-4" />
+                                <Sprout className="h-4 w-4" />
                                 <AlertTitle>Official Government Resource</AlertTitle>
                                 <AlertDescription>
                                     <ul className="list-disc pl-5 mt-2 space-y-3">
