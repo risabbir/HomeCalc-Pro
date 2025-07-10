@@ -145,7 +145,9 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="totalArea" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Total Conditioned Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Total Conditioned Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 2000" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>

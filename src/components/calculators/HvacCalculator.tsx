@@ -156,7 +156,7 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                        <div className="flex items-center gap-1.5">
                             <FormLabel>Insulation Quality</FormLabel>
                             <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent>
-                                <ul className="list-disc pl-4 text-left"><li><b>Good:</b> Well-insulated walls, ceiling, and floor; double-pane windows.</li><li><b>Average:</b> Standard insulation; some leakage.</li><li><b>Poor:</b> Little to no insulation; single-pane windows.</li></ul>
+                                <ul className="list-disc pl-4 text-left max-w-xs"><li><b>Good:</b> Well-insulated walls, ceiling, and floor; double-pane windows.</li><li><b>Average:</b> Standard insulation; some leakage.</li><li><b>Poor:</b> Little to no insulation; single-pane windows.</li></ul>
                             </TooltipContent></Tooltip></TooltipProvider>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>

@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X, HelpCircle } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Link from 'next/link';
 
 const formSchema = z.object({
   roomPerimeter: z.string().min(1, 'Room perimeter is required.'),
@@ -113,7 +114,7 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-          Buy the right amount of wallpaper. Calculate the total wall area and use your wallpaper roll's dimensions to find how many rolls you need. Remember to account for pattern repeat and a waste factor for cuts.
+          Buy the right amount of wallpaper. Calculate the total wall area and use your wallpaper roll's dimensions to find how many rolls you need. Remember to account for pattern repeat and a waste factor for cuts. See our <Link href="/resources/how-to-measure" className="text-primary underline">Measuring Guide</Link> for tips.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -144,14 +145,14 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
                 )}/>
                 <FormField control={form.control} name="rollWidth" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Roll Width ({units === 'imperial' ? 'in' : 'cm'})</FormLabel>
+                         <div className="flex items-center gap-1.5"><FormLabel>Roll Width ({units === 'imperial' ? 'in' : 'cm'})</FormLabel></div>
                         <FormControl><Input type="number" placeholder="e.g., 20.5" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="rollLength" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Roll Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Roll Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel></div>
                         <FormControl><Input type="number" placeholder="e.g., 33" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>

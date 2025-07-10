@@ -11,9 +11,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Download, X } from 'lucide-react';
+import { Download, X, HelpCircle } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Link from 'next/link';
 
 const formSchema = z.object({
   kitchenSize: z.string().min(1, 'Kitchen size is required.'),
@@ -103,7 +105,7 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Budget for your dream kitchen. Select your kitchen's size and the quality level for major components to get a cost estimate. This is for budget planning only and is not a formal quote.
+            Budget for your dream kitchen. Select your kitchen's size and the quality level for major components to get a cost estimate. This is for budget planning only and is not a formal quote. Check our <Link href="/resources/kitchen-layout-guide" className="text-primary underline">Layout Guide</Link> to get started.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -127,7 +129,10 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
                 )}/>
                 <FormField control={form.control} name="cabinets" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Cabinet Quality</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Cabinet Quality</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Stock: Off-the-shelf. Semi-custom: Some modifications. Custom: Built to order.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                         <SelectContent>
@@ -141,7 +146,10 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
                 )}/>
                  <FormField control={form.control} name="countertops" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Countertop Material</FormLabel>
+                        <div className="flex items-center gap-1.5">
+                            <FormLabel>Countertop Material</FormLabel>
+                             <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Laminate: Most affordable. Solid Surface: Mid-range. Granite/Quartz: Premium.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                         <SelectContent>
@@ -155,7 +163,10 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
                 )}/>
                  <FormField control={form.control} name="appliances" render={({ field }) => (
                     <FormItem className="md:col-span-2">
-                      <FormLabel>Appliance Tier</FormLabel>
+                        <div className="flex items-center gap-1.5">
+                            <FormLabel>Appliance Tier</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Basic: Standard models. Mid-range: Better features and brands. High-end: Luxury and professional-grade appliances.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                         <SelectContent>

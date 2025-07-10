@@ -129,14 +129,18 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="length" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Slab Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Slab Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="width" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Slab Width ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
+                        <div className="flex items-center gap-1.5">
+                            <FormLabel>Slab Width ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>

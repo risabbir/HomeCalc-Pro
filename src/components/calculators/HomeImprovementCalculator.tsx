@@ -15,6 +15,7 @@ import { Download, X, HelpCircle } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Link from 'next/link';
 
 const formSchema = z.object({
   roomLength: z.string().min(1, 'Room length is required.'),
@@ -122,7 +123,7 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Figure out exactly how much paint you'll need for your next project. Enter your room's dimensions and the number of coats you plan to apply. We'll automatically subtract standard-sized areas for doors and windows.
+            Figure out exactly how much paint you'll need for your next project. Enter your room's dimensions and the number of coats you plan to apply. We'll automatically subtract standard-sized areas for doors and windows. Need help measuring? Check our <Link href="/resources/how-to-measure" className="text-primary underline">handy guide</Link>.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -164,14 +165,14 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 rounded-md border p-4">
                     <FormField control={form.control} name="numDoors" render={({ field }) => (
                         <FormItem>
-                             <div className="flex items-center gap-1.5"><FormLabel># of Doors</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>We subtract 21 sq ft per door.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                             <div className="flex items-center gap-1.5"><FormLabel># of Doors</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>We subtract 21 sq ft (2 sq m) per door.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <FormField control={form.control} name="numWindows" render={({ field }) => (
                         <FormItem>
-                             <div className="flex items-center gap-1.5"><FormLabel># of Windows</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>We subtract 15 sq ft per window.</p></TooltipContent></Tooltip></TooltipProvider></div>
+                             <div className="flex items-center gap-1.5"><FormLabel># of Windows</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>We subtract 15 sq ft (1.4 sq m) per window.</p></TooltipContent></Tooltip></TooltipProvider></div>
                             <FormControl><Input type="number" placeholder="e.g., 2" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>

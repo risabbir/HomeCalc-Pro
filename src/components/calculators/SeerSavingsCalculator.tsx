@@ -177,14 +177,14 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
                 )}/>
                 <FormField control={form.control} name="hoursPerDay" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Hours of use / day</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Hours of use / day</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Your average daily runtime during the cooling season.</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="daysPerYear" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Days of use / year</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Days of use / year</FormLabel><TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>The number of days you typically run your air conditioner per year.</p></TooltipContent></Tooltip></TooltipProvider></div>
                         <FormControl><Input type="number" placeholder="e.g., 120" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>

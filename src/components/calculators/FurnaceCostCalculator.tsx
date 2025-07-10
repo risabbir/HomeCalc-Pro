@@ -123,7 +123,9 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="homeSize" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Home Size ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
+                         <div className="flex items-center gap-1.5">
+                            <FormLabel>Home Size ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
+                        </div>
                         <FormControl><Input type="number" placeholder="e.g., 2000" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -147,7 +149,10 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
                 )}/>
                 <FormField control={form.control} name="furnaceType" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Furnace Type</FormLabel>
+                        <div className="flex items-center gap-1.5">
+                            <FormLabel>Furnace Type</FormLabel>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Gas is most common, electric is cheaper to install but more expensive to run, and oil is used in fewer regions.</p></TooltipContent></Tooltip></TooltipProvider>
+                        </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                         <SelectContent>

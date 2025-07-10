@@ -212,7 +212,7 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                     <FormItem>
                          <div className="flex items-center gap-1.5">
                             <FormLabel>New Insulation Type</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Cellulose generally has a higher R-value per inch than fiberglass. Choose the type you plan to add.</p></TooltipContent></Tooltip></TooltipProvider>
+                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Cellulose generally has a higher R-value per inch than fiberglass. Choose the type you plan to add. Check our <Link href="/resources/insulation-guide" className="text-primary underline">Insulation Guide</Link> for details.</p></TooltipContent></Tooltip></TooltipProvider>
                         </div>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>

@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X, HelpCircle } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Link from 'next/link';
 
 const formSchema = z.object({
   roomWidth: z.string().min(1, 'Room width is required.'),
@@ -114,7 +115,7 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Measure your room's width and length to find the total area. It is crucial to add a waste factor to account for cuts, mistakes, and board selection.
+            Measure your room's width and length to find the total area. It is crucial to add a waste factor to account for cuts, mistakes, and board selection. See our <Link href="/resources/how-to-measure" className="text-primary underline">Measuring Guide</Link> for tips.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">

@@ -15,6 +15,7 @@ import { Download, X, HelpCircle } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Link from 'next/link';
 
 const formSchema = z.object({
   deckWidth: z.string().min(1, 'Deck width is required.'),
@@ -119,7 +120,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-          Plan your new deck project by calculating the number of deck boards and framing joists you'll need based on your deck's dimensions and structure.
+          Plan your new deck project by calculating the number of deck boards and framing joists you'll need based on your deck's dimensions and structure. Check our <Link href="/resources/deck-checklist" className="text-primary underline">Deck Building Checklist</Link> for a full project guide.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -157,7 +158,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
                 )}/>
                 <FormField control={form.control} name="boardLength" render={({ field }) => (
                      <FormItem>
-                        <FormLabel>Deck Board Length ({units === 'imperial' ? 'ft' : 'm'})</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Deck Board Length</FormLabel></div>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
                             <SelectContent>
