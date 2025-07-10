@@ -206,7 +206,7 @@ export function Chatbot() {
               </div>
             </ScrollArea>
           </CardContent>
-          <CardFooter className="p-2 border-t bg-background">
+          <CardFooter className="p-2 border-t bg-background/50">
              <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex w-full items-end gap-2">
               <Textarea
                 ref={textareaRef}
@@ -214,7 +214,7 @@ export function Chatbot() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Ask about project costs or materials..."
-                className="flex-grow overflow-y-auto resize-none py-2.5 no-scrollbar bg-muted border-muted-foreground/20 focus-visible:ring-primary/50"
+                className="flex-grow overflow-y-auto resize-none py-2.5 no-scrollbar bg-background border-border focus-visible:ring-primary/50"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
