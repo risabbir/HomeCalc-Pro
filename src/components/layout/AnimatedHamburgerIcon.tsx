@@ -12,21 +12,21 @@ export function AnimatedHamburgerIcon({ open, className }: AnimatedHamburgerIcon
             <span
                 aria-hidden="true"
                 className={cn(
-                    "absolute block h-0.5 w-full transform bg-current transition duration-300 ease-in-out",
+                    "absolute block h-[2.5px] w-full transform bg-current transition duration-300 ease-in-out",
                     open ? "rotate-45" : "-translate-y-2"
                 )}
             ></span>
             <span
                 aria-hidden="true"
                 className={cn(
-                    "absolute block h-0.5 w-full transform bg-current transition duration-300 ease-in-out",
+                    "absolute block h-[2.5px] w-full transform bg-current transition duration-300 ease-in-out",
                     open ? "opacity-0" : ""
                 )}
             ></span>
             <span
                 aria-hidden="true"
                 className={cn(
-                    "absolute block h-0.5 w-full transform bg-current transition duration-300 ease-in-out",
+                    "absolute block h-[2.5px] w-full transform bg-current transition duration-300 ease-in-out",
                     open ? "-rotate-45" : "translate-y-2"
                 )}
             ></span>
