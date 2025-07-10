@@ -11,7 +11,7 @@ export function Footer() {
               <Logo />
             </Link>
             <p className="text-base text-muted-foreground max-w-sm">
-              From DIY tasks to major renovations, get accurate estimates with our free calculators for home improvement, HVAC, gardening, and more.
+              Your one-stop destination for a wide range of home-related calculators. From home improvement and energy savings to gardening and financial planning, we provide the tools to help you plan with confidence.
             </p>
           </div>
           <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-8">
