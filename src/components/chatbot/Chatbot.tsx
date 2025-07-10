@@ -44,13 +44,16 @@ export function Chatbot() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [presetQuestions, setPresetQuestions] = useState<string[]>([]);
   const { toast } = useToast();
   
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  // Get 3 random preset questions on component mount
-  const presetQuestions = useMemo(() => getShuffledItems(allPresetQuestions, 3), []);
+  useEffect(() => {
+    // Randomize questions only on the client-side to prevent hydration mismatch
+    setPresetQuestions(getShuffledItems(allPresetQuestions, 3));
+  }, []);
 
 
   useEffect(() => {
