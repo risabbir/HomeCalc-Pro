@@ -5,19 +5,19 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Heater, Layers3, Building, AlertTriangle } from 'lucide-react';
+import { Heater, Layers3, Building, AlertTriangle, Sprout } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const metadata: Metadata = {
-    title: 'U.S. Climate Zone Guide for Homeowners | HomeCalc Pro',
-    description: 'Use official government resources to find your U.S. climate zone. Essential for correctly sizing your HVAC system, choosing insulation, and planning energy-efficient home projects.',
+    title: 'A Homeowner\'s Guide to U.S. Climate & Hardiness Zones | HomeCalc Pro',
+    description: 'Understand the difference between DOE Climate Zones (for building) and USDA Plant Hardiness Zones (for gardening) and find your zone using official government maps.',
 };
 
 const relevantCalculators = [
     'hvac-load',
     'attic-insulation',
     'furnace-cost',
-    'heat-pump-cost'
+    'soil-volume'
 ]
 
 const climateZoneData = [
@@ -37,33 +37,27 @@ export default function ClimateZoneMapPage() {
     return (
         <div className="container mx-auto px-4 py-16">
             <div className="text-center mb-12">
-                <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">U.S. Climate Zone Guide for Homeowners</h1>
+                <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">A Homeowner's Guide to U.S. Climate & Hardiness Zones</h1>
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                    The U.S. Department of Energy (DOE) divides the country into eight climate zones. Identifying your specific zone is the critical first step for any energy-efficient home project.
+                    It's a common point of confusion: "Climate Zones" for building are different from "Plant Hardiness Zones" for gardening. This guide clarifies the two and directs you to the right official resource.
                 </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12 lg:gap-y-0">
                 <main className="lg:col-span-2 space-y-12">
-                    <Card>
+                     <Card>
                         <CardHeader>
-                            <CardTitle>Find Your Exact Climate Zone</CardTitle>
+                            <CardTitle className="flex items-center gap-2"><Building className="h-6 w-6" /> DOE Climate Zones (For Building & HVAC)</CardTitle>
                             <CardDescription>
-                                The most reliable way to find your climate zone is by using the official county-by-county lookup tools provided by U.S. government agencies.
+                                For projects like insulation or HVAC sizing, use the Department of Energy (DOE) / Building America climate zones. These are based on heating and cooling needs. The most reliable way to find your zone is by using the official county-by-county lookup tools.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <Alert>
+                             <Alert>
                                 <AlertTriangle className="h-4 w-4" />
                                 <AlertTitle>Official Government Resources</AlertTitle>
                                 <AlertDescription>
                                     <ul className="list-disc pl-5 mt-2 space-y-3">
-                                        <li>
-                                            <a href="https://www.energystar.gov/products/heating_cooling/heating_cooling_basics/climate_zone_map" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary underline-offset-4 hover:underline">
-                                                ENERGY STAR Climate Zone Finder
-                                            </a>
-                                            <p className="text-xs text-muted-foreground">The most user-friendly tool. Select your state and county to instantly find your zone.</p>
-                                        </li>
                                         <li>
                                             <a href="https://www.energy.gov/eere/buildings/building-energy-codes-program" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary underline-offset-4 hover:underline">
                                                 U.S. Department of Energy (DOE)
@@ -78,44 +72,33 @@ export default function ClimateZoneMapPage() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Why Your Climate Zone is Critical</CardTitle>
-                            <CardDescription>Using the correct zone is essential for getting accurate calculations, saving money, and ensuring your home is comfortable.</CardDescription>
+                            <CardTitle className="flex items-center gap-2"><Sprout className="h-6 w-6" /> USDA Plant Hardiness Zones (For Gardening)</CardTitle>
+                             <CardDescription>
+                                For gardening and choosing plants that will survive the winter, use the USDA Plant Hardiness Zone Map. It is based on the average annual minimum winter temperature.
+                            </CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="flex items-start gap-4">
-                                <div className="bg-primary/10 p-3 rounded-full">
-                                    <Heater className="h-6 w-6 text-primary" />
-                                </div>
-                                <div>
-                                    <h3 className="font-semibold">Accurate HVAC Sizing</h3>
-                                    <p className="text-muted-foreground">Your zone determines the precise heating and cooling capacity (size) your HVAC system needs. An undersized system won't keep up on extreme days, while an oversized system will cycle inefficiently, fail to dehumidify properly, and increase energy bills.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-4">
-                                <div className="bg-primary/10 p-3 rounded-full">
-                                    <Layers3 className="h-6 w-6 text-primary" />
-                                </div>
-                                <div>
-                                    <h3 className="font-semibold">Proper Insulation (R-Value)</h3>
-                                    <p className="text-muted-foreground">Colder zones require much higher insulation R-values in walls, attics, and floors to prevent heat loss. In hot climates, insulation is just as crucial for keeping cool, conditioned air inside. Using the wrong R-value leads to significant energy waste and discomfort.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-4">
-                                <div className="bg-primary/10 p-3 rounded-full">
-                                    <Building className="h-6 w-6 text-primary" />
-                                </div>
-                                <div>
-                                    <h3 className="font-semibold">Informed Building Material Choices</h3>
-                                    <p className="text-muted-foreground">Your choice of windows (e.g., U-factor and SHGC ratings), siding, and roofing should be directly influenced by your climate zone to maximize energy efficiency and long-term durability against the elements.</p>
-                                </div>
-                            </div>
+                        <CardContent>
+                             <Alert>
+                                <AlertTriangle className="h-4 w-4" />
+                                <AlertTitle>Official Government Resource</AlertTitle>
+                                <AlertDescription>
+                                    <ul className="list-disc pl-5 mt-2 space-y-3">
+                                        <li>
+                                            <a href="https://planthardiness.ars.usda.gov/" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary underline-offset-4 hover:underline">
+                                                USDA Plant Hardiness Zone Map
+                                            </a>
+                                            <p className="text-xs text-muted-foreground">The official interactive map. Enter your ZIP code to find your exact hardiness zone.</p>
+                                        </li>
+                                    </ul>
+                                </AlertDescription>
+                            </Alert>
                         </CardContent>
                     </Card>
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Climate Zone Breakdown</CardTitle>
-                            <CardDescription>To determine your zone with certainty, use the county-by-county lookup tools on the official U.S. Department of Energy or ENERGY STAR websites. The table below provides a general overview.</CardDescription>
+                            <CardTitle>DOE Climate Zone General Breakdown</CardTitle>
+                            <CardDescription>To determine your building zone with certainty, use the county-by-county lookup tools on the official U.S. Department of Energy website. The table below provides a general overview.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <Table>
