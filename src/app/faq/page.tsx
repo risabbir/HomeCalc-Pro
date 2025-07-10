@@ -4,6 +4,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Building2, Lightbulb, ShieldQuestion, HelpCircle } from "lucide-react";
+import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata = {
   title: "FAQ | HomeCalc Pro",
@@ -144,6 +145,7 @@ export default function FaqPage() {
             </Card>
 
         </div>
+        <ReportAnIssue />
       </div>
     </div>
   );

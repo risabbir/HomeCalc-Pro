@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Building, AlertTriangle, Sprout } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata: Metadata = {
     title: 'Guide to U.S. Climate & Hardiness Zones',
@@ -43,7 +44,7 @@ export default function ClimateZoneMapPage() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12 lg:gap-y-0">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12">
                 <main className="lg:col-span-2 space-y-12">
                      <Card className="border-primary/20 border-2">
                         <CardHeader>
@@ -131,23 +132,24 @@ export default function ClimateZoneMapPage() {
                 </main>
 
                 <aside className="lg:col-span-1">
-                    <div className="sticky top-28">
-                             <Card className="bg-secondary">
-                                <CardHeader>
-                                    <CardTitle>Related Calculators</CardTitle>
-                                    <CardDescription>Apply your zone knowledge with these tools.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="grid grid-cols-1 gap-4">
-                                    {relatedCalculators.map(calc => (
-                                        <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
-                                            <Link href={`/calculators/${calc.slug}`}>
-                                                <calc.Icon className="h-5 w-5 text-primary" />
-                                                {calc.name}
-                                            </Link>
-                                        </Button>
-                                    ))}
-                                </CardContent>
-                            </Card>
+                    <div className="sticky top-28 space-y-8">
+                        <Card className="bg-secondary">
+                            <CardHeader>
+                                <CardTitle>Related Calculators</CardTitle>
+                                <CardDescription>Apply your zone knowledge with these tools.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="grid grid-cols-1 gap-4">
+                                {relatedCalculators.map(calc => (
+                                    <Button asChild variant="outline" className="justify-start gap-4 bg-background" key={calc.slug}>
+                                        <Link href={`/calculators/${calc.slug}`}>
+                                            <calc.Icon className="h-5 w-5 text-primary" />
+                                            {calc.name}
+                                        </Link>
+                                    </Button>
+                                ))}
+                            </CardContent>
+                        </Card>
+                        <ReportAnIssue />
                     </div>
                 </aside>
             </div>

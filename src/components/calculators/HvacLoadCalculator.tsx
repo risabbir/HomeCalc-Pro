@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import Link from 'next/link';
+import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
 
 const formSchema = z.object({
   totalArea: z.string().min(1, 'Total area is required.'),
@@ -117,122 +118,125 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
   };
   
   return (
-    <Card className="max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>How to use this calculator</CardTitle>
-        <CardDescription>
-            A simplified "Manual J" calculation to determine the heating and cooling load for your entire home. This is essential for correctly sizing a new central HVAC system.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <Alert variant="destructive">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>For Estimation Only</AlertTitle>
-                <AlertDescription>
-                This tool provides a simplified estimate. A professional Manual J calculation considers many more factors like window orientation, air leakage, and local design temperatures.
-                </AlertDescription>
-            </Alert>
-            <div className="flex justify-start mb-4">
-                <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
-                    <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="imperial">Imperial</TabsTrigger>
-                        <TabsTrigger value="metric">Metric</TabsTrigger>
-                    </TabsList>
-                </Tabs>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField control={form.control} name="totalArea" render={({ field }) => (
-                    <FormItem>
-                         <div className="flex items-center gap-1.5">
-                            <FormLabel>Total Conditioned Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
-                        </div>
-                        <FormControl><Input type="number" placeholder="e.g., 2000" {...field} /></FormControl>
+    <div className="max-w-2xl mx-auto">
+        <Card>
+        <CardHeader>
+            <CardTitle>How to use this calculator</CardTitle>
+            <CardDescription>
+                A simplified "Manual J" calculation to determine the heating and cooling load for your entire home. This is essential for correctly sizing a new central HVAC system.
+            </CardDescription>
+        </CardHeader>
+        <CardContent className="p-6">
+            <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <Alert variant="destructive">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle>For Estimation Only</AlertTitle>
+                    <AlertDescription>
+                    This tool provides a simplified estimate. A professional Manual J calculation considers many more factors like window orientation, air leakage, and local design temperatures.
+                    </AlertDescription>
+                </Alert>
+                <div className="flex justify-start mb-4">
+                    <Tabs defaultValue="imperial" onValueChange={(value) => setUnits(value as 'imperial' | 'metric')} className="w-auto">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="imperial">Imperial</TabsTrigger>
+                            <TabsTrigger value="metric">Metric</TabsTrigger>
+                        </TabsList>
+                    </Tabs>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField control={form.control} name="totalArea" render={({ field }) => (
+                        <FormItem>
+                            <div className="flex items-center gap-1.5">
+                                <FormLabel>Total Conditioned Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
+                            </div>
+                            <FormControl><Input type="number" placeholder="e.g., 2000" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                    <FormField control={form.control} name="windowsArea" render={({ field }) => (
+                        <FormItem>
+                            <div className="flex items-center gap-1.5">
+                                <FormLabel>Total Window Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
+                                <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Sum the area (width x height) of all windows.</p></TooltipContent></Tooltip></TooltipProvider>
+                            </div>
+                            <FormControl><Input type="number" placeholder="e.g., 150" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                    <FormField control={form.control} name="climateZone" render={({ field }) => (
+                        <FormItem>
+                            <div className="flex items-center gap-1.5">
+                                <FormLabel>U.S. Climate Zone</FormLabel>
+                                <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Determines your recommended R-value. See our <Link href="/resources/climate-zone-map" className="text-primary underline">Climate Zone Map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
+                            </div>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                            <SelectContent>
+                            {Object.keys(CLIMATE_FACTORS.cooling).map(zone => (
+                                <SelectItem key={zone} value={zone}>Zone {zone}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
                         <FormMessage />
-                    </FormItem>
-                )}/>
-                 <FormField control={form.control} name="windowsArea" render={({ field }) => (
-                    <FormItem>
-                         <div className="flex items-center gap-1.5">
-                            <FormLabel>Total Window Area ({units === 'imperial' ? 'sq ft' : 'sq m'})</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Sum the area (width x height) of all windows.</p></TooltipContent></Tooltip></TooltipProvider>
-                        </div>
-                        <FormControl><Input type="number" placeholder="e.g., 150" {...field} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}/>
-                <FormField control={form.control} name="climateZone" render={({ field }) => (
-                    <FormItem>
+                        </FormItem>
+                    )}/>
+                    <FormField control={form.control} name="numberOfOccupants" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Number of Occupants</FormLabel>
+                            <FormControl><Input type="number" placeholder="e.g., 4" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                    <FormField
+                    control={form.control}
+                    name="insulationQuality"
+                    render={({ field }) => (
+                        <FormItem className="md:col-span-2">
                         <div className="flex items-center gap-1.5">
-                            <FormLabel>U.S. Climate Zone</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent><p>Determines your recommended R-value. See our <Link href="/resources/climate-zone-map" className="text-primary underline">Climate Zone Map</Link> to find yours.</p></TooltipContent></Tooltip></TooltipProvider>
-                        </div>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
-                        <SelectContent>
-                          {Object.keys(CLIMATE_FACTORS.cooling).map(zone => (
-                             <SelectItem key={zone} value={zone}>Zone {zone}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                )}/>
-                <FormField control={form.control} name="numberOfOccupants" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Number of Occupants</FormLabel>
-                        <FormControl><Input type="number" placeholder="e.g., 4" {...field} /></FormControl>
+                                <FormLabel>Overall Insulation Quality</FormLabel>
+                                <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent>
+                                    <ul className="list-disc pl-4 text-left"><li><b>Good:</b> Meets or exceeds modern code; well-sealed.</li><li><b>Average:</b> Older construction, but reasonably insulated.</li><li><b>Poor:</b> Little to no insulation, drafty.</li></ul>
+                                </TooltipContent></Tooltip></TooltipProvider>
+                            </div>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger><SelectValue/></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            <SelectItem value="good">Good</SelectItem>
+                            <SelectItem value="average">Average</SelectItem>
+                            <SelectItem value="poor">Poor</SelectItem>
+                            </SelectContent>
+                        </Select>
                         <FormMessage />
-                    </FormItem>
-                )}/>
-                 <FormField
-                  control={form.control}
-                  name="insulationQuality"
-                  render={({ field }) => (
-                    <FormItem className="md:col-span-2">
-                       <div className="flex items-center gap-1.5">
-                            <FormLabel>Overall Insulation Quality</FormLabel>
-                            <TooltipProvider delayDuration={100}><Tooltip><TooltipTrigger type="button"><HelpCircle className="h-4 w-4 text-muted-foreground" /></TooltipTrigger><TooltipContent>
-                                <ul className="list-disc pl-4 text-left"><li><b>Good:</b> Meets or exceeds modern code; well-sealed.</li><li><b>Average:</b> Older construction, but reasonably insulated.</li><li><b>Poor:</b> Little to no insulation, drafty.</li></ul>
-                            </TooltipContent></Tooltip></TooltipProvider>
-                        </div>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger><SelectValue/></SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="good">Good</SelectItem>
-                          <SelectItem value="average">Average</SelectItem>
-                          <SelectItem value="poor">Poor</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-            </div>
+                        </FormItem>
+                    )}
+                    />
+                </div>
 
-            <div className="flex flex-wrap items-center gap-4">
-              <Button type="submit">Calculate Load</Button>
-              {loadResult && (
-                <Button type="button" variant="destructive" onClick={handleClear}>
-                  Clear<X className="ml-1 h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          </form>
-        </Form>
-        {loadResult && (
-          <Card className="mt-6 bg-accent">
-            <CardHeader><CardTitle>Estimated HVAC Load</CardTitle></CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <p className="text-xl font-bold">{loadResult}</p>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
-            </CardContent>
-          </Card>
-        )}
-      </CardContent>
-    </Card>
+                <div className="flex flex-wrap items-center gap-4">
+                <Button type="submit">Calculate Load</Button>
+                {loadResult && (
+                    <Button type="button" variant="destructive" onClick={handleClear}>
+                    Clear<X className="ml-1 h-4 w-4" />
+                    </Button>
+                )}
+                </div>
+            </form>
+            </Form>
+            {loadResult && (
+            <Card className="mt-6 bg-accent">
+                <CardHeader><CardTitle>Estimated HVAC Load</CardTitle></CardHeader>
+                <CardContent className="flex items-center justify-between">
+                <p className="text-lg md:text-xl font-bold">{loadResult}</p>
+                <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+                </CardContent>
+            </Card>
+            )}
+        </CardContent>
+        </Card>
+        <ReportAnIssue />
+    </div>
   );
 }

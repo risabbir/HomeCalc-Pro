@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle, CheckSquare, FileWarning } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
+import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata: Metadata = {
     title: 'The Ultimate Deck Building Checklist | HomeCalc Pro',
@@ -81,7 +82,7 @@ export default function DeckChecklistPage() {
                 </p>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12 lg:gap-y-0">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12">
                 <main className="lg:col-span-2 space-y-8">
                     <Alert className="mb-12 border-l-4 border-primary bg-primary/5">
                          <FileWarning className="h-4 w-4 text-primary" />
@@ -128,7 +129,7 @@ export default function DeckChecklistPage() {
                 </main>
 
                 <aside className="lg:col-span-1">
-                    <div className="sticky top-28">
+                    <div className="sticky top-28 space-y-8">
                         <Card className="bg-secondary">
                             <CardHeader>
                                 <CardTitle>Calculate Your Deck Materials</CardTitle>
@@ -145,6 +146,7 @@ export default function DeckChecklistPage() {
                                 ))}
                             </CardContent>
                         </Card>
+                        <ReportAnIssue />
                     </div>
                 </aside>
             </div>

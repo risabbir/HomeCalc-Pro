@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Lightbulb } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata: Metadata = {
     title: 'A Homeowner\'s Guide to Paint Finishes | HomeCalc Pro',
@@ -67,7 +68,7 @@ export default function PaintFinishGuidePage() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12">
                 <main className="lg:col-span-2">
                     <Alert className="mb-12">
                         <Lightbulb className="h-4 w-4" />
@@ -100,7 +101,7 @@ export default function PaintFinishGuidePage() {
                 </main>
 
                  <aside className="lg:col-span-1">
-                    <div className="sticky top-28">
+                    <div className="sticky top-28 space-y-8">
                         <Card className="bg-secondary">
                             <CardHeader>
                                 <CardTitle>Ready to Start Painting?</CardTitle>
@@ -117,6 +118,7 @@ export default function PaintFinishGuidePage() {
                                 ))}
                             </CardContent>
                         </Card>
+                        <ReportAnIssue />
                     </div>
                 </aside>
             </div>

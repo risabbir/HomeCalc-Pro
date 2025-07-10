@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Lightbulb } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata: Metadata = {
     title: 'How to Measure a Room Accurately For Any Project | HomeCalc Pro',
@@ -30,7 +31,7 @@ export default function HowToMeasurePage() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12">
                 <main className="lg:col-span-2 space-y-12">
                     <Card>
                         <CardHeader>
@@ -118,7 +119,7 @@ export default function HowToMeasurePage() {
                     </Alert>
                 </main>
                  <aside className="lg:col-span-1">
-                    <div className="sticky top-28">
+                    <div className="sticky top-28 space-y-8">
                          <Card className="bg-secondary">
                             <CardHeader>
                                 <CardTitle>Put Your Measurements to Use</CardTitle>
@@ -135,6 +136,7 @@ export default function HowToMeasurePage() {
                                 ))}
                             </CardContent>
                         </Card>
+                        <ReportAnIssue />
                     </div>
                 </aside>
             </div>

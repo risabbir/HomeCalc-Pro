@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle, CheckSquare } from "lucide-react";
 import React from "react";
 import { Separator } from "@/components/ui/separator";
+import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata: Metadata = {
     title: 'Seasonal HVAC Maintenance Checklist | HomeCalc Pro',
@@ -49,7 +50,7 @@ export default function HvacMaintenancePage() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12">
                 <main className="lg:col-span-2 space-y-8">
                     <Card>
                         <CardHeader>
@@ -102,7 +103,7 @@ export default function HvacMaintenancePage() {
                 </main>
 
                 <aside className="lg:col-span-1">
-                    <div className="sticky top-28">
+                    <div className="sticky top-28 space-y-8">
                         <Card className="bg-secondary">
                             <CardHeader>
                                 <CardTitle>Plan Your HVAC Projects</CardTitle>
@@ -119,6 +120,7 @@ export default function HvacMaintenancePage() {
                                 ))}
                             </CardContent>
                         </Card>
+                        <ReportAnIssue />
                     </div>
                 </aside>
             </div>

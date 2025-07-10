@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/s
 import * as React from 'react';
 import { useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export function Header() {
   const [isMegaMenuOpen, setMegaMenuOpen] = useState(false);
@@ -88,39 +89,43 @@ export function Header() {
                     <span className="sr-only">Open menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-full max-w-sm">
-                    <SheetClose asChild>
-                      <Link href="/" className="mb-8 inline-block" tabIndex={-1}>
-                        <Logo />
-                      </Link>
-                    </SheetClose>
-                    <div className="flex flex-col gap-4">
-                        <SheetClose asChild><Link href="/" className="text-lg font-medium">Home</Link></SheetClose>
-                        <Accordion type="single" collapsible className="w-full">
-                            <AccordionItem value="calculators" className="border-b-0">
-                                <AccordionTrigger className="text-lg font-medium py-2 hover:no-underline">Calculators</AccordionTrigger>
-                                <AccordionContent>
-                                    <div className="flex flex-col gap-2 pl-4">
-                                    {calculatorsByCategory.map((category) => (
-                                        <div key={category.name}>
-                                            <h4 className="font-semibold text-muted-foreground mb-2 mt-2">{category.name}</h4>
-                                            <div className="flex flex-col gap-1">
-                                            {category.calculators.map(calc => (
-                                                <SheetClose asChild key={calc.slug}>
-                                                    <Link href={`/calculators/${calc.slug}`} className="text-foreground hover:text-primary py-1">{calc.name}</Link>
-                                                </SheetClose>
-                                            ))}
-                                            </div>
-                                        </div>
-                                    ))}
-                                    </div>
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
-                         <SheetClose asChild><Link href="/ai-recommendations" className="text-lg font-medium flex items-center gap-2">AI Assistant <Wand2 className="h-5 w-5 text-primary"/></Link></SheetClose>
-                        <SheetClose asChild><Link href="/resources" className="text-lg font-medium">Resources</Link></SheetClose>
-                        <SheetClose asChild><Link href="/faq" className="text-lg font-medium">FAQ</Link></SheetClose>
+                <SheetContent side="right" className="w-full max-w-sm flex flex-col p-0">
+                    <div className='p-6 pb-0'>
+                      <SheetClose asChild>
+                        <Link href="/" className="mb-8 inline-block" tabIndex={-1}>
+                          <Logo />
+                        </Link>
+                      </SheetClose>
                     </div>
+                    <ScrollArea className='flex-1'>
+                      <div className="flex flex-col gap-4 px-6 pb-6">
+                          <SheetClose asChild><Link href="/" className="text-lg font-medium">Home</Link></SheetClose>
+                          <Accordion type="single" collapsible className="w-full">
+                              <AccordionItem value="calculators" className="border-b-0">
+                                  <AccordionTrigger className="text-lg font-medium py-2 hover:no-underline">Calculators</AccordionTrigger>
+                                  <AccordionContent>
+                                      <div className="flex flex-col gap-2 pl-4">
+                                      {calculatorsByCategory.map((category) => (
+                                          <div key={category.name}>
+                                              <h4 className="font-semibold text-muted-foreground mb-2 mt-2">{category.name}</h4>
+                                              <div className="flex flex-col gap-1">
+                                              {category.calculators.map(calc => (
+                                                  <SheetClose asChild key={calc.slug}>
+                                                      <Link href={`/calculators/${calc.slug}`} className="text-foreground hover:text-primary py-1">{calc.name}</Link>
+                                                  </SheetClose>
+                                              ))}
+                                              </div>
+                                          </div>
+                                      ))}
+                                      </div>
+                                  </AccordionContent>
+                              </AccordionItem>
+                          </Accordion>
+                          <SheetClose asChild><Link href="/ai-recommendations" className="text-lg font-medium flex items-center gap-2">AI Assistant <Wand2 className="h-5 w-5 text-primary"/></Link></SheetClose>
+                          <SheetClose asChild><Link href="/resources" className="text-lg font-medium">Resources</Link></SheetClose>
+                          <SheetClose asChild><Link href="/faq" className="text-lg font-medium">FAQ</Link></SheetClose>
+                      </div>
+                    </ScrollArea>
                 </SheetContent>
               </Sheet>
             </div>
