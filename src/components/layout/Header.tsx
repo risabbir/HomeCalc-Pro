@@ -6,15 +6,17 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './ThemeToggle';
 import { calculators } from '@/lib/calculators';
-import { ChevronDown, Menu, Wand2 } from 'lucide-react';
+import { ChevronDown, Wand2 } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import * as React from 'react';
 import { useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { AnimatedHamburgerIcon } from './AnimatedHamburgerIcon';
 
 export function Header() {
   const [isMegaMenuOpen, setMegaMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const categories = ['HVAC', 'Home Improvement', 'Gardening', 'Other'];
   const calculatorsByCategory = categories.map(category => ({
@@ -83,10 +85,10 @@ export function Header() {
 
             {/* Mobile Nav */}
             <div className="md:hidden">
-              <Sheet>
+              <Sheet open={isMobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
-                    <Menu className="h-7 w-7" />
+                    <AnimatedHamburgerIcon open={isMobileMenuOpen} />
                     <span className="sr-only">Open menu</span>
                   </Button>
                 </SheetTrigger>
@@ -100,19 +102,19 @@ export function Header() {
                     </div>
                     <ScrollArea className='flex-1'>
                       <div className="flex flex-col gap-1 p-6 text-lg">
-                          <SheetClose asChild><Link href="/" className="py-2 font-medium">Home</Link></SheetClose>
+                          <SheetClose asChild><Link href="/" className="py-2.5 text-xl font-medium">Home</Link></SheetClose>
                           <Accordion type="single" collapsible className="w-full">
                               <AccordionItem value="calculators" className="border-b-0">
-                                  <AccordionTrigger className="py-2 font-medium text-lg hover:no-underline">Calculators</AccordionTrigger>
+                                  <AccordionTrigger className="py-2.5 text-xl font-medium hover:no-underline">Calculators</AccordionTrigger>
                                   <AccordionContent className="pl-2">
                                       <div className="flex flex-col gap-1">
                                       {calculatorsByCategory.map((category) => (
                                           <div key={category.name}>
-                                              <h4 className="font-semibold text-base text-muted-foreground mb-2 mt-3">{category.name}</h4>
+                                              <h4 className="font-semibold text-lg text-muted-foreground mb-2 mt-3">{category.name}</h4>
                                               <div className="flex flex-col gap-2">
                                               {category.calculators.map(calc => (
                                                   <SheetClose asChild key={calc.slug}>
-                                                      <Link href={`/calculators/${calc.slug}`} className="text-foreground hover:text-primary py-1.5 text-base">{calc.name}</Link>
+                                                      <Link href={`/calculators/${calc.slug}`} className="text-foreground hover:text-primary py-2 text-lg">{calc.name}</Link>
                                                   </SheetClose>
                                               ))}
                                               </div>
@@ -122,9 +124,9 @@ export function Header() {
                                   </AccordionContent>
                               </AccordionItem>
                           </Accordion>
-                          <SheetClose asChild><Link href="/ai-recommendations" className="py-2 font-medium flex items-center gap-2">AI Assistant <Wand2 className="h-5 w-5 text-primary"/></Link></SheetClose>
-                          <SheetClose asChild><Link href="/resources" className="py-2 font-medium">Resources</Link></SheetClose>
-                          <SheetClose asChild><Link href="/faq" className="py-2 font-medium">FAQ</Link></SheetClose>
+                          <SheetClose asChild><Link href="/ai-recommendations" className="py-2.5 text-xl font-medium flex items-center gap-2">AI Assistant <Wand2 className="h-5 w-5 text-primary"/></Link></SheetClose>
+                          <SheetClose asChild><Link href="/resources" className="py-2.5 text-xl font-medium">Resources</Link></SheetClose>
+                          <SheetClose asChild><Link href="/faq" className="py-2.5 text-xl font-medium">FAQ</Link></SheetClose>
                       </div>
                     </ScrollArea>
                 </SheetContent>
