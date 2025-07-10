@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { calculators } from '@/lib/calculators';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { ReportAnIssue } from '../layout/ReportAnIssue';
 
 function AiRecommendationsComponent() {
   const searchParams = useSearchParams();
@@ -138,6 +139,9 @@ function AiRecommendationsComponent() {
                 </CardFooter>
             </form>
         </Card>
+        <div className="max-w-2xl mx-auto">
+          <ReportAnIssue />
+        </div>
     </div>
   );
 }

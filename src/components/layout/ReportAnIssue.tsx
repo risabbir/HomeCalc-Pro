@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export function ReportAnIssue() {
     return (
-        <Card className="mt-16 bg-secondary/50">
+        <Card className="mt-16 bg-gradient-to-br from-secondary/30 to-secondary/80 border-primary/20 border">
             <CardContent className="p-6">
                 <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 mt-1 bg-background p-2 rounded-full border">
