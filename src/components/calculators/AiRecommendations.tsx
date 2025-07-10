@@ -1,7 +1,8 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,28 +13,21 @@ import Link from 'next/link';
 import { calculators } from '@/lib/calculators';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-export function AiRecommendations() {
+function AiRecommendationsComponent() {
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [projectDescription, setProjectDescription] = useState('');
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [noResultsMessage, setNoResultsMessage] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!projectDescription) {
-        toast({
-            title: 'Input needed',
-            description: 'Please describe your project.',
-            variant: 'destructive',
-        });
-        return;
-    }
+  const runRecommendations = useCallback(async (description: string) => {
+    if (!description) return;
     setLoading(true);
     setRecommendations([]);
     setNoResultsMessage(null);
     try {
-      const result = await getAiRecommendations(projectDescription);
+      const result = await getAiRecommendations(description);
       if (result && result.recommendations && result.recommendations.length > 0) {
         setRecommendations(result.recommendations);
       } else {
@@ -49,6 +43,28 @@ export function AiRecommendations() {
     } finally {
       setLoading(false);
     }
+  }, [toast]);
+
+  useEffect(() => {
+    const prompt = searchParams.get('prompt');
+    if (prompt) {
+      const decodedPrompt = decodeURIComponent(prompt);
+      setProjectDescription(decodedPrompt);
+      runRecommendations(decodedPrompt);
+    }
+  }, [searchParams, runRecommendations]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!projectDescription) {
+        toast({
+            title: 'Input needed',
+            description: 'Please describe your project.',
+            variant: 'destructive',
+        });
+        return;
+    }
+    runRecommendations(projectDescription);
   };
 
   const getSlugForRecommendation = (name: string) => {
@@ -124,4 +140,12 @@ export function AiRecommendations() {
         </Card>
     </div>
   );
+}
+
+export function AiRecommendations() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <AiRecommendationsComponent />
+        </Suspense>
+    )
 }
