@@ -32,24 +32,41 @@ const aiFaqs = [
     },
     {
         question: "Is my calculation data safe and private?",
-        answer: "Absolutely. We do not store any of the numbers or project details you enter into our calculators after your session ends. For our AI features, we send only the necessary, anonymized data to our AI provider to generate a response. For more details, please review our <a href='/privacy-policy' class='text-primary underline'>Privacy Policy</a>."
+        answer: "Absolutely. We do not store any of the numbers or project details you enter into our calculators after your session ends. For our AI features, we send only the necessary, anonymized data to our AI provider to generate a response. For more details, please review our Privacy Policy."
     }
 ]
 
 const hvacFaqs = [
     {
         question: "How do I know what size furnace or AC unit I need?",
-        answer: "The best way is with a proper load calculation, often called a 'Manual J' calculation. Our <a href='/calculators/hvac-load' class='text-primary underline'>HVAC Load Calculator</a> provides a simplified estimate, but a professional technician can perform a detailed analysis for the most accurate sizing."
+        answer: "The best way is with a proper load calculation, often called a 'Manual J' calculation. Our [HVAC Load Calculator](/calculators/hvac-load) provides a simplified estimate, but a professional technician can perform a detailed analysis for the most accurate sizing."
     },
     {
         question: "What's the difference between SEER and SEER2?",
-        answer: "SEER2 is the new, more accurate standard for measuring air conditioner efficiency, updated in 2023. It uses more realistic testing conditions. While the numbers aren't directly comparable, a higher SEER or SEER2 rating always means better energy efficiency. Our <a href='/calculators/seer-savings-calculator' class='text-primary underline'>SEER Savings Calculator</a> can help you estimate potential savings."
+        answer: "SEER2 is the new, more accurate standard for measuring air conditioner efficiency, updated in 2023. It uses more realistic testing conditions. While the numbers aren't directly comparable, a higher SEER or SEER2 rating always means better energy efficiency. Our [SEER Savings Calculator](/calculators/seer-savings-calculator) can help you estimate potential savings."
     },
     {
         question: "How are the cost estimates (e.g., furnace, heat pump) calculated?",
         answer: "Our cost estimators use industry-standard averages for materials and labor based on your inputs. These are intended for budget planning and are not a formal quote. Local prices, brand choice, and project complexity will affect the final cost, so we always recommend getting quotes from local professionals."
     }
 ]
+
+// Helper function to render text with links
+const renderAnswer = (text: string) => {
+  const parts = text.split(/(\[.*?\]\(.*?\))/g);
+  return parts.map((part, index) => {
+    const match = part.match(/\[(.*?)\]\((.*?)\)/);
+    if (match) {
+      const [, linkText, href] = match;
+      return (
+        <Link key={index} href={href} className="text-primary underline hover:no-underline">
+          {linkText}
+        </Link>
+      );
+    }
+    return part;
+  });
+};
 
 export default function FaqPage() {
   return (
@@ -75,7 +92,9 @@ export default function FaqPage() {
                         {generalFaqs.map((faq, index) => (
                             <AccordionItem key={`general-${index}`} value={`item-${index}`}>
                                 <AccordionTrigger className="text-left text-base">{faq.question}</AccordionTrigger>
-                                <AccordionContent className="text-base text-muted-foreground" dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                                <AccordionContent className="text-base text-muted-foreground">
+                                    <p>{faq.answer}</p>
+                                </AccordionContent>
                             </AccordionItem>
                         ))}
                     </Accordion>
@@ -94,7 +113,9 @@ export default function FaqPage() {
                         {aiFaqs.map((faq, index) => (
                            <AccordionItem key={`ai-${index}`} value={`item-${index}`}>
                                 <AccordionTrigger className="text-left text-base">{faq.question}</AccordionTrigger>
-                                <AccordionContent className="text-base text-muted-foreground" dangerouslySetInnerHTML={{ __html: faq.answer.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"') }} />
+                                <AccordionContent className="text-base text-muted-foreground">
+                                    <p>{renderAnswer(faq.answer)}</p>
+                                </AccordionContent>
                             </AccordionItem>
                         ))}
                     </Accordion>
@@ -113,7 +134,9 @@ export default function FaqPage() {
                         {hvacFaqs.map((faq, index) => (
                            <AccordionItem key={`hvac-${index}`} value={`item-${index}`}>
                                 <AccordionTrigger className="text-left text-base">{faq.question}</AccordionTrigger>
-                                <AccordionContent className="text-base text-muted-foreground" dangerouslySetInnerHTML={{ __html: faq.answer.replace(/<a/g, '<a target="_blank" rel="noopener noreferrer"') }} />
+                                <AccordionContent className="text-base text-muted-foreground">
+                                    <p>{renderAnswer(faq.answer)}</p>
+                                </AccordionContent>
                             </AccordionItem>
                         ))}
                     </Accordion>
