@@ -1,3 +1,4 @@
+
 import { CalculatorDirectory } from '@/components/calculators/CalculatorDirectory';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
@@ -5,7 +6,42 @@ import Link from 'next/link';
 import { ArrowRight, Wand2, Calculator, ListChecks } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
+const examplePrompts = [
+  {
+    category: 'HVAC',
+    prompts: [
+      "My energy bill is too high, what can I do to lower it?",
+      "What size furnace do I need for a 2,000 sq ft house in a cold climate?",
+      "Is it worth upgrading my old AC unit to a new one?",
+      "How much would it cost to install a mini-split system in my garage?",
+    ],
+  },
+  {
+    category: 'Home Improvement',
+    prompts: [
+      "I want to build a new deck and a fence in my backyard.",
+      "I need to repaint my living room and I'm not sure what kind of paint to use.",
+      "How much will it cost to remodel my kitchen?",
+      "Calculate the amount of flooring I need for two bedrooms.",
+    ],
+  },
+  {
+    category: 'Other',
+    prompts: [
+      "Help me estimate my monthly mortgage payment.",
+      "How much soil do I need to fill a new raised garden bed?",
+      "How much money can I save with a programmable thermostat?",
+      "What would my monthly payment be for a $30,000 car loan?",
+    ],
+  }
+];
+
+// Function to get one random item from an array
+const getRandomItem = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+
 export default function Home() {
+  const selectedPrompts = examplePrompts.map(category => getRandomItem(category.prompts));
+  
   return (
     <>
       <section className="relative text-center py-20 md:py-32 bg-secondary/50">
@@ -49,24 +85,14 @@ export default function Home() {
                     </Button>
                 </div>
                 <div className="space-y-3">
-                    <Link href="/ai-recommendations?prompt=I%20want%20to%20build%20a%20new%20deck" className="group block">
-                        <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between">
-                            <span className="font-medium">"I want to build a new deck"</span>
-                            <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
-                        </div>
-                    </Link>
-                     <Link href="/ai-recommendations?prompt=I%20need%20to%20repaint%20my%20living%20room" className="group block">
-                        <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between">
-                            <span className="font-medium">"I need to repaint my living room"</span>
-                            <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
-                        </div>
-                    </Link>
-                     <Link href="/ai-recommendations?prompt=How%20much%20will%20it%20cost%20to%20remodel%20my%20kitchen%3F" className="group block">
-                        <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between">
-                            <span className="font-medium">"How much will it cost to remodel my kitchen?"</span>
-                            <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
-                        </div>
-                    </Link>
+                    {selectedPrompts.map((prompt) => (
+                      <Link href={`/ai-recommendations?prompt=${encodeURIComponent(prompt)}`} key={prompt} className="group block">
+                          <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between">
+                              <span className="font-medium">"{prompt}"</span>
+                              <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
+                          </div>
+                      </Link>
+                    ))}
                 </div>
             </div>
         </section>
