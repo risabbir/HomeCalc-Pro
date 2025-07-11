@@ -69,9 +69,11 @@ export function Header() {
               onMouseLeave={() => setMegaMenuOpen(false)}
               className="relative"
             >
-              <Button variant="ghost" className={getNavLinkClass('/calculators', true)}>
-                  Calculators
-                  <ChevronDown className="h-4 w-4 ml-1 transition-transform" />
+              <Button variant="ghost" asChild className={cn(getNavLinkClass('/calculators', true), 'gap-1')}>
+                  <Link href="/#calculators">
+                    Calculators
+                    <ChevronDown className="h-4 w-4 transition-transform" />
+                  </Link>
               </Button>
               <div 
                 data-state={isMegaMenuOpen ? 'open' : 'closed'}
@@ -89,11 +91,11 @@ export function Header() {
                           <li key={calc.slug}>
                             <Link 
                               href={`/calculators/${calc.slug}`} 
-                              className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
+                              className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors group"
                               onClick={() => setMegaMenuOpen(false)}
                             >
                               <calc.Icon className="h-4 w-4 shrink-0 text-primary/80" />
-                              <span>{calc.name}</span>
+                              <span className="group-hover:text-primary transition-colors">{calc.name}</span>
                             </Link>
                           </li>
                         ))}
@@ -115,14 +117,14 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <ThemeToggle />
-
              <Button asChild variant="outline" className="hidden sm:inline-flex group hover:bg-primary hover:text-primary-foreground">
                 <Link href="https://buymeacoffee.com/your_username" target="_blank" rel="noopener noreferrer">
-                    <Heart className="mr-1.5 h-4 w-4 text-primary group-hover:text-primary-foreground transition-colors" />
+                    <Heart className="mr-1.5 h-4 w-4 text-primary group-hover:text-primary-foreground transition-colors" fill="currentColor" />
                     Support Us
                 </Link>
             </Button>
+            <ThemeToggle />
+
 
             {/* Mobile Nav */}
             <div className="md:hidden">

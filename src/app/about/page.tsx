@@ -27,7 +27,7 @@ export default function AboutPage() {
                     <div className="grid md:grid-cols-2 gap-8 items-center mb-16">
                         <div className='relative aspect-video'>
                              <Image 
-                                src="https://placehold.co/600x400.png"
+                                src="https://images.unsplash.com/photo-1516542076529-1ea3854896f2?q=80&w=1471"
                                 alt="A person using a laptop to plan a project" 
                                 fill
                                 className="rounded-lg object-cover"
@@ -45,7 +45,7 @@ export default function AboutPage() {
                      <div className="grid md:grid-cols-2 gap-8 items-center mb-16">
                         <div className="md:order-2 relative aspect-video">
                             <Image 
-                                src="https://placehold.co/600x400.png"
+                                src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1470"
                                 alt="A well-organized workshop" 
                                 fill
                                 className="rounded-lg object-cover"
@@ -138,8 +138,8 @@ export default function AboutPage() {
                             </div>
                              <div className="flex flex-col items-center text-center">
                                 <Handshake className="h-8 w-8 text-primary mb-2"/>
-                                <h4 className="font-semibold">Become a Contributor</h4>
-                                <p className="text-sm text-muted-foreground">If you're a developer, consider contributing to our open-source project.</p>
+                                <h4 className="font-semibold">Give Suggestions</h4>
+                                <p className="text-sm text-muted-foreground">If you're a developer or have ideas, we'd love to hear your suggestions!</p>
                             </div>
                         </CardContent>
                     </Card>
