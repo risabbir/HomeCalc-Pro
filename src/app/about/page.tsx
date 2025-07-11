@@ -92,9 +92,12 @@ export default function AboutPage() {
                     </AnimatedSection>
 
                     <AnimatedSection>
-                        <Card className="mb-24 border-0 bg-secondary/40">
-                            <CardHeader className="text-center">
-                                <CardTitle>The Power Behind Our Tools</CardTitle>
+                        <Card className="mb-24 bg-secondary/40">
+                            <CardHeader>
+                                <CardTitle className="flex items-center justify-center gap-3">
+                                    <Lightbulb className="h-7 w-7 text-primary"/>
+                                    The Power Behind Our Tools
+                                </CardTitle>
                                 <CardDescription>We leverage modern technology to provide helpful, intelligent assistance.</CardDescription>
                             </CardHeader>
                             <CardContent>
