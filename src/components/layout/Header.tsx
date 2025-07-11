@@ -118,9 +118,9 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-             <Button asChild variant="default" className="hidden sm:inline-flex group">
+             <Button asChild className="hidden sm:inline-flex group bg-background text-foreground border border-input hover:bg-primary hover:text-primary-foreground">
                 <Link href="https://buymeacoffee.com/your_username" target="_blank" rel="noopener noreferrer">
-                    <Heart className="mr-1.5 h-4 w-4" />
+                    <Heart className="mr-1.5 h-4 w-4 text-primary group-hover:text-primary-foreground fill-primary group-hover:fill-primary-foreground" />
                     Support Us
                 </Link>
             </Button>

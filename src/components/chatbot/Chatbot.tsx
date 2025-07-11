@@ -133,7 +133,7 @@ export function Chatbot() {
       )}
 
       <Button
-          variant="solid"
+          variant="default"
           onClick={() => setIsOpen(true)}
           className={cn(
             "fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 [&_svg]:size-8",
