@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Heart, Github, Share2, Lightbulb, TrendingUp, Handshake, Server, ArrowRight } from 'lucide-react';
+import { Heart, Github, Share2, Lightbulb, Handshake, Server, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
@@ -130,14 +130,14 @@ export default function AboutPage() {
                                 </Card>
                                  <Card>
                                     <CardHeader className="items-center">
-                                        <TrendingUp className="h-8 w-8 text-primary mb-2"/>
+                                        <Lightbulb className="h-8 w-8 text-primary mb-2"/>
                                         <CardTitle className="text-xl">Continued Development</CardTitle>
                                         <CardDescription>Building new calculators and improving existing ones.</CardDescription>
                                     </CardHeader>
                                 </Card>
                                  <Card>
                                     <CardHeader className="items-center">
-                                        <Lightbulb className="h-8 w-8 text-primary mb-2"/>
+                                        <Handshake className="h-8 w-8 text-primary mb-2"/>
                                         <CardTitle className="text-xl">Creating Resources</CardTitle>
                                         <CardDescription>Writing helpful guides and checklists for our users.</CardDescription>
                                     </CardHeader>
