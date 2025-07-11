@@ -15,6 +15,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { AnimatedHamburgerIcon } from './AnimatedHamburgerIcon';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { Separator } from '../ui/separator';
 
 export function Header() {
   const [isMegaMenuOpen, setMegaMenuOpen] = useState(false);
@@ -117,9 +118,9 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-             <Button asChild variant="outline" className="hidden sm:inline-flex group hover:bg-primary/90 hover:text-primary-foreground">
+             <Button asChild variant="default" className="hidden sm:inline-flex group">
                 <Link href="https://buymeacoffee.com/your_username" target="_blank" rel="noopener noreferrer">
-                    <Heart className="mr-1.5 h-4 w-4 text-primary group-hover:text-primary-foreground transition-colors" fill="currentColor" />
+                    <Heart className="mr-1.5 h-4 w-4 text-primary-foreground transition-colors" />
                     Support Us
                 </Link>
             </Button>
@@ -144,7 +145,7 @@ export function Header() {
                       </SheetClose>
                     </div>
                     <ScrollArea className='flex-1'>
-                      <div className="flex flex-col gap-1 p-6 text-lg">
+                      <div className="flex flex-col gap-1 p-6 pt-0 text-lg">
                           <SheetClose asChild>
                               <Link 
                                 href="/"
@@ -199,18 +200,23 @@ export function Header() {
                                   </Link>
                               </SheetClose>
                           ))}
-                            <SheetClose asChild>
-                                  <Link 
+                      </div>
+                    </ScrollArea>
+                    <div className="mt-auto p-6">
+                        <Separator className="mb-6" />
+                        <SheetClose asChild>
+                            <Button asChild className="w-full text-lg" size="lg">
+                                <Link
                                     href="https://buymeacoffee.com/your_username"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={cn(getMobileNavLinkClass(''), "flex items-center gap-2")}
-                                  >
+                                    className="flex items-center gap-2"
+                                >
                                     <Heart className="h-5 w-5" /> Support Us
-                                  </Link>
-                            </SheetClose>
-                      </div>
-                    </ScrollArea>
+                                </Link>
+                             </Button>
+                        </SheetClose>
+                    </div>
                 </SheetContent>
               </Sheet>
             </div>
