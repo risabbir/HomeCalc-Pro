@@ -92,15 +92,26 @@ export default function AboutPage() {
                     </AnimatedSection>
 
                     <AnimatedSection>
-                        <section className="text-center mb-24">
-                            <h2 className="text-3xl font-bold font-headline mb-4">The Power Behind Our Tools</h2>
-                            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
-                                Many of our features, like the AI Recommendations and the Chatbot, are powered by advanced AI models from Google. This allows us to provide smart suggestions and helpful answers to your project questions, going beyond simple calculations.
-                            </p>
-                            <Button asChild variant="outline">
-                                <Link href="/faq">Learn More About our AI Features</Link>
-                            </Button>
-                        </section>
+                        <div className="grid md:grid-cols-2 gap-12 items-center mb-24">
+                            <div className="relative aspect-video rounded-xl">
+                                <Image 
+                                    src="https://images.unsplash.com/photo-1593349480503-69530a3c269e?q=80&w=1470&auto=format&fit=crop"
+                                    alt="Abstract representation of AI and technology" 
+                                    fill
+                                    className="rounded-xl object-cover"
+                                    data-ai-hint="technology abstract"
+                                />
+                            </div>
+                             <div>
+                                <h2 className="text-3xl font-bold font-headline mb-4">The Power Behind Our Tools</h2>
+                                <p className="text-lg text-muted-foreground mb-8">
+                                    Many of our features, like the AI Recommendations and the Chatbot, are powered by advanced AI models from Google. This allows us to provide smart suggestions and helpful answers to your project questions, going beyond simple calculations.
+                                </p>
+                                <Button asChild variant="outline">
+                                    <Link href="/faq">Learn More About our AI Features</Link>
+                                </Button>
+                            </div>
+                        </div>
                     </AnimatedSection>
 
                     <AnimatedSection>
