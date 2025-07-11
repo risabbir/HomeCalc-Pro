@@ -26,7 +26,7 @@ export function HelpInfo({ children }: HelpInfoProps) {
         <PopoverTrigger asChild>
           {triggerButton}
         </PopoverTrigger>
-        <PopoverContent className="text-xs">
+        <PopoverContent className="text-xs p-2 max-w-60">
           {children}
         </PopoverContent>
       </Popover>
