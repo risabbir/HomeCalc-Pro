@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Heart, Github, Share2, Lightbulb, Handshake, Server, ArrowRight } from 'lucide-react';
+import { Heart, Github, Share2, Lightbulb, Handshake, Server, ArrowRight, TrendingUp } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
@@ -149,7 +149,7 @@ export default function AboutPage() {
                                         <Heart className="mr-2 h-5 w-5" /> Buy Me a Coffee
                                     </Link>
                                 </Button>
-                                <Button asChild size="lg" variant="outline">
+                                <Button asChild size="lg" variant="solid">
                                     <Link href="https://patreon.com/your_username" target="_blank" rel="noopener noreferrer">
                                         Become a Patron
                                     </Link>
@@ -178,7 +178,7 @@ export default function AboutPage() {
                                  <div className="flex flex-col items-center text-center">
                                     <Handshake className="h-8 w-8 text-primary mb-2"/>
                                     <h4 className="font-semibold">Give Suggestions</h4>
-                                    <p className="text-sm text-muted-foreground">If you're a developer or have ideas, we'd love to hear your suggestions!</p>
+                                    <p className="text-sm text-muted-foreground">If you're a developer, consider contributing to our open-source project.</p>
                                 </div>
                             </CardContent>
                         </Card>
