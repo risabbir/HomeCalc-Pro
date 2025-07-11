@@ -6,6 +6,7 @@ import { Heart, Github, Share2, Lightbulb, TrendingUp, Handshake, Server } from 
 import Image from 'next/image';
 import Link from 'next/link';
 import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
+import { AnimatedSection } from '@/components/about/AnimatedSection';
 
 export const metadata: Metadata = {
     title: 'About HomeCalc Pro',
@@ -14,136 +15,151 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
     return (
-        <div className="bg-secondary/40">
-            <div className="container mx-auto px-4 py-16">
+        <div className="overflow-x-hidden">
+            <div className="container mx-auto px-4 py-24">
                 <div className="max-w-4xl mx-auto">
-                    <section className="text-center mb-16">
-                        <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary mb-4">Our Mission</h1>
-                        <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                            To empower homeowners, DIY enthusiasts, and professionals with free, accurate, and easy-to-use calculators for any home project, big or small. We believe that with the right tools, anyone can plan with confidence and build with precision.
-                        </p>
-                    </section>
-
-                    <div className="grid md:grid-cols-2 gap-8 items-center mb-16">
-                        <div className='relative aspect-video'>
-                             <Image 
-                                src="https://images.unsplash.com/photo-1516542076529-1ea3854896f2?q=80&w=1471"
-                                alt="A person using a laptop to plan a project" 
-                                fill
-                                className="rounded-lg object-cover"
-                                data-ai-hint="planning project"
-                            />
-                        </div>
-                        <div>
-                            <h2 className="text-3xl font-bold font-headline mb-4">What We Do</h2>
-                            <p className="text-muted-foreground">
-                                HomeCalc Pro is a comprehensive suite of online calculators designed to take the guesswork out of home improvement, gardening, HVAC planning, and more. We provide the mathematical foundation for your projects, from estimating the amount of paint for a bedroom to calculating the load for a new HVAC system. Our goal is to save you time, reduce material waste, and help you stay on budget.
+                    <AnimatedSection>
+                        <section className="text-center mb-24">
+                            <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary mb-4">Our Mission</h1>
+                            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                                To empower homeowners, DIY enthusiasts, and professionals with free, accurate, and easy-to-use calculators for any home project, big or small. We believe that with the right tools, anyone can plan with confidence and build with precision.
                             </p>
-                        </div>
-                    </div>
+                        </section>
+                    </AnimatedSection>
 
-                     <div className="grid md:grid-cols-2 gap-8 items-center mb-16">
-                        <div className="md:order-2 relative aspect-video">
-                            <Image 
-                                src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1470"
-                                alt="A well-organized workshop" 
-                                fill
-                                className="rounded-lg object-cover"
-                                data-ai-hint="tools workshop"
-                            />
+                    <AnimatedSection>
+                        <div className="grid md:grid-cols-2 gap-12 items-center mb-24">
+                            <div className='relative aspect-video shadow-lg rounded-xl'>
+                                 <Image 
+                                    src="https://images.unsplash.com/photo-1516542076529-1ea3854896f2?q=80&w=1471&auto=format&fit=crop"
+                                    alt="A person using a laptop to plan a project" 
+                                    fill
+                                    className="rounded-xl object-cover"
+                                    data-ai-hint="planning project"
+                                />
+                            </div>
+                            <div>
+                                <h2 className="text-3xl font-bold font-headline mb-4">What We Do</h2>
+                                <p className="text-muted-foreground">
+                                    HomeCalc Pro is a comprehensive suite of online calculators designed to take the guesswork out of home improvement, gardening, HVAC planning, and more. We provide the mathematical foundation for your projects, from estimating the amount of paint for a bedroom to calculating the load for a new HVAC system. Our goal is to save you time, reduce material waste, and help you stay on budget.
+                                </p>
+                            </div>
                         </div>
-                        <div className="md:order-1">
-                            <h2 className="text-3xl font-bold font-headline mb-4">How This Tool Helps You</h2>
-                            <p className="text-muted-foreground mb-4">
-                                Planning is the most critical phase of any project. Our calculators help you:
+                    </AnimatedSection>
+
+                    <AnimatedSection>
+                         <div className="grid md:grid-cols-2 gap-12 items-center mb-24">
+                            <div className="md:order-2 relative aspect-video shadow-lg rounded-xl">
+                                <Image 
+                                    src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1470&auto=format&fit=crop"
+                                    alt="A well-organized workshop" 
+                                    fill
+                                    className="rounded-xl object-cover"
+                                    data-ai-hint="tools workshop"
+                                />
+                            </div>
+                            <div className="md:order-1">
+                                <h2 className="text-3xl font-bold font-headline mb-4">How This Tool Helps You</h2>
+                                <p className="text-muted-foreground mb-4">
+                                    Planning is the most critical phase of any project. Our calculators help you:
+                                </p>
+                                <ul className="list-disc pl-5 text-muted-foreground space-y-2">
+                                    <li><strong>Budget Accurately:</strong> Know exactly how much material you need before you buy.</li>
+                                    <li><strong>Save Time:</strong> Get instant calculations without complex formulas.</li>
+                                    <li><strong>Reduce Waste:</strong> Buy the right amount, saving money and the environment.</li>
+                                    <li><strong>Learn & Discover:</strong> Explore our resources to learn best practices for your projects.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </AnimatedSection>
+
+                    <AnimatedSection>
+                        <Card className="mb-24 border-0 bg-secondary/40">
+                            <CardHeader className="text-center">
+                                <CardTitle>The Power Behind Our Tools</CardTitle>
+                                <CardDescription>We leverage modern technology to provide helpful, intelligent assistance.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                 <p className="text-muted-foreground text-center max-w-2xl mx-auto">
+                                    Many of our features, like the AI Recommendations and the Chatbot, are powered by advanced AI models from Google. This allows us to provide smart suggestions and helpful answers to your project questions, going beyond simple calculations.
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </AnimatedSection>
+
+                    <AnimatedSection>
+                        <section className="text-center mb-24">
+                            <h2 className="text-3xl font-bold font-headline mb-4">How Your Support Helps</h2>
+                            <p className="text-muted-foreground max-w-3xl mx-auto mb-8">
+                                HomeCalc Pro is a passion project, and we're committed to keeping it free and accessible. Your support helps us cover the costs of keeping the lights on and building new features.
                             </p>
-                            <ul className="list-disc pl-5 text-muted-foreground space-y-2">
-                                <li><strong>Budget Accurately:</strong> Know exactly how much material you need before you buy.</li>
-                                <li><strong>Save Time:</strong> Get instant calculations without complex formulas.</li>
-                                <li><strong>Reduce Waste:</strong> Buy the right amount, saving money and the environment.</li>
-                                <li><strong>Learn & Discover:</strong> Explore our resources to learn best practices for your projects.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <Card className="mb-16">
-                        <CardHeader className="text-center">
-                            <CardTitle>The Power Behind Our Tools</CardTitle>
-                            <CardDescription>We leverage modern technology to provide helpful, intelligent assistance.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                             <p className="text-muted-foreground text-center max-w-2xl mx-auto">
-                                Many of our features, like the AI Recommendations and the Chatbot, are powered by advanced AI models from Google. This allows us to provide smart suggestions and helpful answers to your project questions, going beyond simple calculations.
-                            </p>
-                        </CardContent>
-                    </Card>
-
-                    <section className="text-center mb-16">
-                        <h2 className="text-3xl font-bold font-headline mb-4">How Your Support Helps</h2>
-                        <p className="text-muted-foreground max-w-3xl mx-auto mb-8">
-                            HomeCalc Pro is a passion project, and we're committed to keeping it free and accessible. Your support helps us cover the costs of keeping the lights on and building new features.
-                        </p>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <Card>
-                                <CardHeader className="items-center">
-                                    <Server className="h-8 w-8 text-primary mb-2"/>
-                                    <CardTitle className="text-xl">Server & API Costs</CardTitle>
-                                    <CardDescription>Keeping the site online and paying for AI services.</CardDescription>
-                                </CardHeader>
-                            </Card>
-                             <Card>
-                                <CardHeader className="items-center">
-                                    <TrendingUp className="h-8 w-8 text-primary mb-2"/>
-                                    <CardTitle className="text-xl">Continued Development</CardTitle>
-                                    <CardDescription>Building new calculators and improving existing ones.</CardDescription>
-                                </CardHeader>
-                            </Card>
-                             <Card>
-                                <CardHeader className="items-center">
-                                    <Lightbulb className="h-8 w-8 text-primary mb-2"/>
-                                    <CardTitle className="text-xl">Creating Resources</CardTitle>
-                                    <CardDescription>Writing helpful guides and checklists for our users.</CardDescription>
-                                </CardHeader>
-                            </Card>
-                        </div>
-                        <div className="mt-8 flex justify-center items-center gap-4">
-                            <Button asChild size="lg">
-                                <Link href="https://buymeacoffee.com/your_username" target="_blank" rel="noopener noreferrer">
-                                    <Heart className="mr-2 h-5 w-5" /> Buy Me a Coffee
-                                </Link>
-                            </Button>
-                            <Button asChild size="lg" variant="outline">
-                                <Link href="https://patreon.com/your_username" target="_blank" rel="noopener noreferrer">
-                                    Become a Patron
-                                </Link>
-                            </Button>
-                        </div>
-                    </section>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <Card>
+                                    <CardHeader className="items-center">
+                                        <Server className="h-8 w-8 text-primary mb-2"/>
+                                        <CardTitle className="text-xl">Server & API Costs</CardTitle>
+                                        <CardDescription>Keeping the site online and paying for AI services.</CardDescription>
+                                    </CardHeader>
+                                </Card>
+                                 <Card>
+                                    <CardHeader className="items-center">
+                                        <TrendingUp className="h-8 w-8 text-primary mb-2"/>
+                                        <CardTitle className="text-xl">Continued Development</CardTitle>
+                                        <CardDescription>Building new calculators and improving existing ones.</CardDescription>
+                                    </CardHeader>
+                                </Card>
+                                 <Card>
+                                    <CardHeader className="items-center">
+                                        <Lightbulb className="h-8 w-8 text-primary mb-2"/>
+                                        <CardTitle className="text-xl">Creating Resources</CardTitle>
+                                        <CardDescription>Writing helpful guides and checklists for our users.</CardDescription>
+                                    </CardHeader>
+                                </Card>
+                            </div>
+                            <div className="mt-8 flex justify-center items-center gap-4">
+                                <Button asChild size="lg">
+                                    <Link href="https://buymeacoffee.com/your_username" target="_blank" rel="noopener noreferrer">
+                                        <Heart className="mr-2 h-5 w-5" /> Buy Me a Coffee
+                                    </Link>
+                                </Button>
+                                <Button asChild size="lg" variant="outline">
+                                    <Link href="https://patreon.com/your_username" target="_blank" rel="noopener noreferrer">
+                                        Become a Patron
+                                    </Link>
+                                </Button>
+                            </div>
+                        </section>
+                    </AnimatedSection>
                     
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Other Ways to Contribute</CardTitle>
-                            <CardDescription>Donations aren't the only way to help! Here are other ways you can support the HomeCalc Pro community.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="flex flex-col items-center text-center">
-                                <Github className="h-8 w-8 text-primary mb-2"/>
-                                <h4 className="font-semibold">Provide Feedback</h4>
-                                <p className="text-sm text-muted-foreground">Suggest a new calculator or report an issue on our GitHub.</p>
-                            </div>
-                             <div className="flex flex-col items-center text-center">
-                                <Share2 className="h-8 w-8 text-primary mb-2"/>
-                                <h4 className="font-semibold">Share the Site</h4>
-                                <p className="text-sm text-muted-foreground">Tell your friends, family, or colleagues about HomeCalc Pro.</p>
-                            </div>
-                             <div className="flex flex-col items-center text-center">
-                                <Handshake className="h-8 w-8 text-primary mb-2"/>
-                                <h4 className="font-semibold">Give Suggestions</h4>
-                                <p className="text-sm text-muted-foreground">If you're a developer or have ideas, we'd love to hear your suggestions!</p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <ReportAnIssue />
+                    <AnimatedSection>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Other Ways to Contribute</CardTitle>
+                                <CardDescription>Donations aren't the only way to help! Here are other ways you can support the HomeCalc Pro community.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="flex flex-col items-center text-center">
+                                    <Github className="h-8 w-8 text-primary mb-2"/>
+                                    <h4 className="font-semibold">Provide Feedback</h4>
+                                    <p className="text-sm text-muted-foreground">Suggest a new calculator or report an issue on our GitHub.</p>
+                                </div>
+                                 <div className="flex flex-col items-center text-center">
+                                    <Share2 className="h-8 w-8 text-primary mb-2"/>
+                                    <h4 className="font-semibold">Share the Site</h4>
+                                    <p className="text-sm text-muted-foreground">Tell your friends, family, or colleagues about HomeCalc Pro.</p>
+                                </div>
+                                 <div className="flex flex-col items-center text-center">
+                                    <Handshake className="h-8 w-8 text-primary mb-2"/>
+                                    <h4 className="font-semibold">Give Suggestions</h4>
+                                    <p className="text-sm text-muted-foreground">If you're a developer or have ideas, we'd love to hear your suggestions!</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </AnimatedSection>
+
+                    <AnimatedSection>
+                        <ReportAnIssue />
+                    </AnimatedSection>
                 </div>
             </div>
         </div>
