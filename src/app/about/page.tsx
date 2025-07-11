@@ -95,7 +95,7 @@ export default function AboutPage() {
                         <div className="grid md:grid-cols-2 gap-12 items-center mb-24">
                             <div className="relative aspect-video rounded-xl">
                                 <Image 
-                                    src="https://images.unsplash.com/photo-1555949963-ff980e62553b?q=80&w=1470&auto=format&fit=crop"
+                                    src="https://images.unsplash.com/photo-1706466614967-f4f14a3d9d08?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxNHx8YWl8ZW58MHx8fHwxNzUyMjE2Nzk3fDA&ixlib=rb-4.1.0&q=80&w=1080"
                                     alt="A person developing software on a laptop" 
                                     fill
                                     className="rounded-xl object-cover"
