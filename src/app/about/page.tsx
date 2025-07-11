@@ -149,7 +149,7 @@ export default function AboutPage() {
                                         <Heart className="mr-2 h-5 w-5" /> Buy Me a Coffee
                                     </Link>
                                 </Button>
-                                <Button asChild size="lg" variant="solid">
+                                <Button asChild size="lg" variant="outline">
                                     <Link href="https://patreon.com/your_username" target="_blank" rel="noopener noreferrer">
                                         Become a Patron
                                     </Link>
