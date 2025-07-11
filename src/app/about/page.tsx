@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Heart, Github, Share2, Lightbulb, TrendingUp, Handshake, Server } from 'lucide-react';
+import { Heart, Github, Share2, Lightbulb, TrendingUp, Handshake, Server, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
@@ -71,6 +71,24 @@ export default function AboutPage() {
                                 </ul>
                             </div>
                         </div>
+                    </AnimatedSection>
+
+                    <AnimatedSection>
+                        <Card className="mb-24 bg-primary/5 border-primary/20 text-center">
+                            <CardHeader>
+                                <CardTitle>Explore Our Guides & Resources</CardTitle>
+                                <CardDescription className="max-w-xl mx-auto">
+                                    Go beyond the numbers. Our comprehensive resource section is filled with step-by-step checklists, planning guides, and expert tips to help you execute your projects successfully.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Button asChild>
+                                    <Link href="/resources">
+                                        Browse Resources <ArrowRight className="ml-2 h-5 w-5" />
+                                    </Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
                     </AnimatedSection>
 
                     <AnimatedSection>
