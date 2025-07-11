@@ -120,7 +120,7 @@ export function Header() {
           <div className="flex items-center gap-2">
              <Button asChild variant="default" className="hidden sm:inline-flex group">
                 <Link href="https://buymeacoffee.com/your_username" target="_blank" rel="noopener noreferrer">
-                    <Heart className="mr-1.5 h-4 w-4 text-primary-foreground transition-colors" />
+                    <Heart className="mr-1.5 h-4 w-4" />
                     Support Us
                 </Link>
             </Button>
