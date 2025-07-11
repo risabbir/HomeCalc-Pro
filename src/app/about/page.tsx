@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
     return (
         <div className="overflow-x-hidden">
-            <div className="container mx-auto px-4 py-24">
+            <div className="container mx-auto px-4 py-12 md:py-24">
                 <div className="max-w-4xl mx-auto">
                     <AnimatedSection>
                         <section className="text-center mb-24">
@@ -143,7 +143,7 @@ export default function AboutPage() {
                                     </CardHeader>
                                 </Card>
                             </div>
-                            <div className="mt-8 flex justify-center items-center gap-4">
+                            <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
                                 <Button asChild size="lg">
                                     <Link href="https://buymeacoffee.com/your_username" target="_blank" rel="noopener noreferrer">
                                         <Heart className="mr-2 h-5 w-5" /> Buy Me a Coffee

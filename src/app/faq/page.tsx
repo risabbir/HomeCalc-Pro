@@ -72,7 +72,7 @@ const renderAnswer = (text: string) => {
 
 export default function FaqPage() {
   return (
-    <div className="container mx-auto px-4 py-16">
+    <div className="container mx-auto px-4 py-12 md:py-16">
       <div className="max-w-4xl mx-auto">
         <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Frequently Asked Questions</h1>

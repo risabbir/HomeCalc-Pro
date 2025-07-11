@@ -56,7 +56,7 @@ const resources = [
 
 export default function ResourcesPage() {
   return (
-    <div className="container mx-auto px-4 py-16">
+    <div className="container mx-auto px-4 py-12 md:py-16">
       <div className="text-center mb-12 max-w-3xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Helpful Resources</h1>
         <p className="text-muted-foreground text-lg">

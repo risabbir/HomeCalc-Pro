@@ -1,10 +1,13 @@
 
+'use client';
+
 import { CalculatorDirectory } from '@/components/calculators/CalculatorDirectory';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowRight, Wand2, Calculator, ListChecks } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useEffect, useState } from 'react';
 
 const examplePrompts = [
   {
@@ -40,7 +43,12 @@ const examplePrompts = [
 const getRandomItem = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
 
 export default function Home() {
-  const selectedPrompts = examplePrompts.map(category => getRandomItem(category.prompts));
+  const [selectedPrompts, setSelectedPrompts] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Run randomization on client-side only to prevent hydration mismatch
+    setSelectedPrompts(examplePrompts.map(category => getRandomItem(category.prompts)));
+  }, []);
   
   return (
     <>
@@ -65,9 +73,9 @@ export default function Home() {
         </div>
       </section>
       
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-12 md:py-16">
         <CalculatorDirectory />
-        <Separator className="my-24" />
+        <Separator className="my-16 md:my-24" />
 
         <section className="bg-secondary rounded-xl p-8 md:p-16 border">
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -85,7 +93,7 @@ export default function Home() {
                     </Button>
                 </div>
                 <div className="space-y-3">
-                    {selectedPrompts.map((prompt) => (
+                    {selectedPrompts.length > 0 && selectedPrompts.map((prompt) => (
                       <Link href={`/ai-recommendations?prompt=${encodeURIComponent(prompt)}`} key={prompt} className="group block">
                           <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between">
                               <span className="font-medium">"{prompt}"</span>
@@ -97,7 +105,7 @@ export default function Home() {
             </div>
         </section>
 
-        <Separator className="my-24" />
+        <Separator className="my-16 md:my-24" />
 
         <section>
           <div className="text-center max-w-3xl mx-auto">
