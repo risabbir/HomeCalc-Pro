@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Building2, Lightbulb, ShieldQuestion, HelpCircle } from "lucide-react";
 import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
+import type { Metadata } from 'next';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "FAQ | HomeCalc Pro",
   description: "Frequently Asked Questions about HomeCalc Pro's calculators, AI features, and project planning tools.",
 };

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './ThemeToggle';
 import { calculators } from '@/lib/calculators';
-import { ChevronDown, Wand2 } from 'lucide-react';
+import { ChevronDown, Wand2, Heart } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import * as React from 'react';
 import { useState } from 'react';
@@ -31,7 +31,7 @@ export function Header() {
     { href: '/', label: 'Home' },
     { href: '/ai-recommendations', label: 'AI Assistant', Icon: Wand2 },
     { href: '/resources', label: 'Resources' },
-    { href: '/faq', label: 'FAQ' },
+    { href: '/about', label: 'About Us' },
   ];
 
   const getNavLinkClass = (href: string, isStartsWith = false) => {
@@ -116,6 +116,13 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             <ThemeToggle />
+
+             <Button asChild variant="outline" className="hidden sm:inline-flex group hover:bg-primary hover:text-primary-foreground">
+                <Link href="https://buymeacoffee.com/your_username" target="_blank" rel="noopener noreferrer">
+                    <Heart className="mr-1.5 h-4 w-4 text-primary group-hover:text-primary-foreground transition-colors" />
+                    Support Us
+                </Link>
+            </Button>
 
             {/* Mobile Nav */}
             <div className="md:hidden">

@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Logo } from './Logo';
 
@@ -36,6 +37,7 @@ export function Footer() {
             <div>
               <h4 className="font-semibold text-foreground mb-4">Company</h4>
               <ul className="space-y-3 text-sm">
+                <li><Link href="/about" className="text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
                 <li><Link href="/faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</Link></li>
                 <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
                 <li><Link href="/legal" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>
