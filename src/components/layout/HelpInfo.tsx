@@ -26,7 +26,7 @@ export function HelpInfo({ children }: HelpInfoProps) {
         <PopoverTrigger asChild>
           {triggerButton}
         </PopoverTrigger>
-        <PopoverContent className="text-sm">
+        <PopoverContent className="text-xs">
           {children}
         </PopoverContent>
       </Popover>
@@ -34,13 +34,13 @@ export function HelpInfo({ children }: HelpInfoProps) {
   }
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={0}>
       <Tooltip>
         <TooltipTrigger asChild>
           {triggerButton}
         </TooltipTrigger>
         <TooltipContent>
-          <p className="text-sm">{children}</p>
+          <p className="text-xs">{children}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
