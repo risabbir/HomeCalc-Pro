@@ -95,11 +95,11 @@ export default function AboutPage() {
                         <div className="grid md:grid-cols-2 gap-12 items-center mb-24">
                             <div className="relative aspect-video rounded-xl">
                                 <Image 
-                                    src="https://images.unsplash.com/photo-1593349480503-69530a3c269e?q=80&w=1470&auto=format&fit=crop"
-                                    alt="Abstract representation of AI and technology" 
+                                    src="https://images.unsplash.com/photo-1555949963-ff980e62553b?q=80&w=1470&auto=format&fit=crop"
+                                    alt="A person developing software on a laptop" 
                                     fill
                                     className="rounded-xl object-cover"
-                                    data-ai-hint="technology abstract"
+                                    data-ai-hint="technology code"
                                 />
                             </div>
                              <div>
