@@ -29,7 +29,7 @@ export default function AboutPage() {
 
                     <AnimatedSection>
                         <div className="grid md:grid-cols-2 gap-12 items-center mb-24">
-                            <div className='relative aspect-video shadow-lg rounded-xl'>
+                            <div className='relative aspect-video rounded-xl'>
                                  <Image 
                                     src="https://images.unsplash.com/photo-1516542076529-1ea3854896f2?q=80&w=1471&auto=format&fit=crop"
                                     alt="A person using a laptop to plan a project" 
@@ -49,7 +49,7 @@ export default function AboutPage() {
 
                     <AnimatedSection>
                          <div className="grid md:grid-cols-2 gap-12 items-center mb-24">
-                            <div className="md:order-2 relative aspect-video shadow-lg rounded-xl">
+                            <div className="md:order-2 relative aspect-video rounded-xl">
                                 <Image 
                                     src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1470&auto=format&fit=crop"
                                     alt="A well-organized workshop" 
