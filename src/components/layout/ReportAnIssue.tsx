@@ -15,7 +15,7 @@ export function ReportAnIssue() {
                         <p className="text-sm text-muted-foreground mt-2">
                            Have an idea for a new calculator or found an issue? Your feedback helps us a lot in making this tool better for everyone. Please consider submitting your thoughts on our{' '}
                             <Link
-                                href="https://github.com/your-username/your-repo"
+                                href="https://github.com/risabbir/HomeCalc-Pro"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="font-medium text-primary underline-offset-4 hover:underline"
