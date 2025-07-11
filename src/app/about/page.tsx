@@ -92,20 +92,15 @@ export default function AboutPage() {
                     </AnimatedSection>
 
                     <AnimatedSection>
-                        <Card className="mb-24 bg-secondary/40">
-                            <CardHeader>
-                                <CardTitle className="flex items-center justify-center gap-3">
-                                    <Lightbulb className="h-7 w-7 text-primary"/>
-                                    The Power Behind Our Tools
-                                </CardTitle>
-                                <CardDescription>We leverage modern technology to provide helpful, intelligent assistance.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                 <p className="text-muted-foreground text-center max-w-2xl mx-auto">
-                                    Many of our features, like the AI Recommendations and the Chatbot, are powered by advanced AI models from Google. This allows us to provide smart suggestions and helpful answers to your project questions, going beyond simple calculations.
-                                </p>
-                            </CardContent>
-                        </Card>
+                        <section className="text-center mb-24">
+                            <h2 className="text-3xl font-bold font-headline mb-4">The Power Behind Our Tools</h2>
+                            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
+                                Many of our features, like the AI Recommendations and the Chatbot, are powered by advanced AI models from Google. This allows us to provide smart suggestions and helpful answers to your project questions, going beyond simple calculations.
+                            </p>
+                            <Button asChild variant="outline">
+                                <Link href="/faq">Learn More About our AI Features</Link>
+                            </Button>
+                        </section>
                     </AnimatedSection>
 
                     <AnimatedSection>
