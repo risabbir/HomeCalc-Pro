@@ -1,4 +1,3 @@
-
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
@@ -10,7 +9,7 @@ export function Logo({ className }: { className?: string }) {
   // 3. The `src` paths below point to these files.
 
   return (
-    <div className={cn("relative w-[150px] h-[40px] md:w-[200px] md:h-[53px]", className)}>
+    <div className={cn("relative w-[150px] aspect-[150/40] md:w-[200px] md:aspect-[200/53]", className)}>
       {/* Light mode logo */}
       <div className="block dark:hidden">
         <Image
