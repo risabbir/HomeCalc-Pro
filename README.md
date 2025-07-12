@@ -1,48 +1,95 @@
-
 # HomeCalc Pro
 
-Welcome to HomeCalc Pro, a comprehensive, production-ready suite of online calculators designed to empower homeowners, DIY enthusiasts, and professionals. With a clean, mobile-responsive interface and powerful AI features, HomeCalc Pro takes the guesswork out of any home project, from planning and budgeting to execution.
+**HomeCalc Pro** is a comprehensive, AI-powered suite of online calculators designed for homeowners, DIY enthusiasts, and professionals. Eliminate guesswork from your home projects with an intelligent, user-friendly platform that covers everything from planning and budgeting to execution—all within a beautiful and mobile-responsive interface.
 
-**[ Live Demo Link: Coming Soon ]**
+---
+
+## Visit the Website
+
+[HomeCalc Pro Live](https://homecalcpro.vercel.app/)
 
 ---
 
 ## Key Features
 
-- **22+ Production-Ready Calculators**: A wide range of tools covering HVAC, Home Improvement, Gardening, and Financial Planning.
-- **AI Calculator Recommendations**: Describe your project in plain English, and our AI will suggest the most relevant calculators for the job.
-- **AI-Assisted Calculations**: Get smart suggestions for missing parameters in calculators, making it easier to get an estimate even with incomplete information.
-_**AI Chatbot**: A friendly AI assistant, powered by Gemini, ready to answer a vast range of home improvement questions and guide you to the right tools.
-- **Dynamic Preset Questions**: The chatbot offers a randomized, relevant set of starter questions, encouraging user engagement.
-- **Downloadable PDF Results**: Save your calculation inputs and results in a professionally branded PDF with a single click.
-- **7+ Comprehensive Resource Guides**: Go beyond the numbers with expert checklists, how-to guides, and planning articles for major projects like deck building, painting, and kitchen remodels.
-- **Fully Responsive Design**: A seamless user experience across all devices, from mobile phones to desktops.
-- **Modern UI/UX**: Built with user-friendliness in mind, featuring a clean design, dark mode, and intuitive navigation.
+- **22+ Production-Ready Calculators**  
+  Tools for HVAC, Home Improvement, Gardening, and Financial Planning.
+- **AI Calculator Recommendations**  
+  Describe your project in plain English and get the best calculator suggestions.
+- **AI-Assisted Calculations**  
+  Receive suggestions for missing calculator parameters for faster estimation.
+- **Conversational AI Chatbot**  
+  Gemini-powered assistant answers your questions and guides you to the right tools.
+- **Dynamic Preset Questions**  
+  Engaging, randomized starter questions to encourage exploration.
+- **Downloadable PDF Results**  
+  Save your calculation results as a professionally branded PDF.
+- **Comprehensive Resource Guides**  
+  Expert checklists, how-tos, and planning guides for major home projects.
+- **Fully Responsive Design**  
+  Seamless experience across mobile, tablet, and desktop.
+- **Modern UI/UX**  
+  Clean, intuitive design with dark mode and easy navigation.
 
 ---
 
-## Technologies Used
+## Technology Stack
 
-- **Frontend**: Next.js, React, TypeScript
-- **UI/Styling**: Tailwind CSS, ShadCN UI
-- **AI & Backend Logic**:
-  - **Genkit**: The core framework for defining and running AI flows.
-  - **Google Gemini**: Powers all generative AI features, including recommendations, calculations assistance, and the chatbot.
-- **Hosting**: Firebase App Hosting
-- **PDF Generation**: jsPDF
+| Technology      | Role/Usage                                       |
+| --------------- | ------------------------------------------------ |
+| Next.js         | React framework for server-side rendering        |
+| React           | Component-based UI library                       |
+| TypeScript      | Type-safe JavaScript                             |
+| Tailwind CSS    | Utility-first CSS framework                      |
+| ShadCN UI       | Accessible, customizable React UI components     |
+| Genkit          | AI flow framework                                |
+| Google Gemini   | Generative AI powering recommendations & chatbot |
+| jsPDF           | PDF generation for calculation results           |
+| Vercel          | Deployment and hosting                           |
+
+---
+
+## Resource Guides
+
+Our platform provides detailed guides and checklists for major home improvement topics, including:
+
+- Deck Building
+- Painting
+- Kitchen Remodels
+- Flooring
+- Landscaping
+- HVAC Planning
+- Home Budgeting
 
 ---
 
 ## Future Plans
 
--   Adding user accounts to save and track past calculations.
--   Expanding the library of calculators and resource guides.
--   Implementing more advanced AI features, such as image-based calculations.
+We are committed to expanding and improving HomeCalc Pro. Upcoming features include:
+
+- User accounts for saving and tracking calculation history
+- Additional calculators and resource guides
+- Advanced AI features, such as image-based calculations
+- Translation and localization for multiple languages
+- Enhanced PDF export options, including branding and sharing
 
 ---
 
-## Copyright
+## Copyright & Acknowledgments
 
-© 2025 HomeCalc Pro, All Rights Reserved.
+© 2025 HomeCalc Pro. All Rights Reserved.
 
-A project by **R. Sabbir**, with assistance from Firebase Studio, and powered by Gemini.
+A project by **R. Sabbir**  
+With assistance from **Firebase Studio**  
+Powered by **Google Gemini**
+
+---
+
+## Contributing
+
+We welcome contributions, issues, and feature requests!  
+To contribute, please open an issue or submit a pull request.
+
+---
+
+HomeCalc Pro – Smarter home projects, made simple.
