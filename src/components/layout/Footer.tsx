@@ -47,7 +47,18 @@ export function Footer() {
         </div>
         <div className="border-t mt-12 pt-8 text-center text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} HomeCalc Pro. All Rights Reserved.</p>
-          <p>A project by R. Sabbir, with assistance from Firebase Studio, and powered by Gemini.</p>
+          <p>
+            A project by{' '}
+            <a 
+              href="https://rsabbir.com/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-primary underline-offset-4 hover:underline"
+            >
+              R. Sabbir
+            </a>
+            , with assistance from Firebase Studio, and powered by Gemini.
+          </p>
         </div>
       </div>
     </footer>
