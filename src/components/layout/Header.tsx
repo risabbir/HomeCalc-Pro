@@ -56,7 +56,7 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <Link href="/">
-            <Logo />
+            <Logo className="h-10" />
           </Link>
 
           {/* Desktop Nav */}
@@ -133,7 +133,7 @@ export function Header() {
                     <div className='p-6 pb-0'>
                       <SheetClose asChild>
                         <Link href="/" className="mb-8 inline-block" tabIndex={-1}>
-                          <Logo />
+                          <Logo className="h-10" />
                         </Link>
                       </SheetClose>
                     </div>

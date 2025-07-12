@@ -9,7 +9,7 @@ export function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block mb-4">
-              <Logo />
+              <Logo className="h-10" />
             </Link>
             <p className="text-base text-muted-foreground max-w-sm">
               Your one-stop destination for a wide range of home-related calculators. From home improvement and energy savings to gardening and financial planning, we provide the tools to help you plan with confidence.

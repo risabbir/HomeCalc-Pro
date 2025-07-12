@@ -1,6 +1,48 @@
-import Image from "next/image";
+import { cn } from "@/lib/utils";
 
-export function Logo() {
-  // Base64 encoded PNG of the logo to avoid storing a static file
-  const logoSrc = "data:image/png;base64,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..."/>
+export function Logo({ className }: { className?: string }) {
+  return (
+    <div className={cn("relative", className)}>
+      <svg
+        width="150"
+        height="40"
+        viewBox="0 0 150 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-label="HomeCalc Pro Logo"
+      >
+        <text
+          x="0"
+          y="28"
+          fontFamily="var(--font-sans), sans-serif"
+          fontSize="24"
+          fontWeight="bold"
+          fill="hsl(var(--foreground))"
+          className="transition-colors"
+        >
+          HomeCalc
+        </text>
+        <rect
+          x="118"
+          y="8"
+          width="32"
+          height="24"
+          rx="4"
+          fill="hsl(var(--primary))"
+          className="transition-colors"
+        />
+        <text
+          x="121.5"
+          y="28"
+          fontFamily="var(--font-sans), sans-serif"
+          fontSize="24"
+          fontWeight="bold"
+          fill="hsl(var(--primary-foreground))"
+          className="transition-colors"
+        >
+          Pro
+        </text>
+      </svg>
+    </div>
+  );
 }
