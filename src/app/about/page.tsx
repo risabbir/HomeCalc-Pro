@@ -120,17 +120,17 @@ export default function AboutPage() {
                             <p className="text-muted-foreground mt-2 max-w-xl mx-auto">HomeCalc Pro is built for the community. Your feedback is invaluable in helping us make the tool better for everyone.</p>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                            <Card className="flex flex-col items-center p-6 bg-secondary/50 border-0 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                            <Card className="flex flex-col items-center p-6 bg-secondary/50 hover:-translate-y-1 transition-transform duration-300">
                                 <Github className="h-10 w-10 text-primary mb-4"/>
                                 <h4 className="font-semibold text-lg">Provide Feedback</h4>
                                 <p className="text-sm text-muted-foreground mt-1">Suggest a new calculator or report an issue on our GitHub.</p>
                             </Card>
-                             <Card className="flex flex-col items-center p-6 bg-secondary/50 border-0 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                             <Card className="flex flex-col items-center p-6 bg-secondary/50 hover:-translate-y-1 transition-transform duration-300">
                                 <Share2 className="h-10 w-10 text-primary mb-4"/>
                                 <h4 className="font-semibold text-lg">Share the Site</h4>
                                 <p className="text-sm text-muted-foreground mt-1">Tell your friends, family, or colleagues about HomeCalc Pro.</p>
                             </Card>
-                             <Card className="flex flex-col items-center p-6 bg-secondary/50 border-0 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                             <Card className="flex flex-col items-center p-6 bg-secondary/50 hover:-translate-y-1 transition-transform duration-300">
                                 <Handshake className="h-10 w-10 text-primary mb-4"/>
                                 <h4 className="font-semibold text-lg">Contribute</h4>
                                 <p className="text-sm text-muted-foreground mt-1">If you're a developer, consider contributing to our open-source project.</p>
