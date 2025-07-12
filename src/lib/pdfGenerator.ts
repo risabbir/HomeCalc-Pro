@@ -14,31 +14,32 @@ interface PdfContent {
 export function generatePdf({ title, slug, inputs, results, disclaimer }: PdfContent) {
     const doc = new jsPDF();
     const pageHeight = doc.internal.pageSize.height;
-    const primaryColor = [1, 150, 254]; // #0196fe
+    const primaryColor = [1, 151, 224]; // Approx HSL(200, 99%, 44%)
 
     // Header
     const drawHeader = () => {
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(20);
+        doc.setFontSize(22);
         doc.setTextColor(40);
         doc.text('HomeCalc', 14, 22);
         
         const proText = "Pro";
-        const proTextWidth = doc.getTextWidth(proText);
         const homecalcTextWidth = doc.getTextWidth("HomeCalc");
-        const proRectX = 14 + homecalcTextWidth + 1;
-        
+        const proRectX = 14 + homecalcTextWidth + 1.5;
+        const proTextWidth = doc.getTextWidth(proText);
+
         doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
         doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-        doc.roundedRect(proRectX, 15.5, proTextWidth + 4, 8.5, 2, 2, 'F');
+        doc.roundedRect(proRectX, 14.5, proTextWidth + 5, 10, 2, 2, 'F');
         
+        doc.setFontSize(22);
         doc.setTextColor(255);
-        doc.text(proText, proRectX + 2, 21.5);
+        doc.text(proText, proRectX + 2.5, 22.5);
 
         doc.setFontSize(14);
         doc.setTextColor(100);
         doc.setFont('helvetica', 'normal');
-        doc.text(title, 14, 32);
+        doc.text(title, 14, 34);
     };
 
     // Footer
@@ -58,12 +59,12 @@ export function generatePdf({ title, slug, inputs, results, disclaimer }: PdfCon
 
     // Inputs Table
     autoTable(doc, {
-        startY: 42,
-        head: [['Your Inputs', '']],
+        startY: 45,
+        head: [['Calculation Details', '']],
         body: inputs.map(item => [item.key, item.value]) as RowInput,
         theme: 'striped',
         headStyles: {
-            fillColor: [230, 230, 230], // A light grey
+            fillColor: [241, 245, 249], // secondary color
             textColor: 40,
             fontStyle: 'bold',
         },
@@ -80,7 +81,7 @@ export function generatePdf({ title, slug, inputs, results, disclaimer }: PdfCon
     // Results Table
     const lastTableY = (doc as any).lastAutoTable.finalY || 80;
     autoTable(doc, {
-        startY: lastTableY + 12,
+        startY: lastTableY + 15,
         head: [['Results', '']],
         body: results.map(item => [item.key, item.value]) as RowInput,
         theme: 'grid',
@@ -94,8 +95,8 @@ export function generatePdf({ title, slug, inputs, results, disclaimer }: PdfCon
             1: { cellWidth: 'auto' },
         },
         styles: {
-            fontSize: 10,
-            cellPadding: 3,
+            fontSize: 11,
+            cellPadding: 3.5,
         },
         didParseCell: (data) => {
             if (data.section === 'body' && data.column.index === 1) {
@@ -109,7 +110,7 @@ export function generatePdf({ title, slug, inputs, results, disclaimer }: PdfCon
         const finalY = (doc as any).lastAutoTable.finalY || 120;
         doc.setFontSize(9);
         doc.setTextColor(150);
-        doc.text(disclaimer, 14, finalY + 10, { maxWidth: 180 });
+        doc.text(disclaimer, 14, finalY + 12, { maxWidth: 180 });
     }
 
     drawFooter();
