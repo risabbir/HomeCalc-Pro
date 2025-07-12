@@ -21,28 +21,26 @@ interface Message {
 const allPresetQuestions = [
   // HVAC
   "How much money can I save with a smart thermostat?",
-  "What's the difference between SEER and SEER2?",
+  "What's the difference between SEER and SEER2 for AC units?",
   "What size AC unit do I need for a 2000 sq ft house?",
-  "How do I know if I need a new furnace?",
-  "Estimate the cost of a new heat pump.",
+  "What are the signs that I need a new furnace?",
   "What are the benefits of a ductless mini-split system?",
   // Home Improvement
   "What do I need to know before building a deck?",
   "What's the best type of paint for a bathroom?",
-  "How do I estimate the cost of a kitchen remodel?",
-  "How many rolls of wallpaper do I need for an accent wall?",
-  "How much concrete do I need for a small patio slab?",
   "What's a reasonable budget for a mid-range kitchen renovation?",
+  "What are the most durable types of flooring for a family with pets?",
+  "How do I properly prepare a wall for wallpaper?",
   // Gardening
-  "How much soil do I need for a raised garden bed?",
-  "How much fertilizer should I use on my lawn?",
-  "What is my USDA plant hardiness zone?",
+  "What is my USDA plant hardiness zone and what can I plant?",
+  "How much compost should I add to my garden bed?",
+  "What are some low-maintenance plants for a shady area?",
   // Other / Financial
   "Can you help me calculate my monthly mortgage payment?",
   "What would my monthly payment be for a $30,000 car loan?",
-  "How much will my investment be worth in 15 years?",
-  "Calculate the annual energy cost of my old freezer.",
-  "Show me the potential savings of upgrading my old AC unit to a new one.",
+  "How much will my investment be worth in 15 years with compound interest?",
+  "What are some simple ways to save on my energy bill?",
+  "What are the pros and cons of a 15-year vs a 30-year mortgage?",
 ];
 
 
