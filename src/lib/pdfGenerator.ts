@@ -68,7 +68,7 @@ export async function generatePdf({ title, slug, inputs, results, disclaimer }: 
             doc.setFontSize(9);
             doc.setTextColor(150);
             const date = new Date().toLocaleDateString();
-            doc.text(`homecalc.pro`, 14, pageHeight - 10);
+            doc.text(`© ${new Date().getFullYear()} HomeCalc Pro`, 14, pageHeight - 10);
             doc.text(`Generated on ${date}`, doc.internal.pageSize.width - 14, pageHeight - 10, { align: 'right' });
         }
     };
