@@ -45,16 +45,14 @@ export default function ClimateZoneMapPage() {
                 </p>
             </div>
 
-            <div className="relative w-full max-w-4xl mx-auto aspect-video rounded-xl overflow-hidden mb-12 border shadow-lg">
+            <div className="relative w-full max-w-4xl mx-auto aspect-[16/9] rounded-xl overflow-hidden mb-12 border shadow-lg">
                 <Image 
-                    // To add your own image:
-                    // 1. Add your image (e.g., "climate-zone-map.png") to the `public` folder.
-                    // 2. Replace the `src` below with `src="/climate-zone-map.png"`.
-                    src="https://placehold.co/1200x675.png"
+                    src="https://www.energy.gov/sites/default/files/2021-10/ba-climate-zone-map-101121.png"
                     alt="Map of US Climate Zones for building and construction, showing different colored regions."
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     data-ai-hint="climate map"
+                    priority
                 />
             </div>
 
