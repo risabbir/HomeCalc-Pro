@@ -26,11 +26,12 @@ async function getImageBase64(url: string): Promise<string> {
 export async function generatePdf({ title, slug, inputs, results, disclaimer }: PdfContent) {
     const doc = new jsPDF();
     const pageHeight = doc.internal.pageSize.height;
+    const pageWidth = doc.internal.pageSize.width;
     const primaryColor = [1, 151, 224]; // Approx HSL(200, 99%, 44%)
 
     try {
         const logoBase64 = await getImageBase64('/logo-light.png');
-        // The logo's aspect ratio (200/53) to calculate height from width
+        // The logo's aspect ratio (200/53) to calculate height from width, ensuring it's contained
         const logoWidth = 35; 
         const logoHeight = logoWidth * (53 / 200); 
         doc.addImage(logoBase64, 'PNG', 14, 15, logoWidth, logoHeight);
@@ -46,7 +47,11 @@ export async function generatePdf({ title, slug, inputs, results, disclaimer }: 
     doc.setFontSize(14);
     doc.setTextColor(100);
     doc.setFont('helvetica', 'normal');
-    doc.text(title, 14, 34);
+    doc.text(title, pageWidth - 14, 22, { align: 'right' });
+
+    // Add a dividing line under the header
+    doc.setDrawColor(224, 224, 224); // light grey
+    doc.line(14, 30, pageWidth - 14, 30);
 
 
     // Footer
