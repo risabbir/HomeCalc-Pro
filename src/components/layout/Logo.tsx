@@ -1,4 +1,3 @@
-
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
@@ -18,6 +17,7 @@ export function Logo({ className }: { className?: string }) {
           fill
           priority
           sizes="(max-width: 768px) 150px, 200px"
+          className="object-contain"
         />
       </div>
       {/* Dark mode logo */}
@@ -28,6 +28,7 @@ export function Logo({ className }: { className?: string }) {
           fill
           priority
           sizes="(max-width: 768px) 150px, 200px"
+          className="object-contain"
         />
       </div>
     </div>
