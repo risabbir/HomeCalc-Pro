@@ -1,5 +1,4 @@
 
-
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
@@ -8,8 +7,8 @@ import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "FAQ | HomeCalc Pro",
-  description: "Frequently Asked Questions about HomeCalc Pro's calculators, AI features, and project planning tools.",
+  title: "Frequently Asked Questions | HomeCalc Pro",
+  description: "Find answers to common questions about our free online calculators, AI features, data privacy, and how to get the most accurate project estimates.",
 };
 
 const generalFaqs = [
@@ -19,11 +18,11 @@ const generalFaqs = [
     },
     {
         question: "Can I save my calculation results?",
-        answer: "Yes! Each calculator has a 'Download Results' button that appears after you perform a calculation. This will download a simple text file with your inputs and the calculated result for your records."
+        answer: "Yes! Each calculator has a 'Download Results' button that appears after you perform a calculation. This will download a simple PDF file with your inputs and the calculated result for your records."
     },
     {
         question: "What if I can't find the calculator I need?",
-        answer: "We are always looking to expand our toolset. You can use the 'AI Recommendations' feature on the homepage to describe your project. While it can only recommend existing calculators, this feedback helps us understand what tools our users are looking for. You can also ask our AI Chatbot for help on topics we don't have a calculator for."
+        answer: "We are always looking to expand our toolset. You can use the 'AI Assistant' feature on the homepage to describe your project. While it can only recommend existing calculators, this feedback helps us understand what tools our users are looking for. You can also ask our AI Chatbot for help on topics we don't have a calculator for."
     }
 ]
 
@@ -82,69 +81,72 @@ export default function FaqPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-12">
-            <Card className="p-2 md:p-4">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-3">
-                        <HelpCircle className="h-7 w-7 text-primary" />
-                        General Questions
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                        {generalFaqs.map((faq, index) => (
-                            <AccordionItem key={`general-${index}`} value={`item-${index}`}>
-                                <AccordionTrigger className="text-left text-base">{faq.question}</AccordionTrigger>
-                                <AccordionContent className="text-base text-muted-foreground">
-                                    <p>{faq.answer}</p>
-                                </AccordionContent>
-                            </AccordionItem>
-                        ))}
-                    </Accordion>
-                </CardContent>
-            </Card>
-
-            <Card className="p-2 md:p-4">
-                 <CardHeader>
-                    <CardTitle className="flex items-center gap-3">
-                        <Lightbulb className="h-7 w-7 text-primary" />
-                        AI & Data Privacy
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                        {aiFaqs.map((faq, index) => (
-                           <AccordionItem key={`ai-${index}`} value={`item-${index}`}>
-                                <AccordionTrigger className="text-left text-base">{faq.question}</AccordionTrigger>
-                                <AccordionContent className="text-base text-muted-foreground">
-                                    <p>{renderAnswer(faq.answer)}</p>
-                                </AccordionContent>
-                            </AccordionItem>
-                        ))}
-                    </Accordion>
-                </CardContent>
-            </Card>
-            
-            <Card className="p-2 md:p-4 md:col-span-2">
-                 <CardHeader>
-                    <CardTitle className="flex items-center gap-3">
-                        <Building2 className="h-7 w-7 text-primary" />
-                        Calculators & Estimators
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                     <Accordion type="single" collapsible className="w-full">
-                        {hvacFaqs.map((faq, index) => (
-                           <AccordionItem key={`hvac-${index}`} value={`item-${index}`}>
-                                <AccordionTrigger className="text-left text-base">{faq.question}</AccordionTrigger>
-                                <AccordionContent className="text-base text-muted-foreground">
-                                    <p>{renderAnswer(faq.answer)}</p>
-                                </AccordionContent>
-                            </AccordionItem>
-                        ))}
-                    </Accordion>
-                </CardContent>
-            </Card>
-
+            <section>
+                <Card className="p-2 md:p-4 h-full">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-3">
+                            <HelpCircle className="h-7 w-7 text-primary" />
+                            General Questions
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Accordion type="single" collapsible className="w-full">
+                            {generalFaqs.map((faq, index) => (
+                                <AccordionItem key={`general-${index}`} value={`item-${index}`}>
+                                    <AccordionTrigger className="text-left text-base">{faq.question}</AccordionTrigger>
+                                    <AccordionContent className="text-base text-muted-foreground">
+                                        <p>{faq.answer}</p>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+                    </CardContent>
+                </Card>
+            </section>
+            <section>
+                <Card className="p-2 md:p-4 h-full">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-3">
+                            <Lightbulb className="h-7 w-7 text-primary" />
+                            AI & Data Privacy
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Accordion type="single" collapsible className="w-full">
+                            {aiFaqs.map((faq, index) => (
+                            <AccordionItem key={`ai-${index}`} value={`item-${index}`}>
+                                    <AccordionTrigger className="text-left text-base">{faq.question}</AccordionTrigger>
+                                    <AccordionContent className="text-base text-muted-foreground">
+                                        <p>{renderAnswer(faq.answer)}</p>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+                    </CardContent>
+                </Card>
+            </section>
+            <section className="md:col-span-2">
+                <Card className="p-2 md:p-4">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-3">
+                            <Building2 className="h-7 w-7 text-primary" />
+                            Calculators & Estimators
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Accordion type="single" collapsible className="w-full">
+                            {hvacFaqs.map((faq, index) => (
+                            <AccordionItem key={`hvac-${index}`} value={`item-${index}`}>
+                                    <AccordionTrigger className="text-left text-base">{faq.question}</AccordionTrigger>
+                                    <AccordionContent className="text-base text-muted-foreground">
+                                        <p>{renderAnswer(faq.answer)}</p>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+                    </CardContent>
+                </Card>
+            </section>
         </div>
         <ReportAnIssue />
       </div>

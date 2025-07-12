@@ -5,8 +5,8 @@ import { ArrowRight, ListChecks, Map, Ruler, Paintbrush, ClipboardCheck, Layers3
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Resources | HomeCalc Pro',
-  description: 'Helpful guides, checklists, and resources to help you plan and execute your home projects with confidence.',
+  title: 'DIY Project Resources & Guides | HomeCalc Pro',
+  description: 'Explore helpful guides, step-by-step checklists, and expert tips to help you plan and execute your home improvement and DIY projects with confidence.',
 };
 
 const resources = [
@@ -17,19 +17,19 @@ const resources = [
         Icon: Map,
     },
     {
-        title: "How to Measure a Room",
+        title: "How to Measure a Room Accurately",
         description: "Learn the proper way to measure a room's dimensions for paint, flooring, or wallpaper.",
         href: "/resources/how-to-measure",
         Icon: Ruler,
     },
     {
-        title: "Deck Building Checklist",
+        title: "The Ultimate Deck Building Checklist",
         description: "A step-by-step checklist to ensure your deck building project goes smoothly from start to finish.",
         href: "/resources/deck-checklist",
         Icon: ListChecks,
     },
     {
-        title: "Paint Finish Guide",
+        title: "A Homeowner's Guide to Paint Finishes",
         description: "Choose the right paint sheen for any room, from durable semi-gloss for trim to flat for ceilings.",
         href: "/resources/paint-finish-guide",
         Icon: Paintbrush,
@@ -41,7 +41,7 @@ const resources = [
         Icon: ClipboardCheck,
     },
     {
-        title: "Homeowner's Guide to Insulation",
+        title: "A Homeowner's Guide to Insulation",
         description: "Learn about fiberglass, spray foam, and more to choose the best insulation for your home.",
         href: "/resources/insulation-guide",
         Icon: Layers3,
@@ -58,7 +58,7 @@ export default function ResourcesPage() {
   return (
     <div className="container mx-auto px-4 py-12 md:py-16">
       <div className="text-center mb-12 max-w-3xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Helpful Resources</h1>
+        <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Helpful DIY Resources</h1>
         <p className="text-muted-foreground text-lg">
           Planning is the key to a successful project. Use these guides, checklists, and expert tips to help you get started right.
         </p>

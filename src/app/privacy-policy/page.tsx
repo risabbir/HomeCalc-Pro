@@ -1,8 +1,9 @@
 
+import type { Metadata } from 'next';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Privacy Policy | HomeCalc Pro",
-  description: "Our Privacy Policy describes how your information is collected, used, and shared when you use HomeCalc Pro.",
+  description: "Our Privacy Policy describes how information is collected, used, and handled when you use the HomeCalc Pro website and its free calculator tools.",
 };
 
 export default function PrivacyPolicyPage() {

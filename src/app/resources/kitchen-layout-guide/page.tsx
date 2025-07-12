@@ -9,8 +9,8 @@ import { Lightbulb, Ruler } from "lucide-react";
 import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata: Metadata = {
-    title: 'Kitchen Layout Planning Guide | HomeCalc Pro',
-    description: 'Discover the fundamental principles of kitchen design, including the work triangle and common layouts, to plan a beautiful and functional space.',
+    title: 'Kitchen Layout Planning Guide (5 Common Designs) | HomeCalc Pro',
+    description: 'Discover the fundamental principles of kitchen design, including the work triangle and 5 common layouts, to plan a beautiful and functional space.',
 };
 
 const relevantCalculators = [
@@ -80,7 +80,7 @@ export default function KitchenLayoutGuidePage() {
                 <main className="lg:col-span-2">
                     <Alert className="mb-12">
                         <Lightbulb className="h-4 w-4" />
-                        <AlertTitle>The Kitchen Work Triangle</AlertTitle>
+                        <AlertTitle as="h2">The Kitchen Work Triangle</AlertTitle>
                         <AlertDescription>
                             A core principle of kitchen design connects the three main work areas: the sink, the refrigerator, and the stove. For an efficient kitchen, the total distance between these three points should generally be no more than 26 feet, with no single leg of the triangle shorter than 4 feet or longer than 9 feet.
                         </AlertDescription>
@@ -90,7 +90,7 @@ export default function KitchenLayoutGuidePage() {
                         {layouts.map((layout) => (
                             <Card key={layout.name} className="flex flex-col">
                                 <CardHeader>
-                                    <CardTitle>{layout.name}</CardTitle>
+                                    <CardTitle as="h3">{layout.name}</CardTitle>
                                 </CardHeader>
                                 <CardContent className="flex-grow space-y-4">
                                     {layout.diagram}
@@ -106,7 +106,7 @@ export default function KitchenLayoutGuidePage() {
 
                     <Card className="mb-12">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><Ruler/>Key Measurement Guidelines</CardTitle>
+                            <CardTitle as="h2" className="flex items-center gap-2"><Ruler/>Key Measurement Guidelines</CardTitle>
                             <CardDescription>Keep these standard clearances in mind for a comfortable and safe kitchen.</CardDescription>
                         </CardHeader>
                          <CardContent>

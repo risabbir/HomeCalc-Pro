@@ -9,8 +9,8 @@ import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
 import { AnimatedSection } from '@/components/about/AnimatedSection';
 
 export const metadata: Metadata = {
-    title: 'About HomeCalc Pro',
-    description: 'Learn about our mission to provide the best home project calculators and how you can support our work.',
+    title: 'About Us | HomeCalc Pro',
+    description: 'Learn about HomeCalc Pro\'s mission to provide free, accurate, and easy-to-use calculators that empower homeowners, DIY enthusiasts, and professionals for any project.',
 };
 
 export default function AboutPage() {
@@ -32,7 +32,7 @@ export default function AboutPage() {
                             <div className='relative aspect-video rounded-xl'>
                                  <Image 
                                     src="https://images.unsplash.com/photo-1516542076529-1ea3854896f2?q=80&w=1471&auto=format&fit=crop"
-                                    alt="A person using a laptop to plan a project" 
+                                    alt="A person using a laptop with blueprints, planning a home project with online tools." 
                                     fill
                                     className="rounded-xl object-cover"
                                     data-ai-hint="planning project"
@@ -52,7 +52,7 @@ export default function AboutPage() {
                             <div className="md:order-2 relative aspect-video rounded-xl">
                                 <Image 
                                     src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1470&auto=format&fit=crop"
-                                    alt="A well-organized workshop" 
+                                    alt="A well-organized workshop with tools hanging on the wall, representing DIY projects." 
                                     fill
                                     className="rounded-xl object-cover"
                                     data-ai-hint="tools workshop"
@@ -96,7 +96,7 @@ export default function AboutPage() {
                             <div className="relative aspect-video rounded-xl">
                                 <Image 
                                     src="https://images.unsplash.com/photo-1706466614967-f4f14a3d9d08?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxNHx8YWl8ZW58MHx8fHwxNzUyMjE2Nzk3fDA&ixlib=rb-4.1.0&q=80&w=1080"
-                                    alt="A person developing software on a laptop" 
+                                    alt="A person's hands typing on a laptop, symbolizing the AI technology behind the calculators." 
                                     fill
                                     className="rounded-xl object-cover"
                                     data-ai-hint="technology code"
@@ -122,17 +122,17 @@ export default function AboutPage() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                             <Card className="flex flex-col items-center p-6 bg-secondary/50 hover:-translate-y-1 transition-transform duration-300">
                                 <Github className="h-10 w-10 text-primary mb-4"/>
-                                <h4 className="font-semibold text-lg">Provide Feedback</h4>
+                                <h3 className="font-semibold text-lg">Provide Feedback</h3>
                                 <p className="text-sm text-muted-foreground mt-1">Suggest a new calculator or report an issue on our GitHub.</p>
                             </Card>
                              <Card className="flex flex-col items-center p-6 bg-secondary/50 hover:-translate-y-1 transition-transform duration-300">
                                 <Share2 className="h-10 w-10 text-primary mb-4"/>
-                                <h4 className="font-semibold text-lg">Share the Site</h4>
+                                <h3 className="font-semibold text-lg">Share the Site</h3>
                                 <p className="text-sm text-muted-foreground mt-1">Tell your friends, family, or colleagues about HomeCalc Pro.</p>
                             </Card>
                              <Card className="flex flex-col items-center p-6 bg-secondary/50 hover:-translate-y-1 transition-transform duration-300">
                                 <Handshake className="h-10 w-10 text-primary mb-4"/>
-                                <h4 className="font-semibold text-lg">Contribute</h4>
+                                <h3 className="font-semibold text-lg">Contribute</h3>
                                 <p className="text-sm text-muted-foreground mt-1">If you're a developer, consider contributing to our open-source project.</p>
                             </Card>
                         </div>

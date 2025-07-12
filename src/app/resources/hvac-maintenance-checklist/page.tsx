@@ -11,8 +11,8 @@ import { Separator } from "@/components/ui/separator";
 import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata: Metadata = {
-    title: 'Seasonal HVAC Maintenance Checklist | HomeCalc Pro',
-    description: 'Keep your system running efficiently and prevent costly repairs with our seasonal HVAC maintenance guide for homeowners.',
+    title: 'DIY Seasonal HVAC Maintenance Checklist | HomeCalc Pro',
+    description: 'Keep your heating and cooling system running efficiently and prevent costly repairs with our seasonal DIY HVAC maintenance guide for homeowners.',
 };
 
 const relevantCalculators = [
@@ -54,7 +54,7 @@ export default function HvacMaintenancePage() {
                 <main className="lg:col-span-2 space-y-8">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Spring & Summer (Cooling Season)</CardTitle>
+                            <CardTitle as="h2">Spring & Summer (Cooling Season)</CardTitle>
                             <CardDescription>Prepare your air conditioner for the heat.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-1">
@@ -64,7 +64,7 @@ export default function HvacMaintenancePage() {
                                     <div className="flex items-start space-x-4 p-2">
                                         <CheckSquare className="h-5 w-5 text-primary mt-1 shrink-0" />
                                         <div className="flex-1">
-                                            <p className="font-medium text-base">{item.text}</p>
+                                            <h3 className="font-medium text-base">{item.text}</h3>
                                             <p className="text-sm text-muted-foreground">{item.details}</p>
                                         </div>
                                     </div>
@@ -74,7 +74,7 @@ export default function HvacMaintenancePage() {
                     </Card>
                     <Card>
                         <CardHeader>
-                            <CardTitle>Fall & Winter (Heating Season)</CardTitle>
+                            <CardTitle as="h2">Fall & Winter (Heating Season)</CardTitle>
                             <CardDescription>Get your furnace or heat pump ready for the cold.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-1">
@@ -84,7 +84,7 @@ export default function HvacMaintenancePage() {
                                     <div className="flex items-start space-x-4 p-2">
                                         <CheckSquare className="h-5 w-5 text-primary mt-1 shrink-0" />
                                         <div className="flex-1">
-                                            <p className="font-medium text-base">{item.text}</p>
+                                            <h3 className="font-medium text-base">{item.text}</h3>
                                             <p className="text-sm text-muted-foreground">{item.details}</p>
                                         </div>
                                     </div>
@@ -95,7 +95,7 @@ export default function HvacMaintenancePage() {
 
                     <Alert variant="destructive">
                          <AlertTriangle className="h-4 w-4" />
-                         <AlertTitle>When to Call a Professional</AlertTitle>
+                         <AlertTitle as="h3">When to Call a Professional</AlertTitle>
                          <AlertDescription>
                              This DIY checklist is for basic maintenance. You should schedule a professional tune-up annually. A qualified technician will check refrigerant levels, inspect electrical components, clean internal parts, and ensure your system is operating safely and at peak performance.
                          </AlertDescription>

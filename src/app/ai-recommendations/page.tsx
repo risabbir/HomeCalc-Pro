@@ -1,9 +1,10 @@
+
 import { AiRecommendations } from "@/components/calculators/AiRecommendations";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'AI Calculator Recommendations',
-    description: 'Describe your project and let our AI assistant recommend the perfect calculators to help you plan.',
+    title: 'AI Project Assistant | Calculator Recommendations',
+    description: 'Not sure where to start? Describe your home project to our AI assistant and get instant recommendations for the most relevant calculators to help you plan.',
 };
 
 export default function AiRecommendationsPage() {

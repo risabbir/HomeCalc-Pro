@@ -1,8 +1,9 @@
 
+import type { Metadata } from 'next';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Terms of Service | HomeCalc Pro",
-  description: "Review the Terms of Service for using the HomeCalc Pro website and tools.",
+  description: "Review the official Terms of Service for using the HomeCalc Pro website, its calculators, AI features, and other online tools.",
 };
 
 export default function LegalPage() {

@@ -10,8 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata: Metadata = {
-    title: 'A Homeowner\'s Guide to Paint Finishes | HomeCalc Pro',
-    description: 'Learn the difference between paint finishes like matte, eggshell, satin, and semi-gloss to choose the perfect one for any room and surface in your home.',
+    title: 'A Homeowner\'s Guide to Paint Finishes (Sheen) | HomeCalc Pro',
+    description: 'Learn the difference between paint finishes like matte, eggshell, satin, and semi-gloss to choose the perfect sheen for any room and surface in your home.',
 };
 
 const relevantCalculators = [
@@ -72,7 +72,7 @@ export default function PaintFinishGuidePage() {
                 <main className="lg:col-span-2">
                     <Alert className="mb-12">
                         <Lightbulb className="h-4 w-4" />
-                        <AlertTitle>The Golden Rule of Paint Sheen</AlertTitle>
+                        <AlertTitle as="h2">The Golden Rule of Paint Sheen</AlertTitle>
                         <AlertDescription className="space-y-1">
                             <p><strong>Higher Sheen = Higher Durability & Shine.</strong> This makes it easy to clean, perfect for high-traffic or high-moisture areas like kitchens, bathrooms, and trim.</p>
                             <p><strong>Lower Sheen = Better at Hiding Imperfections.</strong> Its non-reflective nature conceals minor flaws in walls, making it ideal for living areas and ceilings.</p>
@@ -83,7 +83,7 @@ export default function PaintFinishGuidePage() {
                         {finishes.map((finish) => (
                             <Card key={finish.name} className="flex flex-col border-2">
                                 <CardHeader>
-                                    <CardTitle>{finish.name}</CardTitle>
+                                    <CardTitle as="h3">{finish.name}</CardTitle>
                                     <CardDescription>{finish.sheen} | {finish.durability} Durability</CardDescription>
                                 </CardHeader>
                                 <CardContent className="flex-grow">

@@ -10,8 +10,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata: Metadata = {
-    title: 'Guide to U.S. Climate & Hardiness Zones',
-    description: 'Find your official DOE Building Climate Zone for HVAC and insulation projects or your USDA Plant Hardiness Zone for gardening. Use our guide to link to official government lookup tools.',
+    title: 'Guide to U.S. Climate & USDA Plant Hardiness Zones',
+    description: 'Find your correct climate zone. Use the official DOE map for building/HVAC projects and the USDA Plant Hardiness map for gardening. Link to official lookup tools.',
 };
 
 const relevantCalculators = [

@@ -10,7 +10,7 @@ import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata: Metadata = {
     title: 'How to Measure a Room Accurately For Any Project | HomeCalc Pro',
-    description: 'Learn the professional way to measure any room, including how to handle irregular shapes and account for waste, ensuring you buy the right amount of material every time.',
+    description: 'Learn the professional way to measure any room, including how to handle irregular shapes and account for waste, ensuring you buy the right amount of material.',
 };
 
 const relevantCalculators = [
@@ -35,7 +35,7 @@ export default function HowToMeasurePage() {
                 <main className="lg:col-span-2 space-y-12">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Step 1: Gather Your Tools</CardTitle>
+                            <CardTitle as="h2">Step 1: Gather Your Tools</CardTitle>
                             <CardDescription>Having the right tools makes the job easy and accurate. Here’s what you’ll need:</CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -51,7 +51,7 @@ export default function HowToMeasurePage() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Step 2: Measuring for Flooring (Square Footage)</CardTitle>
+                            <CardTitle as="h2">Step 2: Measuring for Flooring (Square Footage)</CardTitle>
                             <CardDescription>This is the most common measurement needed for flooring materials like tile, vinyl, or laminate.</CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -84,7 +84,7 @@ export default function HowToMeasurePage() {
 
                      <Card>
                         <CardHeader>
-                            <CardTitle>Step 3: Measuring for Walls (Paint & Wallpaper)</CardTitle>
+                            <CardTitle as="h2">Step 3: Measuring for Walls (Paint & Wallpaper)</CardTitle>
                             <CardDescription>For wall coverings, you need the total paintable surface area of your walls.</CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -107,7 +107,7 @@ export default function HowToMeasurePage() {
                     
                     <Alert>
                         <Lightbulb className="h-4 w-4" />
-                        <AlertTitle>Pro Tips for Flawless Measurements</AlertTitle>
+                        <AlertTitle as="h3">Pro Tips for Flawless Measurements</AlertTitle>
                         <AlertDescription>
                             <ul className="list-disc pl-5 mt-2 space-y-1">
                                 <li><strong>Measure Twice, Buy Once:</strong> It's an old saying for a reason. Always double-check your measurements before purchasing materials.</li>

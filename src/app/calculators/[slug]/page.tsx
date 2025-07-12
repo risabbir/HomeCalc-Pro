@@ -1,5 +1,7 @@
+
 import { calculators } from '@/lib/calculators';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
 import { HvacCalculator } from '@/components/calculators/HvacCalculator';
 import { SeerSavingsCalculator } from '@/components/calculators/SeerSavingsCalculator';
@@ -25,15 +27,21 @@ import { MiniSplitCostEstimator } from '@/components/calculators/MiniSplitCostEs
 import { SavingsCalculator } from '@/components/calculators/SavingsCalculator';
 import { CarLoanCalculator } from '@/components/calculators/CarLoanCalculator';
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const calculator = calculators.find((c) => c.slug === params.slug);
+  
   if (!calculator) {
     return {
-      title: 'Calculator Not Found',
+      title: 'Calculator Not Found | HomeCalc Pro',
+      description: 'The calculator you are looking for could not be found.',
     }
   }
+
+  // Generate a more SEO-friendly title, e.g., "Paint Coverage Calculator | Free DIY Estimator"
+  const title = `${calculator.name} | Free Online Estimator`;
+  
   return {
-    title: `${calculator.name} | HomeCalc Pro`,
+    title,
     description: calculator.description,
   }
 }

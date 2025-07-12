@@ -11,7 +11,7 @@ import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata: Metadata = {
     title: 'A Homeowner\'s Guide to Insulation Types | HomeCalc Pro',
-    description: 'Learn about the different types of home insulation, from fiberglass batts to spray foam, and find out which is best for your project.',
+    description: 'Learn about the different types of home insulation—from fiberglass batts and blown-in cellulose to spray foam—and find out which is best for your project.',
 };
 
 const relevantCalculators = [
@@ -78,7 +78,7 @@ export default function InsulationGuidePage() {
                 <main className="lg:col-span-2">
                     <Alert className="mb-12">
                         <Lightbulb className="h-4 w-4" />
-                        <AlertTitle>What is R-Value?</AlertTitle>
+                        <AlertTitle as="h2">What is R-Value?</AlertTitle>
                         <AlertDescription>
                             <p>R-Value measures an insulation's ability to resist heat flow. **The higher the R-value, the better its insulating performance.** Your required R-value depends on your climate zone and where you're insulating (attic, walls, etc.).</p>
                         </AlertDescription>
@@ -88,7 +88,7 @@ export default function InsulationGuidePage() {
                         {insulationTypes.map((insulation) => (
                             <Card key={insulation.name} className="flex flex-col border-2">
                                 <CardHeader>
-                                    <CardTitle>{insulation.name}</CardTitle>
+                                    <CardTitle as="h3">{insulation.name}</CardTitle>
                                     <CardDescription>R-Value/inch: <span className="font-bold text-foreground">{insulation.rValue}</span></CardDescription>
                                 </CardHeader>
                                 <CardContent className="flex-grow space-y-4">

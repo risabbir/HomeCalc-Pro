@@ -11,8 +11,8 @@ import React from "react";
 import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 
 export const metadata: Metadata = {
-    title: 'The Ultimate Deck Building Checklist | HomeCalc Pro',
-    description: 'A comprehensive, step-by-step checklist for planning and building your new deck, covering design, permits, materials, construction, and safety.',
+    title: 'The Ultimate DIY Deck Building Checklist | HomeCalc Pro',
+    description: 'Our comprehensive, step-by-step checklist for planning and building a new deck. Covers design, permits, materials, construction, and critical safety tips.',
 };
 
 const relevantCalculators = [
@@ -95,7 +95,7 @@ export default function DeckChecklistPage() {
                     {checklistItems.map((section) => (
                         <Card key={section.category}>
                             <CardHeader>
-                                <CardTitle>{section.category}</CardTitle>
+                                <CardTitle as="h2">{section.category}</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-1">
                                 {section.items.map((item, itemIndex) => (
@@ -104,7 +104,7 @@ export default function DeckChecklistPage() {
                                         <div className="flex items-start space-x-4 p-2">
                                             <CheckSquare className="h-5 w-5 text-primary mt-1 shrink-0" />
                                             <div className="flex-1">
-                                                <p className="font-medium text-base">{item.text}</p>
+                                                <h3 className="font-medium text-base">{item.text}</h3>
                                                 <p className="text-sm text-muted-foreground">{item.details}</p>
                                             </div>
                                         </div>
@@ -116,7 +116,7 @@ export default function DeckChecklistPage() {
 
                     <Alert variant="destructive" className="mt-16">
                          <AlertTriangle className="h-4 w-4" />
-                         <AlertTitle>Critical Safety & Durability Pitfalls to Avoid</AlertTitle>
+                         <AlertTitle as="h3">Critical Safety & Durability Pitfalls to Avoid</AlertTitle>
                          <AlertDescription>
                              <ul className="list-disc pl-5 mt-2 space-y-2">
                                 <li><strong>Improper Ledger Board Attachment & Flashing:</strong> This is the #1 cause of catastrophic deck collapse and severe water damage to your home. It must be bolted and flashed perfectly to code.</li>

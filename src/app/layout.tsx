@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -12,10 +13,10 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: {
-    default: 'HomeCalc Pro | Precision Calculators for Every Project',
+    default: 'HomeCalc Pro | Free Calculators for Any Home Project',
     template: '%s | HomeCalc Pro',
   },
-  description: 'Your one-stop destination for a wide range of home-related calculators. From home improvement and energy savings to gardening and financial planning, we provide the tools to help you plan with confidence.',
+  description: 'Your one-stop destination for free, accurate calculators for any home project. From DIY home improvement and HVAC to gardening and finance, get the estimates you need.',
 };
 
 export default function RootLayout({
