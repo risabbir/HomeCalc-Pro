@@ -283,7 +283,7 @@ export function Chatbot() {
                       )}
                     >
                       <p className="whitespace-pre-wrap">{message.content}</p>
-                      {message.link && (
+                      {message.link && typeof message.link === 'string' && (
                         <Button asChild size="sm" className="mt-2">
                            <Link href={`/calculators/${message.link}`}>Go to calculator</Link>
                         </Button>
