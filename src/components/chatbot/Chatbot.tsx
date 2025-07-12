@@ -254,7 +254,7 @@ export function Chatbot() {
           variant="default"
           onClick={() => setIsOpen(true)}
           className={cn(
-            "fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 h-16 w-16 rounded-full flex items-center justify-center p-0 shrink-0 [&_svg]:size-8",
+            "fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 h-14 w-14 md:h-16 md:w-16 rounded-full flex items-center justify-center p-0 shrink-0 [&_svg]:size-7 md:[&_svg]:size-8",
             "transition-all duration-300 ease-in-out hover:scale-110",
             isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
           )}
@@ -271,7 +271,7 @@ export function Chatbot() {
                 <MessagesSquare className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-lg">HomeCalc Helper</CardTitle>
+                <CardTitle className="text-base">HomeCalc Helper</CardTitle>
                 <CardDescription className="text-xs">Your friendly home project guide</CardDescription>
               </div>
             </div>
@@ -368,5 +368,3 @@ export function Chatbot() {
     </>
   );
 }
-
-    
