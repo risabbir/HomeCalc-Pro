@@ -8,7 +8,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Building, AlertTriangle, Sprout } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
-import Image from "next/image";
 
 export const metadata: Metadata = {
     title: 'Guide to U.S. Climate & USDA Plant Hardiness Zones',
@@ -43,17 +42,6 @@ export default function ClimateZoneMapPage() {
                 <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                     It's a common point of confusion: "Climate Zones" for building are different from "Plant Hardiness Zones" for gardening. This guide clarifies the two and directs you to the right official resource.
                 </p>
-            </div>
-
-            <div className="relative w-full max-w-4xl mx-auto aspect-[16/9] rounded-xl overflow-hidden mb-12 border shadow-lg">
-                <Image 
-                    src="https://www.energy.gov/sites/default/files/2021-10/ba-climate-zone-map-101121.png"
-                    alt="Map of US Climate Zones for building and construction, showing different colored regions."
-                    fill
-                    className="object-contain"
-                    data-ai-hint="climate map"
-                    priority
-                />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-12 gap-y-12">
