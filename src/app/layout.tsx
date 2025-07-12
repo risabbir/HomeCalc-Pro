@@ -13,10 +13,10 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: {
-    default: 'HomeCalc Pro | Free Calculators for Any Home Project',
+    default: 'HomeCalc Pro | Plan Any Home Project with Free, Easy-to-Use Calculators',
     template: '%s | HomeCalc Pro',
   },
-  description: 'Your one-stop destination for free, accurate calculators for any home project. From DIY home improvement and HVAC to gardening and finance, get the estimates you need.',
+  description: 'Get instant, accurate estimates for any home project with HomeCalc Pro\'s suite of free online calculators. Perfect for DIY, HVAC, painting, flooring, and more. Plan your budget and save money.',
 };
 
 export default function RootLayout({
