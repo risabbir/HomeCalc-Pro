@@ -17,6 +17,10 @@ const examplePrompts = [
       "What size furnace do I need for a 2,000 sq ft house in a cold climate?",
       "Is it worth upgrading my old AC unit to a new one?",
       "How much would it cost to install a mini-split system in my garage?",
+      "Estimate the cost of a new heat pump for my home.",
+      "How much can I save by using a programmable thermostat?",
+      "How much attic insulation should I have for my climate zone?",
+      "What size ducts do I need for my HVAC system?",
     ],
   },
   {
@@ -26,6 +30,10 @@ const examplePrompts = [
       "I need to repaint my living room and I'm not sure what kind of paint to use.",
       "How much will it cost to remodel my kitchen?",
       "Calculate the amount of flooring I need for two bedrooms.",
+      "How many rolls of wallpaper do I need for an accent wall?",
+      "I'm pouring a concrete slab for a new shed, how much concrete do I need?",
+      "I'm planning a full kitchen remodel with semi-custom cabinets and quartz countertops.",
+      "Calculate the materials for a 12x16 foot deck.",
     ],
   },
   {
@@ -33,8 +41,12 @@ const examplePrompts = [
     prompts: [
       "Help me estimate my monthly mortgage payment.",
       "How much soil do I need to fill a new raised garden bed?",
-      "How much money can I save with a programmable thermostat?",
       "What would my monthly payment be for a $30,000 car loan?",
+      "How much will my investment be worth in 10 years with monthly contributions?",
+      "Calculate the annual running cost of my old refrigerator.",
+      "How much fertilizer do I need for my 500 sq ft lawn?",
+      "Compare the energy cost of my old AC unit to a new one.",
+      "What's my estimated mortgage payment on a $400,000 loan?",
     ],
   }
 ];
