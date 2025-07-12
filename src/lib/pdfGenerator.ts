@@ -13,14 +13,23 @@ interface PdfContent {
 
 // Function to fetch image and convert to Base64
 async function getImageBase64(url: string): Promise<string> {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch image: ${response.statusText}`);
+        }
+        const blob = await response.blob();
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    } catch (error) {
+        console.error("Error converting image to Base64:", error);
+        // Return a transparent pixel as a fallback
+        return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+    }
 }
 
 export async function generatePdf({ title, slug, inputs, results, disclaimer }: PdfContent) {
@@ -31,17 +40,14 @@ export async function generatePdf({ title, slug, inputs, results, disclaimer }: 
 
     try {
         const logoBase64 = await getImageBase64('/logo-light.png');
-        // The logo's aspect ratio (200/53) to calculate height from width, ensuring it's contained
-        const logoWidth = 35; 
-        const logoHeight = logoWidth * (53 / 200); 
-        doc.addImage(logoBase64, 'PNG', 14, 15, logoWidth, logoHeight);
+        if (logoBase64 && !logoBase64.includes('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=')) {
+            // The logo's aspect ratio (200/53) to calculate height from width, ensuring it's contained
+            const logoWidth = 35; 
+            const logoHeight = logoWidth * (53 / 200); 
+            doc.addImage(logoBase64, 'PNG', 14, 15, logoWidth, logoHeight);
+        }
     } catch (error) {
         console.error("Could not add logo to PDF:", error);
-        // Fallback to text if logo fails to load
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(22);
-        doc.setTextColor(40);
-        doc.text('HomeCalc Pro', 14, 22);
     }
 
     doc.setFontSize(14);
