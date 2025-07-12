@@ -232,8 +232,8 @@ export function Chatbot() {
   return (
     <>
       { !isOpen && showHelpBubble && (
-        <div className="fixed bottom-10 right-4 z-40 animate-in fade-in-50 slide-in-from-bottom-4 md:bottom-24 md:right-6">
-            <Card className="p-2 sm:p-3 shadow-none">
+        <div className="fixed bottom-20 right-4 z-40 animate-in fade-in-50 slide-in-from-bottom-4 md:bottom-24 md:right-6">
+            <Card className="p-2 sm:p-3 shadow-lg">
                  <CardContent className="p-0 flex items-center gap-2">
                     <p className="text-xs sm:text-sm font-medium">How can I help with your project?</p>
                     <Button 
@@ -254,8 +254,8 @@ export function Chatbot() {
           variant="default"
           onClick={() => setIsOpen(true)}
           className={cn(
-            "fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 h-12 w-12 rounded-full flex items-center justify-center p-0 shrink-0",
-            "sm:h-14 sm:w-14 [&_svg]:h-6 [&_svg]:w-6 sm:[&_svg]:h-7 sm:[&_svg]:w-7",
+            "fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 h-14 w-14 rounded-full flex items-center justify-center p-0 shrink-0",
+            "[&_svg]:h-7 [&_svg]:w-7",
             "transition-all duration-300 ease-in-out hover:scale-110",
             isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
           )}
