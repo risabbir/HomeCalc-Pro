@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: {
-    default: 'HomeCalc Pro | Plan Any Home Project with Free, Easy-to-Use Calculators',
+    default: 'HomeCalc Pro | Free Calculators for Any Home Project',
     template: '%s | HomeCalc Pro',
   },
   description: 'Get instant, accurate estimates for any home project with HomeCalc Pro\'s suite of free online calculators. Perfect for DIY, HVAC, painting, flooring, and more. Plan your budget and save money.',

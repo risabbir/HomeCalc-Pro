@@ -154,7 +154,7 @@ export default function Home() {
           }}
         ></div>
         <div className="container relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 font-headline text-primary">Plan Any Home Project</h1>
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 font-headline text-primary">Free Calculators for Any Home Project</h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
             Get instant estimates with our suite of free, easy-to-use calculators. From DIY to professional jobs, we have you covered.
           </p>
