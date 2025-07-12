@@ -71,7 +71,7 @@ export default function PrivacyPolicyPage() {
         <section className="mt-8">
           <h2 className="text-2xl font-bold font-headline">8. Contact Us</h2>
           <p>
-            If you have questions or comments about this Privacy Policy, please contact us at: webcodar37@gmail.com.
+            If you have questions or comments about this Privacy Policy, please contact us at: contact@homecalc.pro.
           </p>
         </section>
       </div>

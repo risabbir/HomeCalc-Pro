@@ -118,14 +118,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-             <Button asChild className="hidden sm:inline-flex group bg-background text-foreground border border-input hover:bg-primary hover:text-primary-foreground">
-                <Link href="https://buymeacoffee.com/your_username" target="_blank" rel="noopener noreferrer">
-                    <Heart className="mr-1.5 h-4 w-4 text-primary group-hover:text-primary-foreground fill-primary group-hover:fill-primary-foreground" />
-                    Support Us
-                </Link>
-            </Button>
             <ThemeToggle />
-
 
             {/* Mobile Nav */}
             <div className="md:hidden">
@@ -202,21 +195,6 @@ export function Header() {
                           ))}
                       </div>
                     </ScrollArea>
-                    <div className="mt-auto p-6">
-                        <Separator className="mb-6" />
-                        <SheetClose asChild>
-                            <Button asChild className="w-full text-lg" size="lg">
-                                <Link
-                                    href="https://buymeacoffee.com/your_username"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-2"
-                                >
-                                    <Heart className="h-5 w-5" /> Support Us
-                                </Link>
-                             </Button>
-                        </SheetClose>
-                    </div>
                 </SheetContent>
               </Sheet>
             </div>

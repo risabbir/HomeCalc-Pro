@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Heart, Github, Share2, Lightbulb, Handshake, Server, ArrowRight, TrendingUp } from 'lucide-react';
+import { Github, Share2, Handshake, ArrowRight, TrendingUp } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
     return (
         <div className="overflow-x-hidden">
-            <div className="container mx-auto px-4 py-12 md:py-24">
+            <div className="container mx-auto px-4 py-12 md:py-16">
                 <div className="max-w-4xl mx-auto">
                     <AnimatedSection>
                         <section className="text-center mb-24">
@@ -113,59 +113,15 @@ export default function AboutPage() {
                             </div>
                         </div>
                     </AnimatedSection>
-
-                    <AnimatedSection>
-                        <section className="text-center mb-24">
-                            <h2 className="text-3xl font-bold font-headline mb-4">How Your Support Helps</h2>
-                            <p className="text-muted-foreground max-w-3xl mx-auto mb-8">
-                                HomeCalc Pro is a passion project, and we're committed to keeping it free and accessible. Your support helps us cover the costs of keeping the lights on and building new features.
-                            </p>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <Card>
-                                    <CardHeader className="items-center">
-                                        <Server className="h-8 w-8 text-primary mb-2"/>
-                                        <CardTitle className="text-xl">Server & API Costs</CardTitle>
-                                        <CardDescription>Keeping the site online and paying for AI services.</CardDescription>
-                                    </CardHeader>
-                                </Card>
-                                 <Card>
-                                    <CardHeader className="items-center">
-                                        <Lightbulb className="h-8 w-8 text-primary mb-2"/>
-                                        <CardTitle className="text-xl">Continued Development</CardTitle>
-                                        <CardDescription>Building new calculators and improving existing ones.</CardDescription>
-                                    </CardHeader>
-                                </Card>
-                                 <Card>
-                                    <CardHeader className="items-center">
-                                        <Handshake className="h-8 w-8 text-primary mb-2"/>
-                                        <CardTitle className="text-xl">Creating Resources</CardTitle>
-                                        <CardDescription>Writing helpful guides and checklists for our users.</CardDescription>
-                                    </CardHeader>
-                                </Card>
-                            </div>
-                            <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
-                                <Button asChild size="lg">
-                                    <Link href="https://buymeacoffee.com/your_username" target="_blank" rel="noopener noreferrer">
-                                        <Heart className="mr-2 h-5 w-5" /> Buy Me a Coffee
-                                    </Link>
-                                </Button>
-                                <Button asChild size="lg" variant="outline">
-                                    <Link href="https://patreon.com/your_username" target="_blank" rel="noopener noreferrer">
-                                        Become a Patron
-                                    </Link>
-                                </Button>
-                            </div>
-                        </section>
-                    </AnimatedSection>
                     
                     <AnimatedSection>
                         <Card>
                             <CardHeader>
-                                <CardTitle>Other Ways to Contribute</CardTitle>
-                                <CardDescription>Donations aren't the only way to help! Here are other ways you can support the HomeCalc Pro community.</CardDescription>
+                                <CardTitle>Help Us Improve</CardTitle>
+                                <CardDescription>HomeCalc Pro is built for the community. Your feedback is invaluable in helping us make the tool better for everyone.</CardDescription>
                             </CardHeader>
-                            <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="flex flex-col items-center text-center">
+                            <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                                <div className="flex flex-col items-center">
                                     <Github className="h-8 w-8 text-primary mb-2"/>
                                     <h4 className="font-semibold">Provide Feedback</h4>
                                     <p className="text-sm text-muted-foreground">Suggest a new calculator or report an issue on our GitHub.</p>
@@ -177,7 +133,7 @@ export default function AboutPage() {
                                 </div>
                                  <div className="flex flex-col items-center text-center">
                                     <Handshake className="h-8 w-8 text-primary mb-2"/>
-                                    <h4 className="font-semibold">Give Suggestions</h4>
+                                    <h4 className="font-semibold">Contribute</h4>
                                     <p className="text-sm text-muted-foreground">If you're a developer, consider contributing to our open-source project.</p>
                                 </div>
                             </CardContent>
