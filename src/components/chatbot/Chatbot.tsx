@@ -25,22 +25,47 @@ const allPresetQuestions = [
   "What size AC unit do I need for a 2000 sq ft house?",
   "What are the signs that I need a new furnace?",
   "What are the benefits of a ductless mini-split system?",
+  "How often should I change my HVAC air filter?",
+  "What is a 'Manual J' calculation and why is it important?",
+  "Is a heat pump a good option for my climate?",
+  "What's the best temperature to set my thermostat to in the summer?",
+  "How can I improve the air quality in my home?",
+
   // Home Improvement
   "What do I need to know before building a deck?",
   "What's the best type of paint for a bathroom?",
   "What's a reasonable budget for a mid-range kitchen renovation?",
   "What are the most durable types of flooring for a family with pets?",
   "How do I properly prepare a wall for wallpaper?",
+  "What are the pros and cons of granite vs. quartz countertops?",
+  "What's the most important safety tip for any DIY project?",
+  "How can I tell if a wall is load-bearing?",
+  "What are some common mistakes to avoid when painting a room?",
+  "Give me a step-by-step guide for installing laminate flooring.",
+
   // Gardening
   "What is my USDA plant hardiness zone and what can I plant?",
   "How much compost should I add to my garden bed?",
   "What are some low-maintenance plants for a shady area?",
+  "How can I test the pH of my garden soil?",
+  "What's the difference between fertilizer numbers like 10-10-10?",
+  "How do I get rid of common garden pests naturally?",
+  "When is the best time to plant tomatoes in my area?",
+  "What are some good companion plants for a vegetable garden?",
+  "How deep should I make my raised garden bed?",
+  "What are the basics of starting a compost pile?",
+
   // Other / Financial
   "Can you help me calculate my monthly mortgage payment?",
   "What would my monthly payment be for a $30,000 car loan?",
   "How much will my investment be worth in 15 years with compound interest?",
   "What are some simple ways to save on my energy bill?",
   "What are the pros and cons of a 15-year vs a 30-year mortgage?",
+  "What is PMI and how can I avoid it?",
+  "How much of an emergency fund should I have as a homeowner?",
+  "Should I get a fixed-rate or adjustable-rate mortgage?",
+  "What's the first step in planning for retirement?",
+  "How can I improve my credit score before applying for a loan?",
 ];
 
 
@@ -67,7 +92,7 @@ export function Chatbot() {
 
   useEffect(() => {
     // Randomize questions only on the client-side to prevent hydration mismatch
-    setPresetQuestions(getShuffledItems(allPresetQuestions, 3));
+    setPresetQuestions(getShuffledItems(allPresetQuestions, 4));
   }, []);
 
 

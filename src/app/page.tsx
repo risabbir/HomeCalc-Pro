@@ -17,24 +17,36 @@ const examplePrompts = [
       "Planning to add new attic insulation to improve my home's efficiency.",
       "Thinking about upgrading my old AC unit to a new high-efficiency one.",
       "I want to install a mini-split system in my garage workshop.",
+      "My energy bills are too high, I think my old AC is the problem.",
+      "Need to figure out the right duct size for a new addition to my house.",
+      "I want to compare the cost of a new furnace vs. a new heat pump.",
+      "How much can I save by using a programmable thermostat?",
     ],
   },
   {
     category: 'Home Improvement',
     prompts: [
-      "I want to build a new 12x16 foot deck and a fence in my backyard.",
+      "I want to build a new 12x16 foot deck in my backyard.",
       "I'm planning a full kitchen remodel with semi-custom cabinets and quartz countertops.",
       "I need to repaint my living room and two bedrooms.",
       "I'm installing new laminate flooring in my basement.",
+      "I need to pour a concrete slab for a new shed.",
+      "I'm redoing my bathroom and need to buy new wallpaper.",
+      "I'm trying to budget for a complete kitchen tear-out and remodel.",
+      "How many boards do I need for a 20-foot long privacy fence?",
     ],
   },
   {
     category: 'Gardening',
     prompts: [
-        "I need to fill three new raised garden beds with soil.",
+        "I need to fill three new 4x8 raised garden beds with soil.",
         "I'm fertilizing my 1500 sq ft lawn for the spring.",
         "I need to calculate how much mulch to buy for my flower beds.",
-        "Planning my vegetable garden layout and need to figure out soil needs."
+        "Planning my vegetable garden layout and need to figure out soil needs for different beds.",
+        "How much topsoil do I need to level out my backyard?",
+        "I bought a bag of 10-10-10 fertilizer and need to know how much to use on my vegetable garden.",
+        "Starting a container garden on my patio and need to calculate soil volume for various pot sizes.",
+        "I'm creating a new flower bed along a 30-foot fence line and need to know how much soil to order.",
     ]
   },
   {
@@ -44,6 +56,10 @@ const examplePrompts = [
       "I'm planning my retirement savings over the next 20 years.",
       "I'm looking to buy a new home and need to understand the mortgage costs.",
       "Comparing the energy usage of my old freezer to a new one.",
+      "How much will my $5,000 investment be worth in 10 years at a 7% return?",
+      "I need to figure out my monthly payment for a $400,000 mortgage.",
+      "I want to see how much I can save on electricity by replacing all my light bulbs with LEDs.",
+      "What are the total costs involved in a $25,000 car loan over 5 years?",
     ],
   }
 ];
