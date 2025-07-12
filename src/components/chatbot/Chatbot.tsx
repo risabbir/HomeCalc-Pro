@@ -210,6 +210,24 @@ export function Chatbot() {
   const handlePresetClick = (question: string) => {
     handleSendMessage(question);
   };
+  
+  const renderLinkButton = (link: string) => {
+    const isExternal = link.startsWith('http');
+    const buttonText = isExternal ? "View Resource" : "Go to Calculator";
+
+    if (isExternal) {
+        return (
+            <a href={link} target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ size: 'sm' }), 'mt-2')}>
+                {buttonText}
+            </a>
+        );
+    }
+    return (
+        <Button asChild size="sm" className="mt-2">
+            <Link href={link}>{buttonText}</Link>
+        </Button>
+    );
+  }
 
   return (
     <>
@@ -283,11 +301,7 @@ export function Chatbot() {
                       )}
                     >
                       <p className="whitespace-pre-wrap">{message.content}</p>
-                      {message.link && typeof message.link === 'string' && (
-                        <Button asChild size="sm" className="mt-2">
-                           <Link href={`/calculators/${message.link}`}>Go to calculator</Link>
-                        </Button>
-                      )}
+                      {message.link && typeof message.link === 'string' && renderLinkButton(message.link)}
                     </div>
                      {message.role === 'user' && <User className="h-6 w-6 shrink-0 rounded-full bg-secondary text-secondary-foreground p-0.5" />}
                   </div>
