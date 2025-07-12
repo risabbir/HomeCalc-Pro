@@ -17,8 +17,6 @@ const examplePrompts = [
       "Planning to add new attic insulation to improve my home's efficiency.",
       "Thinking about upgrading my old AC unit to a new high-efficiency one.",
       "I want to install a mini-split system in my garage workshop.",
-      "My goal is to lower my energy bill by upgrading my HVAC system.",
-      "I'm considering a new heat pump for my home.",
     ],
   },
   {
@@ -28,18 +26,23 @@ const examplePrompts = [
       "I'm planning a full kitchen remodel with semi-custom cabinets and quartz countertops.",
       "I need to repaint my living room and two bedrooms.",
       "I'm installing new laminate flooring in my basement.",
-      "I need to put up wallpaper on an accent wall in my dining room.",
-      "I'm pouring a concrete slab for a new backyard shed.",
     ],
+  },
+  {
+    category: 'Gardening',
+    prompts: [
+        "I need to fill three new raised garden beds with soil.",
+        "I'm fertilizing my 1500 sq ft lawn for the spring.",
+        "I need to calculate how much mulch to buy for my flower beds.",
+        "Planning my vegetable garden layout and need to figure out soil needs."
+    ]
   },
   {
     category: 'Other',
     prompts: [
       "I'm trying to figure out a budget for a new car purchase.",
-      "I need to fill three new raised garden beds with soil.",
       "I'm planning my retirement savings over the next 20 years.",
       "I'm looking to buy a new home and need to understand the mortgage costs.",
-      "I'm fertilizing my 1500 sq ft lawn for the spring.",
       "Comparing the energy usage of my old freezer to a new one.",
     ],
   }
