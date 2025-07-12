@@ -11,36 +11,43 @@ interface PdfContent {
     disclaimer?: string;
 }
 
-export function generatePdf({ title, slug, inputs, results, disclaimer }: PdfContent) {
+// Function to fetch image and convert to Base64
+async function getImageBase64(url: string): Promise<string> {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+
+export async function generatePdf({ title, slug, inputs, results, disclaimer }: PdfContent) {
     const doc = new jsPDF();
     const pageHeight = doc.internal.pageSize.height;
     const primaryColor = [1, 151, 224]; // Approx HSL(200, 99%, 44%)
 
-    // Header
-    const drawHeader = () => {
+    try {
+        const logoBase64 = await getImageBase64('/logo-light.png');
+        // The logo's aspect ratio (200/53) to calculate height from width
+        const logoWidth = 35; 
+        const logoHeight = logoWidth * (53 / 200); 
+        doc.addImage(logoBase64, 'PNG', 14, 15, logoWidth, logoHeight);
+    } catch (error) {
+        console.error("Could not add logo to PDF:", error);
+        // Fallback to text if logo fails to load
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(22);
         doc.setTextColor(40);
-        doc.text('HomeCalc', 14, 22);
-        
-        const proText = "Pro";
-        const homecalcTextWidth = doc.getTextWidth("HomeCalc");
-        const proRectX = 14 + homecalcTextWidth + 1.5;
-        const proTextWidth = doc.getTextWidth(proText);
+        doc.text('HomeCalc Pro', 14, 22);
+    }
 
-        doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-        doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-        doc.roundedRect(proRectX, 14.5, proTextWidth + 5, 10, 2, 2, 'F');
-        
-        doc.setFontSize(22);
-        doc.setTextColor(255);
-        doc.text(proText, proRectX + 2.5, 22.5);
+    doc.setFontSize(14);
+    doc.setTextColor(100);
+    doc.setFont('helvetica', 'normal');
+    doc.text(title, 14, 34);
 
-        doc.setFontSize(14);
-        doc.setTextColor(100);
-        doc.setFont('helvetica', 'normal');
-        doc.text(title, 14, 34);
-    };
 
     // Footer
     const drawFooter = () => {
@@ -55,8 +62,6 @@ export function generatePdf({ title, slug, inputs, results, disclaimer }: PdfCon
         }
     };
     
-    drawHeader();
-
     // Inputs Table
     autoTable(doc, {
         startY: 45,
