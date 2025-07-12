@@ -15,6 +15,8 @@ import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   roomWidth: z.string().min(1, 'Room width is required.'),
@@ -82,32 +84,30 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
+
     const unitLabelArea = units === 'imperial' ? 'sq ft' : 'sq m';
-    let content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Units: ${units}\n` +
-      `Room Width: ${values.roomWidth} ${units === 'imperial' ? 'ft' : 'm'}\n` +
-      `Room Length: ${values.roomLength} ${units === 'imperial' ? 'ft' : 'm'}\n` +
-      `Waste Factor: ${values.wasteFactor}%\n`;
-
+    const inputs = [
+        { key: 'Room Width', value: `${values.roomWidth} ${units === 'imperial' ? 'ft' : 'm'}` },
+        { key: 'Room Length', value: `${values.roomLength} ${units === 'imperial' ? 'ft' : 'm'}` },
+        { key: 'Waste Factor', value: `${values.wasteFactor}%` },
+    ];
     if (values.boxCoverage) {
-        content += `Coverage per Box: ${values.boxCoverage} ${unitLabelArea}\n`;
+        inputs.push({ key: 'Coverage per Box', value: `${values.boxCoverage} ${unitLabelArea}` });
+    }
+    
+    const results = [
+        { key: 'Total Flooring Required', value: `${flooringResult.totalArea.toFixed(2)} ${unitLabelArea}` },
+    ];
+    if (flooringResult.boxesNeeded) {
+        results.push({ key: 'Estimated Boxes to Buy', value: `${flooringResult.boxesNeeded} boxes` });
     }
 
-    content += `\n--------------------\n` +
-      `Total Flooring Needed: ${flooringResult.totalArea.toFixed(2)} ${unitLabelArea}\n`;
-    
-    if(flooringResult.boxesNeeded) {
-        content += `Estimated Boxes to Buy: ${flooringResult.boxesNeeded} boxes\n`;
-    }
-    
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs,
+        results
+    });
   };
   
   return (
@@ -180,13 +180,28 @@ export function FlooringCalculator({ calculator }: { calculator: Omit<Calculator
         </Form>
         {flooringResult && (
           <Card className="mt-6 bg-accent">
-            <CardHeader><CardTitle>Total Flooring Required</CardTitle></CardHeader>
+            <CardHeader>
+                <CardTitle>Total Flooring Required</CardTitle>
+                <CardDescription>This is the total material to purchase, including waste.</CardDescription>
+            </CardHeader>
             <CardContent className="flex items-center justify-between">
               <p className="text-2xl font-bold">
                 {flooringResult.totalArea.toFixed(2)} {units === 'imperial' ? 'sq ft' : 'sq m'}
                 {flooringResult.boxesNeeded && <span className="text-lg text-muted-foreground ml-2"> (~{flooringResult.boxesNeeded} boxes)</span>}
               </p>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleDownload} variant="secondary">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download PDF
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download results as PDF</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </CardContent>
           </Card>
         )}

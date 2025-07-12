@@ -17,6 +17,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   atticArea: z.string().min(1, 'Attic area is required.'),
@@ -122,33 +124,32 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
       return;
     }
 
-    let content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `--Your Inputs--\n` +
-      `Attic Area: ${values.atticArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
-      `Climate Zone: ${values.climateZone}\n` +
-      `Existing Insulation: ${values.existingInsulation} ${units === 'imperial' ? 'inches' : 'cm'}\n` +
-      `Selected New Insulation: ${INSULATION_DATA[values.insulationType].name}\n\n`;
+    const inputs = [
+        { key: 'Attic Area', value: `${values.atticArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}` },
+        { key: 'U.S. Climate Zone', value: `Zone ${values.climateZone}` },
+        { key: 'Existing Insulation Depth', value: `${values.existingInsulation} ${units === 'imperial' ? 'inches' : 'cm'}` },
+        { key: 'New Insulation Type', value: INSULATION_DATA[values.insulationType].name },
+    ];
 
-    if(isSufficient) {
-        content += `--------------------\n` +
-        `Your current insulation level appears to be sufficient for your climate zone. No additional insulation is recommended.`;
+    let results = [];
+    if (isSufficient) {
+        results.push({ key: 'Status', value: 'Sufficient' }, { key: 'Recommendation', value: 'Your current insulation meets or exceeds recommendations. No action is needed.' });
     } else if (result) {
-        const neededDisplay = units === 'imperial' ? result.neededInches.toFixed(1) + '"' : (result.neededInches * 2.54).toFixed(1) + ' cm';
-        content += `--------------------\n` +
-        `--Your Insulation Plan--\n` +
-        `Target R-Value for Zone ${values.climateZone}: R-${result.targetRValue}\n` +
-        `Additional Depth Needed: ${neededDisplay}\n` +
-        `Estimated Bags Needed: ~${result.bagsNeeded} bags\n`;
+        const neededDisplay = units === 'imperial' ? `${result.neededInches.toFixed(1)}"` : `${(result.neededInches * 2.54).toFixed(1)} cm`;
+        results.push(
+            { key: 'Target R-Value', value: `R-${result.targetRValue}` },
+            { key: 'Additional Depth Needed', value: neededDisplay },
+            { key: 'Estimated Bags Needed', value: `~${result.bagsNeeded} bags` },
+        );
     }
-
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: inputs,
+        results: results,
+        disclaimer: 'This is an estimate. Coverage per bag varies by manufacturer and desired R-value. Always check the coverage chart on the packaging before purchasing.'
+    });
   };
   
   return (
@@ -246,6 +247,21 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                         <CardDescription className="text-green-700/80">Your current insulation depth meets or exceeds the recommendation for your climate zone. No action is needed.</CardDescription>
                     </div>
                 </CardHeader>
+                <CardFooter>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button onClick={handleDownload} variant="outline" size="sm">
+                                    <Download className="mr-2 h-4 w-4" />
+                                    Download PDF
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Download results as PDF</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </CardFooter>
              </Card>
         )}
         {result && (
@@ -269,12 +285,24 @@ export function AtticInsulationCalculator({ calculator }: { calculator: Omit<Cal
                  </div>
             </CardContent>
             <CardFooter className="flex-col items-start gap-4">
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleDownload} variant="secondary">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download PDF
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download results as PDF</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
                  <Alert>
                     <Info className="h-4 w-4" />
                     <AlertTitle>Disclaimer</AlertTitle>
                     <AlertDescription>This is an estimate. Coverage per bag varies by manufacturer and desired R-value. Always check the coverage chart on the packaging before purchasing.</AlertDescription>
                 </Alert>
-                <Button variant="ghost" size="sm" onClick={handleDownload}><Download className="h-4 w-4 mr-2" /> Download Plan</Button>
             </CardFooter>
           </Card>
         )}

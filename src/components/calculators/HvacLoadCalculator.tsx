@@ -18,6 +18,8 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   totalArea: z.string().min(1, 'Total area is required.'),
@@ -35,7 +37,7 @@ const CLIMATE_FACTORS = {
 }
 
 export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
-  const [loadResult, setLoadResult] = useState<string | null>(null);
+  const [loadResult, setLoadResult] = useState<{ cooling: string, heating: string } | null>(null);
   const [units, setUnits] = useState<'imperial' | 'metric'>('imperial');
   const { toast } = useToast();
 
@@ -74,11 +76,17 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
       
       if (units === 'imperial') {
         const coolingTons = (coolingLoad / 12000).toFixed(1);
-        setLoadResult(`Cooling: ${coolingLoad.toFixed(0)} BTU/hr (${coolingTons} tons) | Heating: ${heatingLoad.toFixed(0)} BTU/hr`);
+        setLoadResult({
+            cooling: `${coolingLoad.toFixed(0)} BTU/hr (${coolingTons} tons)`,
+            heating: `${heatingLoad.toFixed(0)} BTU/hr`
+        });
       } else {
         const coolingWatts = coolingLoad / 3.41;
         const heatingWatts = heatingLoad / 3.41;
-        setLoadResult(`Cooling: ${coolingWatts.toFixed(0)} W | Heating: ${heatingWatts.toFixed(0)} W`);
+        setLoadResult({
+            cooling: `${coolingWatts.toFixed(0)} W`,
+            heating: `${heatingWatts.toFixed(0)} W`
+        });
       }
 
     } else {
@@ -97,24 +105,23 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Total Area: ${values.totalArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
-      `Climate Zone: ${values.climateZone}\n` +
-      `Windows Area: ${values.windowsArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
-      `Number of Occupants: ${values.numberOfOccupants}\n` +
-      `Insulation Quality: ${values.insulationQuality}\n\n`+
-      `--------------------\n` +
-      `Estimated Load: ${loadResult}\n` +
-      `Disclaimer: This is a simplified estimate and not a substitute for a professional Manual J calculation.`;
     
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Total Conditioned Area', value: `${values.totalArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}` },
+            { key: 'Total Window Area', value: `${values.windowsArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}` },
+            { key: 'U.S. Climate Zone', value: `Zone ${values.climateZone}` },
+            { key: 'Number of Occupants', value: values.numberOfOccupants },
+            { key: 'Overall Insulation Quality', value: values.insulationQuality },
+        ],
+        results: [
+            { key: 'Estimated Cooling Load', value: loadResult.cooling },
+            { key: 'Estimated Heating Load', value: loadResult.heating },
+        ],
+        disclaimer: 'This is a simplified estimate and not a substitute for a professional Manual J calculation, which considers many more factors for accurate system sizing.'
+    });
   };
   
   return (
@@ -229,8 +236,23 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
             <Card className="mt-6 bg-accent">
                 <CardHeader><CardTitle>Estimated HVAC Load</CardTitle></CardHeader>
                 <CardContent className="flex items-center justify-between">
-                <p className="text-lg md:text-xl font-bold">{loadResult}</p>
-                <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+                <div className="font-bold">
+                    <p>Cooling: {loadResult.cooling}</p>
+                    <p>Heating: {loadResult.heating}</p>
+                </div>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleDownload} variant="secondary">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download PDF
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download results as PDF</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
                 </CardContent>
             </Card>
             )}

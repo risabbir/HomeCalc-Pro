@@ -14,6 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   length: z.string().min(1, 'Length is required.'),
@@ -87,24 +89,21 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const unitVol = units === 'imperial' ? 'cubic yards' : 'cubic meters';
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Slab Length: ${values.length} ${units === 'imperial' ? 'ft' : 'm'}\n` +
-      `Slab Width: ${values.width} ${units === 'imperial' ? 'ft' : 'm'}\n` +
-      `Slab Thickness: ${values.thickness} ${units === 'imperial' ? 'in' : 'cm'}\n` +
-      `Waste Factor: ${values.wasteFactor}%\n\n`+
-      `--------------------\n` +
-      `Concrete Needed (for delivery): ${concreteResult.volume.toFixed(2)} ${unitVol}\n` +
-      `Concrete Needed (for bags): ~${concreteResult.bagsNeeded} (80lb / 36kg) bags\n`;
     
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Slab Length', value: `${values.length} ${units === 'imperial' ? 'ft' : 'm'}` },
+            { key: 'Slab Width', value: `${values.width} ${units === 'imperial' ? 'ft' : 'm'}` },
+            { key: 'Slab Thickness', value: `${values.thickness} ${units === 'imperial' ? 'in' : 'cm'}` },
+            { key: 'Waste Factor', value: `${values.wasteFactor}%` },
+        ],
+        results: [
+            { key: 'Concrete for Delivery', value: `${concreteResult.volume.toFixed(2)} ${units === 'imperial' ? 'cubic yards' : 'cubic meters'}` },
+            { key: 'Concrete in Bags', value: `~${concreteResult.bagsNeeded} (80lb / 36kg) bags` },
+        ]
+    });
   };
   
   return (
@@ -179,13 +178,28 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
         </Form>
         {concreteResult && (
           <Card className="mt-6 bg-accent">
-            <CardHeader><CardTitle>Concrete Needed</CardTitle></CardHeader>
+            <CardHeader>
+                <CardTitle>Concrete Needed</CardTitle>
+                <CardDescription>Results include the waste factor you provided.</CardDescription>
+            </CardHeader>
             <CardContent className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold">{concreteResult.volume.toFixed(2)} {units === 'imperial' ? 'cubic yards' : 'cubic meters'}</p>
                 <p className="text-muted-foreground">or ~{concreteResult.bagsNeeded} (80lb / 36kg) bags</p>
               </div>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button onClick={handleDownload} variant="secondary">
+                        <Download className="mr-2 h-4 w-4" />
+                        Download PDF
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Download results as PDF</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </CardContent>
           </Card>
         )}

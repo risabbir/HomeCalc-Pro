@@ -16,6 +16,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   roomLength: z.string().min(1, 'Room length is required.'),
@@ -98,24 +100,23 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const unit = units === 'imperial' ? 'ft' : 'm';
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Room Dimensions (LxWxH): ${values.roomLength} ${unit} x ${values.roomWidth} ${unit} x ${values.wallHeight} ${unit}\n` +
-      `Number of Coats: ${values.coats}\n` +
-      `Number of Windows: ${values.numWindows || '0'}\n` +
-      `Number of Doors: ${values.numDoors || '0'}\n` +
-      `Paint Ceiling: ${values.includeCeiling ? 'Yes' : 'No'}\n\n` +
-      `--------------------\n` +
-      `Paint Needed: ${paintResult}\n`;
-    
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Room Length', value: `${values.roomLength} ${units === 'imperial' ? 'ft' : 'm'}` },
+            { key: 'Room Width', value: `${values.roomWidth} ${units === 'imperial' ? 'ft' : 'm'}` },
+            { key: 'Wall Height', value: `${values.wallHeight} ${units === 'imperial' ? 'ft' : 'm'}` },
+            { key: '# of Doors', value: values.numDoors || '0' },
+            { key: '# of Windows', value: values.numWindows || '0' },
+            { key: 'Coats of Paint', value: values.coats },
+            { key: 'Paint Ceiling?', value: values.includeCeiling ? 'Yes' : 'No' },
+        ],
+        results: [
+            { key: 'Total Paint Needed', value: paintResult },
+        ]
+    });
   };
   
   return (
@@ -223,13 +224,25 @@ export function HomeImprovementCalculator({ calculator }: { calculator: Omit<Cal
         </Form>
         {paintResult && (
           <Card className="mt-6 bg-accent">
-            <CardHeader><CardTitle>Paint Estimation</CardTitle></CardHeader>
+            <CardHeader>
+                <CardTitle>Paint Estimation</CardTitle>
+                <CardDescription>The total amount of paint required for your project.</CardDescription>
+            </CardHeader>
             <CardContent className="flex items-center justify-between">
-              <div>
-                <p className="text-muted-foreground">Paint Needed</p>
-                <p className="text-2xl font-bold">{paintResult}</p>
-              </div>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+              <p className="text-2xl font-bold">{paintResult}</p>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleDownload} variant="secondary">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download PDF
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download results as PDF</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </CardContent>
           </Card>
         )}

@@ -14,6 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   annualHvacCost: z.string().min(1, 'Annual HVAC cost is required.'),
@@ -46,7 +48,7 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
       const savingsPerDegree = units === 'imperial' ? 0.01 : 0.018;
       const savingsPercentage = (degrees * savingsPerDegree * (hours / 8));
       const annualSavings = cost * savingsPercentage;
-      setSavingsResult(`~$${annualSavings.toFixed(2)} per year`);
+      setSavingsResult(`$${annualSavings.toFixed(2)} per year`);
     } else {
       setSavingsResult(null);
     }
@@ -63,20 +65,19 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Annual HVAC Cost: $${values.annualHvacCost}\n` +
-      `Average Setback: ${values.setbackDegrees}°${units === 'imperial' ? 'F' : 'C'} for ${values.setbackHours} hrs/day\n\n`+
-      `--------------------\n` +
-      `Estimated Savings: ${savingsResult}\n`;
     
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Annual HVAC Cost', value: `$${values.annualHvacCost}` },
+            { key: 'Average Setback', value: `${values.setbackDegrees}°${units === 'imperial' ? 'F' : 'C'}` },
+            { key: 'Setback Duration', value: `${values.setbackHours} hours per day` },
+        ],
+        results: [
+            { key: 'Estimated Annual Savings', value: savingsResult },
+        ]
+    });
   };
   
   return (
@@ -137,7 +138,19 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
             <CardHeader><CardTitle>Estimated Annual Savings</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
               <p className="text-2xl font-bold">{savingsResult}</p>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleDownload} variant="secondary">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download PDF
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download results as PDF</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </CardContent>
           </Card>
         )}

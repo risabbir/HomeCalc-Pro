@@ -14,6 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   airFlow: z.string().min(1, 'Air Flow (CFM) is required.'),
@@ -41,7 +43,7 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
     if (cfm > 0 && friction > 0) {
       // Simplified Ductulator formula approximation for round metal ducts.
       const diameter = 1.3 * Math.pow(Math.pow(cfm, 0.9) / friction, 0.2);
-      setDuctSizeResult(`Recommended: ${diameter.toFixed(1)}-inch round duct`);
+      setDuctSizeResult(`${diameter.toFixed(1)}-inch round duct`);
     } else {
       setDuctSizeResult(null);
     }
@@ -58,21 +60,19 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Air Flow: ${values.airFlow} CFM\n` +
-      `Friction Loss: ${values.frictionLoss} in. w.g./100 ft\n\n`+
-      `--------------------\n` +
-      `Result: ${ductSizeResult}\n\n` +
-      `Disclaimer: This is a simplified estimate for round metal ducts and is not a substitute for professional HVAC design.`;
     
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Air Flow (CFM)', value: values.airFlow },
+            { key: 'Friction Loss Rate', value: `${values.frictionLoss} in. w.g./100 ft` },
+        ],
+        results: [
+            { key: 'Recommended Duct Size', value: ductSizeResult },
+        ],
+        disclaimer: 'This is a simplified estimate for round metal ducts and is not a substitute for professional HVAC design using ACCA Manual D.'
+    });
   };
   
   return (
@@ -131,7 +131,19 @@ export function DuctSizeCalculator({ calculator }: { calculator: Omit<Calculator
             <CardHeader><CardTitle>Recommended Duct Size</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
               <p className="text-2xl font-bold">{ductSizeResult}</p>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleDownload} variant="secondary">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download PDF
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download results as PDF</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </CardContent>
           </Card>
         )}

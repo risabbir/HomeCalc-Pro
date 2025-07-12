@@ -15,6 +15,8 @@ import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   roomPerimeter: z.string().min(1, 'Room perimeter is required.'),
@@ -89,24 +91,22 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Room Perimeter: ${values.roomPerimeter} ${units === 'imperial' ? 'ft' : 'm'}\n` +
-      `Wall Height: ${values.wallHeight} ${units === 'imperial' ? 'ft' : 'm'}\n` +
-      `Roll Width: ${values.rollWidth} ${units === 'imperial' ? 'in' : 'cm'}\n` +
-      `Roll Length: ${values.rollLength} ${units === 'imperial' ? 'ft' : 'm'}\n`+
-      `Pattern Repeat: ${values.patternRepeat || '0'} ${units === 'imperial' ? 'in' : 'cm'}\n`+
-      `Waste Factor: ${values.wasteFactor}%\n\n`+
-      `--------------------\n` +
-      `Estimated Rolls Needed: ${wallpaperResult}\n`;
-    
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Room Perimeter', value: `${values.roomPerimeter} ${units === 'imperial' ? 'ft' : 'm'}` },
+            { key: 'Wall Height', value: `${values.wallHeight} ${units === 'imperial' ? 'ft' : 'm'}` },
+            { key: 'Roll Width', value: `${values.rollWidth} ${units === 'imperial' ? 'in' : 'cm'}` },
+            { key: 'Roll Length', value: `${values.rollLength} ${units === 'imperial' ? 'ft' : 'm'}` },
+            { key: 'Pattern Repeat', value: `${values.patternRepeat || '0'} ${units === 'imperial' ? 'in' : 'cm'}` },
+            { key: 'Waste Factor', value: `${values.wasteFactor}%` },
+        ],
+        results: [
+            { key: 'Estimated Rolls Needed', value: wallpaperResult },
+        ]
+    });
   };
   
   return (
@@ -188,7 +188,19 @@ export function WallpaperCalculator({ calculator }: { calculator: Omit<Calculato
             <CardHeader><CardTitle>Wallpaper Rolls Needed</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
               <p className="text-2xl font-bold">{wallpaperResult}</p>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleDownload} variant="secondary">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download PDF
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download results as PDF</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </CardContent>
           </Card>
         )}

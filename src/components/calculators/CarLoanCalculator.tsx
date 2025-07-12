@@ -13,6 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   vehiclePrice: z.string().min(1, 'Vehicle price is required.'),
@@ -102,28 +104,26 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Vehicle Price: $${values.vehiclePrice}\n` +
-      `Down Payment: $${values.downPayment || '0'}\n` +
-      `Trade-in Value: $${values.tradeInValue || '0'}\n` +
-      `Sales Tax Rate: ${values.salesTaxRate || '0'}%\n` +
-      `Other Fees: $${values.otherFees || '0'}\n` +
-      `Annual Interest Rate: ${values.interestRate}%\n` +
-      `Loan Term: ${values.loanTerm} years\n\n` +
-      `--------------------\n` +
-      `Monthly Payment: $${result.monthlyPayment.toFixed(2)}\n` +
-      `Total Loan Amount: $${result.totalLoanAmount.toFixed(2)}\n` +
-      `Total Interest Paid: $${result.totalInterest.toFixed(2)}\n` +
-      `Total Cost of Car (including interest): $${result.totalCost.toFixed(2)}\n`;
     
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Vehicle Price', value: `$${parseFloat(values.vehiclePrice).toLocaleString()}` },
+            { key: 'Down Payment', value: `$${parseFloat(values.downPayment || '0').toLocaleString()}` },
+            { key: 'Trade-in Value', value: `$${parseFloat(values.tradeInValue || '0').toLocaleString()}` },
+            { key: 'Sales Tax Rate', value: `${values.salesTaxRate || '0'}%` },
+            { key: 'Other Fees', value: `$${parseFloat(values.otherFees || '0').toLocaleString()}` },
+            { key: 'Annual Interest Rate', value: `${values.interestRate}%` },
+            { key: 'Loan Term', value: `${values.loanTerm} years` },
+        ],
+        results: [
+            { key: 'Estimated Monthly Payment', value: `$${result.monthlyPayment.toFixed(2)}` },
+            { key: 'Total Loan Amount', value: `$${result.totalLoanAmount.toFixed(2)}` },
+            { key: 'Total Interest Paid', value: `$${result.totalInterest.toFixed(2)}` },
+            { key: 'Total Cost of Car', value: `$${result.totalCost.toFixed(2)}` },
+        ],
+    });
   };
   
   return (
@@ -210,13 +210,27 @@ export function CarLoanCalculator({ calculator }: { calculator: Omit<Calculator,
                 <CardDescription>Estimated Monthly Payment</CardDescription>
                 <CardTitle className="text-4xl">${result.monthlyPayment.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col sm:flex-row items-start justify-between gap-4">
-              <ul className='text-sm space-y-1 w-full'>
-                <li className='flex justify-between'><span>Total Loan Amount</span> <strong>${result.totalLoanAmount.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong></li>
-                <li className='flex justify-between'><span>Total Interest Paid</span> <strong>${result.totalInterest.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong></li>
-                 <li className='flex justify-between font-medium'><span>Total Cost of Car</span> <strong>${result.totalCost.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong></li>
-              </ul>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results" className='shrink-0'><Download className="h-6 w-6" /></Button>
+            <CardContent>
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <ul className='text-sm space-y-1 w-full'>
+                        <li className='flex justify-between'><span>Total Loan Amount</span> <strong>${result.totalLoanAmount.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong></li>
+                        <li className='flex justify-between'><span>Total Interest Paid</span> <strong>${result.totalInterest.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong></li>
+                        <li className='flex justify-between font-medium'><span>Total Cost of Car</span> <strong>${result.totalCost.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong></li>
+                    </ul>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button onClick={handleDownload} variant="secondary" className="shrink-0">
+                                    <Download className="mr-2 h-4 w-4" />
+                                    Download PDF
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Download results as PDF</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </div>
             </CardContent>
           </Card>
         )}

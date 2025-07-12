@@ -16,6 +16,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   homeSize: z.string().min(1, 'Home size is required.'),
@@ -82,23 +84,21 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Home Size: ${values.homeSize} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
-      `Furnace Type: ${values.furnaceType}\n` +
-      `Efficiency: ${values.efficiency}\n` +
-      `Climate Zone: ${values.climateZone}\n\n`+
-      `--------------------\n` +
-      `Estimated Installation Cost Range: ${costResult}\n`+
-      `Note: This is a rough estimate. Get multiple quotes from local HVAC professionals.`;
-    
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Home Size', value: `${values.homeSize} ${units === 'imperial' ? 'sq ft' : 'sq m'}` },
+            { key: 'Furnace Type', value: values.furnaceType },
+            { key: 'Efficiency Level', value: values.efficiency },
+            { key: 'U.S. Climate Zone', value: `Zone ${values.climateZone}` },
+        ],
+        results: [
+            { key: 'Estimated Installation Cost', value: costResult },
+        ],
+        disclaimer: 'This is for budget planning only. Costs can vary significantly based on your location, home complexity, and choice of contractor. Always get multiple quotes from local HVAC professionals.'
+    });
   };
   
   return (
@@ -197,7 +197,19 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
             <CardHeader><CardTitle>Estimated Installation Cost</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
               <p className="text-2xl font-bold">{costResult}</p>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+              <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button onClick={handleDownload} variant="secondary">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download PDF
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Download results as PDF</p>
+                    </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </CardContent>
           </Card>
         )}

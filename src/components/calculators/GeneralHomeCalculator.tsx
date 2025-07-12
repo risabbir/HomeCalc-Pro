@@ -13,6 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   loanAmount: z.string().min(1, 'Loan amount is required.'),
@@ -101,28 +103,26 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Loan Amount: $${values.loanAmount}\n` +
-      `Interest Rate: ${values.interestRate}%\n` +
-      `Loan Term: ${values.loanTerm} years\n` +
-      `Annual Property Tax: $${values.propertyTax || '0'}\n` +
-      `Annual Home Insurance: $${values.homeInsurance || '0'}\n` +
-      `Monthly PMI: $${values.pmi || '0'}\n\n` +
-      `--------------------\n` +
-      `Principal & Interest: $${paymentBreakdown.principalAndInterest.toFixed(2)}\n` +
-      `Taxes: $${paymentBreakdown.tax.toFixed(2)}\n` +
-      `Insurance: $${paymentBreakdown.insurance.toFixed(2)}\n` +
-      `PMI: $${paymentBreakdown.pmi.toFixed(2)}\n` +
-      `TOTAL MONTHLY PAYMENT: $${paymentBreakdown.total.toFixed(2)}\n`;
     
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Loan Amount', value: `$${parseFloat(values.loanAmount).toLocaleString()}` },
+            { key: 'Interest Rate', value: `${values.interestRate}%` },
+            { key: 'Loan Term', value: `${values.loanTerm} years` },
+            { key: 'Annual Property Tax', value: `$${parseFloat(values.propertyTax || '0').toLocaleString()}` },
+            { key: 'Annual Home Insurance', value: `$${parseFloat(values.homeInsurance || '0').toLocaleString()}` },
+            { key: 'Monthly PMI', value: `$${parseFloat(values.pmi || '0').toLocaleString()}` },
+        ],
+        results: [
+            { key: 'Total Monthly Payment', value: `$${paymentBreakdown.total.toFixed(2)}` },
+            { key: 'Principal & Interest', value: `$${paymentBreakdown.principalAndInterest.toFixed(2)}` },
+            { key: 'Monthly Taxes', value: `$${paymentBreakdown.tax.toFixed(2)}` },
+            { key: 'Monthly Insurance', value: `$${paymentBreakdown.insurance.toFixed(2)}` },
+            { key: 'Monthly PMI', value: `$${paymentBreakdown.pmi.toFixed(2)}` },
+        ]
+    });
   };
   
   return (
@@ -209,7 +209,19 @@ export function GeneralHomeCalculator({ calculator }: { calculator: Omit<Calcula
                 <li className='flex justify-between'><span>Home Insurance</span> <span>${paymentBreakdown.insurance.toFixed(2)}</span></li>
                 <li className='flex justify-between'><span>PMI</span> <span>${paymentBreakdown.pmi.toFixed(2)}</span></li>
               </ul>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results" className='shrink-0'><Download className="h-6 w-6" /></Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleDownload} variant="secondary" className="shrink-0">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download PDF
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download results as PDF</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </CardContent>
           </Card>
         )}

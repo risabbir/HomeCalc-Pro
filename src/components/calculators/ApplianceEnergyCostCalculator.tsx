@@ -13,6 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   wattage: z.string().min(1, 'Wattage is required.'),
@@ -64,22 +66,19 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Appliance Wattage: ${values.wattage} W\n` +
-      `Hours Used Per Day: ${values.hoursPerDay}\n` +
-      `Cost per kWh: $${values.costPerKwh}\n\n`+
-      `--------------------\n` +
-      `Estimated Annual Cost: ${costResult}\n`;
     
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Appliance Wattage (W)', value: values.wattage },
+            { key: 'Hours Used Per Day', value: values.hoursPerDay },
+            { key: 'Cost per kWh ($)', value: values.costPerKwh },
+        ],
+        results: [
+            { key: 'Estimated Annual Cost', value: costResult },
+        ]
+    });
   };
   
   return (
@@ -139,12 +138,25 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
         </Form>
         {costResult && (
           <Card className="mt-6 bg-accent">
-            <CardHeader><CardTitle>Estimated Annual Cost</CardTitle></CardHeader>
+            <CardHeader>
+                <CardTitle>Estimated Annual Cost</CardTitle>
+                <CardDescription>This is the estimated cost to run this appliance for one year.</CardDescription>
+            </CardHeader>
             <CardContent className="flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-bold">{costResult}</p>
-              </div>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+              <p className="text-3xl font-bold">{costResult}</p>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button onClick={handleDownload}>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download PDF
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Download results as PDF</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </CardContent>
           </Card>
         )}

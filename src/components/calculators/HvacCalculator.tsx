@@ -16,6 +16,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   roomArea: z.string().min(1, 'Room area is required.'),
@@ -83,24 +85,20 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
         toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
         return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-        `Units: ${units}\n`+
-        `Room Area: ${values.roomArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
-        `Ceiling Height: ${values.ceilingHeight} ${units === 'imperial' ? 'ft' : 'm'}\n` +
-        `Insulation: ${values.insulation}\n` +
-        `Sun Exposure: ${values.sunExposure}\n\n` +
-        `--------------------\n` +
-        `Required Capacity: ${btuResult}\n`;
-
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Room Area', value: `${values.roomArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}` },
+            { key: 'Ceiling Height', value: `${values.ceilingHeight} ${units === 'imperial' ? 'ft' : 'm'}` },
+            { key: 'Insulation Quality', value: values.insulation },
+            { key: 'Sun Exposure', value: values.sunExposure },
+        ],
+        results: [
+            { key: 'Required AC Capacity', value: btuResult },
+        ]
+    });
   };
 
   return (
@@ -213,16 +211,24 @@ export function HvacCalculator({ calculator }: { calculator: Omit<Calculator, 'I
           {btuResult && (
             <Card className="mt-6 bg-accent">
               <CardHeader>
-                <CardTitle>Calculation Result</CardTitle>
+                <CardTitle>Required AC Capacity</CardTitle>
+                <CardDescription>The estimated cooling power your AC unit needs for this room.</CardDescription>
               </CardHeader>
               <CardContent className="flex items-center justify-between">
-                <div>
-                  <p className="text-muted-foreground">Required AC Capacity</p>
-                  <p className="text-2xl font-bold">{btuResult}</p>
-                </div>
-                <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results">
-                  <Download className="h-6 w-6" />
-                </Button>
+                <p className="text-2xl font-bold">{btuResult}</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button onClick={handleDownload} variant="secondary">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download PDF
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Download results as PDF</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </CardContent>
             </Card>
           )}

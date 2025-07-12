@@ -16,6 +16,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   kitchenSize: z.string().min(1, 'Kitchen size is required.'),
@@ -81,23 +83,21 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Kitchen Size: ${values.kitchenSize} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
-      `Cabinet Quality: ${values.cabinets}\n`+
-      `Countertop Quality: ${values.countertops}\n`+
-      `Appliance Quality: ${values.appliances}\n\n`+
-      `--------------------\n` +
-      `Estimated Cost Range: ${costResult}\n`+
-      `Note: This is a rough estimate for budget planning. Get multiple quotes from local contractors.`;
     
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Kitchen Size', value: `${values.kitchenSize} ${units === 'imperial' ? 'sq ft' : 'sq m'}` },
+            { key: 'Cabinet Quality', value: values.cabinets },
+            { key: 'Countertop Material', value: values.countertops },
+            { key: 'Appliance Tier', value: values.appliances },
+        ],
+        results: [
+            { key: 'Estimated Cost Range', value: costResult },
+        ],
+        disclaimer: 'This is a rough estimate for budget planning only and does not include structural changes, moving plumbing/gas lines, or high-end finishes. Always get multiple quotes from qualified contractors.'
+    });
   };
   
   return (
@@ -195,7 +195,19 @@ export function KitchenRemodelEstimator({ calculator }: { calculator: Omit<Calcu
             <CardHeader><CardTitle>Estimated Remodel Cost</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
               <p className="text-2xl font-bold">{costResult}</p>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+              <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button onClick={handleDownload} variant="secondary">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download PDF
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Download results as PDF</p>
+                    </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </CardContent>
           </Card>
         )}

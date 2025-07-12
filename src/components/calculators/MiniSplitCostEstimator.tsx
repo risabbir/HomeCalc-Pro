@@ -14,6 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   zones: z.string().min(1, 'Number of zones is required.'),
@@ -68,22 +70,20 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Number of Zones: ${values.zones}\n` +
-      `Total Capacity: ${values.btuRating} ${units === 'imperial' ? 'BTU/hr' : 'Watts'}\n` +
-      `SEER2 Rating: ${values.seerRating}\n\n`+
-      `--------------------\n` +
-      `Estimated Installation Cost Range: ${costResult}\n`+
-      `Note: This is a rough estimate. Get multiple quotes from local HVAC professionals.`;
     
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Number of Zones (Indoor Units)', value: values.zones },
+            { key: 'Total Capacity', value: `${values.btuRating} ${units === 'imperial' ? 'BTU/hr' : 'Watts'}` },
+            { key: 'SEER2 Rating', value: values.seerRating },
+        ],
+        results: [
+            { key: 'Estimated Installation Cost', value: costResult },
+        ],
+        disclaimer: 'This is a rough estimate for budget planning only. Costs can vary significantly based on brand, system complexity, and local labor rates. Always get multiple quotes from qualified HVAC contractors.'
+    });
   };
   
   return (
@@ -153,7 +153,19 @@ export function MiniSplitCostEstimator({ calculator }: { calculator: Omit<Calcul
             <CardHeader><CardTitle>Estimated Installation Cost</CardTitle></CardHeader>
             <CardContent className="flex items-center justify-between">
               <p className="text-2xl font-bold">{costResult}</p>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+              <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button onClick={handleDownload} variant="secondary">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download PDF
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Download results as PDF</p>
+                    </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </CardContent>
           </Card>
         )}

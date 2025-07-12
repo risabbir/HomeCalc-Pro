@@ -15,6 +15,8 @@ import { Download, X } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   oldSeer: z.string().min(1, 'Old SEER rating is required.'),
@@ -106,33 +108,34 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    let content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `--Inputs--\n`+
-      `Old SEER Rating: ${values.oldSeer}\n` +
-      `New SEER Rating: ${values.newSeer}\n` +
-      `Cooling Capacity: ${values.coolingBtu} BTU/hr\n` +
-      `Usage: ${values.hoursPerDay} hrs/day, ${values.daysPerYear} days/yr\n` +
-      `Electricity Cost: $${values.costPerKwh}/kWh\n`;
     
+    const inputs = [
+        { key: 'Old Unit SEER/SEER2', value: values.oldSeer },
+        { key: 'New Unit SEER/SEER2', value: values.newSeer },
+        { key: 'Cooling Capacity', value: `${values.coolingBtu} BTU/hr` },
+        { key: 'Usage per Day', value: `${values.hoursPerDay} hours` },
+        { key: 'Usage per Year', value: `${values.daysPerYear} days` },
+        { key: 'Electricity Cost', value: `$${values.costPerKwh}/kWh` },
+    ];
     if (values.unitCost) {
-      content += `New Unit Cost: $${values.unitCost}\n`;
+        inputs.push({ key: 'New Unit Installed Cost', value: `$${values.unitCost}` });
     }
 
-    content += `\n--Results--\n` +
-      `Estimated Annual Savings: $${savingsResult.annualSavings.toFixed(2)}\n`;
-
+    const results = [
+        { key: 'Estimated Annual Savings', value: `$${savingsResult.annualSavings.toFixed(2)}` },
+        { key: 'Old System Annual Cost', value: `$${savingsResult.oldCost.toFixed(2)}` },
+        { key: 'New System Annual Cost', value: `$${savingsResult.newCost.toFixed(2)}` },
+    ];
     if (savingsResult.paybackPeriod) {
-        content += `Payback Period: ${savingsResult.paybackPeriod}\n`;
+        results.push({ key: 'Payback Period', value: savingsResult.paybackPeriod });
     }
-    
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: inputs,
+        results: results,
+    });
   };
   
   return (
@@ -270,7 +273,19 @@ export function SeerSavingsCalculator({ calculator }: { calculator: Omit<Calcula
                 )}
             </CardContent>
             <CardFooter>
-                 <Button variant="ghost" onClick={handleDownload}><Download className="mr-2 h-4 w-4" /> Download Results</Button>
+                 <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleDownload} variant="secondary">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download PDF
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download results as PDF</p>
+                        </TooltipContent>
+                    </Tooltip>
+                 </TooltipProvider>
             </CardFooter>
           </Card>
         )}

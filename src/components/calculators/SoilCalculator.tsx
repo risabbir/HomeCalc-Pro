@@ -14,6 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   length: z.string().min(1, 'Length is required.'),
@@ -80,35 +82,34 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    let content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Bed Length: ${values.length} ${units === 'imperial' ? 'ft' : 'm'}\n` +
-      `Bed Width: ${values.width} ${units === 'imperial' ? 'ft' : 'm'}\n` +
-      `Soil Depth: ${values.depth} ${units === 'imperial' ? 'in' : 'cm'}\n`;
-
-    if (values.bagSize) {
-        content += `Bag Size: ${values.bagSize} ${units === 'imperial' ? 'cu ft' : 'liters'}\n`;
-    }
     
+    const inputs = [
+        { key: 'Bed Length', value: `${values.length} ${units === 'imperial' ? 'ft' : 'm'}` },
+        { key: 'Bed Width', value: `${values.width} ${units === 'imperial' ? 'ft' : 'm'}` },
+        { key: 'Soil Depth', value: `${values.depth} ${units === 'imperial' ? 'in' : 'cm'}` },
+    ];
+    if (values.bagSize) {
+        inputs.push({ key: 'Bag Size', value: `${values.bagSize} ${units === 'imperial' ? 'cu ft' : 'liters'}` });
+    }
+
     const cubicMeters = soilResult.cubicFeet / 35.315;
     const resultVol = units === 'imperial' 
       ? `${soilResult.cubicFeet.toFixed(2)} cu ft (${soilResult.cubicYards.toFixed(2)} cu yd)`
       : `${cubicMeters.toFixed(2)} cu m`;
-
-    content += `\n--------------------\n` +
-      `Total Soil Needed: ${resultVol}\n`;
-
-    if (soilResult.bagsNeeded) {
-        content += `Estimated Bags Needed: ${soilResult.bagsNeeded} bags\n`;
-    }
     
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const results = [
+        { key: 'Total Soil Volume', value: resultVol }
+    ];
+    if (soilResult.bagsNeeded) {
+        results.push({ key: 'Estimated Bags Needed', value: `${soilResult.bagsNeeded} bags` });
+    }
+
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: inputs,
+        results: results
+    });
   };
   
   return (
@@ -174,14 +175,29 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
         </Form>
         {soilResult && (
           <Card className="mt-6 bg-accent">
-            <CardHeader><CardTitle>Soil Volume Needed</CardTitle></CardHeader>
+            <CardHeader>
+                <CardTitle>Soil Volume Needed</CardTitle>
+                <CardDescription>The total amount of soil required for your project dimensions.</CardDescription>
+            </CardHeader>
             <CardContent className="flex items-center justify-between">
               <p className="text-2xl font-bold">
                 {units === 'imperial' ? `${soilResult.cubicFeet.toFixed(2)} cu ft` : `${(soilResult.cubicFeet / 35.315).toFixed(2)} cu m`}
                 {units === 'imperial' && <span className="text-lg text-muted-foreground ml-2">({soilResult.cubicYards.toFixed(2)} cu yd)</span>}
                 {soilResult.bagsNeeded && <span className="block text-base font-normal text-muted-foreground">Approx. {soilResult.bagsNeeded} bags</span>}
               </p>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+              <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button onClick={handleDownload} variant="secondary">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download PDF
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Download results as PDF</p>
+                    </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </CardContent>
           </Card>
         )}

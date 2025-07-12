@@ -14,6 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { ReportAnIssue } from '@/components/layout/ReportAnIssue';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   initialDeposit: z.string().min(1, 'Initial deposit is required.'),
@@ -86,24 +88,22 @@ export function SavingsCalculator({ calculator }: { calculator: Omit<Calculator,
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Initial Deposit: $${values.initialDeposit}\n` +
-      `Monthly Contribution: $${values.monthlyContribution}\n` +
-      `Annual Interest Rate: ${values.interestRate}%\n` +
-      `Investment Period: ${values.years} years\n\n` +
-      `--------------------\n` +
-      `Future Value: $${result.futureValue.toFixed(2)}\n` +
-      `Total Contributions: $${result.totalContributions.toFixed(2)}\n` +
-      `Total Interest Earned: $${result.totalInterest.toFixed(2)}\n`;
     
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Initial Deposit', value: `$${parseFloat(values.initialDeposit).toLocaleString()}` },
+            { key: 'Monthly Contribution', value: `$${parseFloat(values.monthlyContribution).toLocaleString()}` },
+            { key: 'Annual Interest Rate', value: `${values.interestRate}%` },
+            { key: 'Investment Period', value: `${values.years} years` },
+        ],
+        results: [
+            { key: 'Estimated Future Value', value: `$${result.futureValue.toFixed(2)}` },
+            { key: 'Total Contributions', value: `$${result.totalContributions.toFixed(2)}` },
+            { key: 'Total Interest Earned', value: `$${result.totalInterest.toFixed(2)}` },
+        ]
+    });
   };
   
   return (
@@ -165,12 +165,24 @@ export function SavingsCalculator({ calculator }: { calculator: Omit<Calculator,
                     <CardDescription>Estimated Future Value</CardDescription>
                     <CardTitle className="text-4xl">${result.futureValue.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</CardTitle>
                 </CardHeader>
-                <CardContent className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <ul className='text-sm space-y-1 w-full'>
                     <li className='flex justify-between'><span>Total Contributions</span> <strong>${result.totalContributions.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong></li>
                     <li className='flex justify-between'><span>Total Interest Earned</span> <strong>${result.totalInterest.toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })}</strong></li>
                 </ul>
-                <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results" className='shrink-0'><Download className="h-6 w-6" /></Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleDownload} variant="secondary" className="shrink-0">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download PDF
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download results as PDF</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
                 </CardContent>
             </Card>
             )}

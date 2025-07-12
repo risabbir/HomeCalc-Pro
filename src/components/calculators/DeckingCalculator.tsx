@@ -16,6 +16,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   deckWidth: z.string().min(1, 'Deck width is required.'),
@@ -94,25 +96,27 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Deck Width: ${values.deckWidth} ${units === 'imperial' ? 'ft' : 'm'}\n` +
-      `Deck Length: ${values.deckLength} ${units === 'imperial' ? 'ft' : 'm'}\n` +
-      `Board Width: ${values.boardWidth} ${units === 'imperial' ? 'in' : 'cm'}\n`+
-      `Board Length: ${values.boardLength} ${units === 'imperial' ? 'ft' : 'm'}\n`+
-      `Joist Spacing: ${values.joistSpacing} ${units === 'imperial' ? 'in' : 'cm'}\n`+
-      `Waste Factor: ${values.wasteFactor}%\n\n`+
-      `--------------------\n` +
-      `Deck Boards Needed: ~${deckingResult.boardsToBuy} boards (${values.boardLength}${units === 'imperial' ? 'ft' : 'm'} length)\n`+
-      `Joists Needed: ~${deckingResult.joistsNeeded} joists (${values.deckWidth}${units === 'imperial' ? 'ft' : 'm'} length)\n`;
-    
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+
+    const boardLengthDisplay = `${values.boardLength}${units === 'imperial' ? 'ft' : 'm'}`;
+    const joistLengthDisplay = `${values.deckWidth}${units === 'imperial' ? 'ft' : 'm'}`;
+
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Deck Width', value: `${values.deckWidth} ${units === 'imperial' ? 'ft' : 'm'}` },
+            { key: 'Deck Length', value: `${values.deckLength} ${units === 'imperial' ? 'ft' : 'm'}` },
+            { key: 'Deck Board Width', value: `${values.boardWidth} ${units === 'imperial' ? 'in' : 'cm'}` },
+            { key: 'Deck Board Length', value: boardLengthDisplay },
+            { key: 'Joist Spacing', value: `${values.joistSpacing} ${units === 'imperial' ? 'in' : 'cm'}` },
+            { key: 'Waste Factor', value: `${values.wasteFactor}%` },
+        ],
+        results: [
+            { key: 'Deck Boards Needed', value: `~${deckingResult.boardsToBuy} boards (${boardLengthDisplay} length)` },
+            { key: 'Joists Needed', value: `~${deckingResult.joistsNeeded} joists (${joistLengthDisplay} length)` },
+        ],
+        disclaimer: 'This is a materials estimate for standard layouts. Complex designs may require more materials. Always consult a building professional.'
+    });
   };
   
   return (
@@ -206,13 +210,28 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
         </Form>
         {deckingResult && (
           <Card className="mt-6 bg-accent">
-            <CardHeader><CardTitle>Estimated Materials</CardTitle></CardHeader>
+            <CardHeader>
+                <CardTitle>Estimated Materials</CardTitle>
+                <CardDescription>Includes waste factor. Does not include hardware or footings.</CardDescription>
+            </CardHeader>
             <CardContent className="flex items-center justify-between">
               <div className="text-lg font-bold">
                 <p>~{deckingResult.boardsToBuy} deck boards</p>
                 <p>~{deckingResult.joistsNeeded} joists</p>
               </div>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleDownload} variant="secondary">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download PDF
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download results as PDF</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </CardContent>
           </Card>
         )}

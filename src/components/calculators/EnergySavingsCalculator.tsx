@@ -13,6 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   costPerKwh: z.string().min(1, 'Cost per kWh is required.'),
@@ -77,28 +79,23 @@ export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calcu
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    let content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `--Inputs--\n`+
-      `Electricity Cost: $${values.costPerKwh}/kWh\n\n`+
-      `--Current Appliance--\n`+
-      `Wattage: ${values.current_wattage} W\n` +
-      `Hours Used Per Day: ${values.current_hours} hrs\n\n` +
-      `--New Appliance--\n`+
-      `Wattage: ${values.new_wattage} W\n` +
-      `Hours Used Per Day: ${values.new_hours} hrs\n\n` +
-      `--Results--\n` +
-      `Estimated Annual Savings: $${savingsResult.annualSavings.toFixed(2)}\n`+
-      `Old Appliance Annual Cost: $${savingsResult.currentCost.toFixed(2)}\n`+
-      `New Appliance Annual Cost: $${savingsResult.newCost.toFixed(2)}\n`;
-    
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Electricity Cost', value: `$${values.costPerKwh}/kWh` },
+            { key: 'Current Appliance Wattage', value: `${values.current_wattage} W` },
+            { key: 'Current Usage', value: `${values.current_hours} hrs/day` },
+            { key: 'New Appliance Wattage', value: `${values.new_wattage} W` },
+            { key: 'New Usage', value: `${values.new_hours} hrs/day` },
+        ],
+        results: [
+            { key: 'Estimated Annual Savings', value: `$${savingsResult.annualSavings.toFixed(2)}` },
+            { key: 'Old Appliance Annual Cost', value: `$${savingsResult.currentCost.toFixed(2)}` },
+            { key: 'New Appliance Annual Cost', value: `$${savingsResult.newCost.toFixed(2)}` },
+        ]
+    });
   };
   
   return (
@@ -194,7 +191,19 @@ export function EnergySavingsCalculator({ calculator }: { calculator: Omit<Calcu
                 </div>
             </CardContent>
             <CardFooter>
-                 <Button variant="ghost" onClick={handleDownload}><Download className="mr-2 h-4 w-4" /> Download Results</Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button onClick={handleDownload} variant="secondary">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download PDF
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Download results as PDF</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </CardFooter>
           </Card>
         )}

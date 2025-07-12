@@ -14,6 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HelpInfo } from '../layout/HelpInfo';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { generatePdf } from '@/lib/pdfGenerator';
 
 const formSchema = z.object({
   gardenArea: z.string().min(1, 'Garden area is required.'),
@@ -78,21 +80,19 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
       toast({ title: 'No result to download', description: 'Please calculate first.', variant: 'destructive' });
       return;
     }
-    const content = `HomeCalc Pro - ${calculator.name} Results\n\n` +
-      `Garden Area: ${values.gardenArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}\n` +
-      `Application Rate: ${values.applicationRate} ${units === 'imperial' ? 'lbs of Nitrogen per 1000 sq ft' : 'kg of N per 100 sq m'}\n` +
-      `Fertilizer Ratio (N-P-K): ${values.nitrogenRatio}-${values.phosphorusRatio}-${values.potassiumRatio}\n\n`+
-      `--------------------\n` +
-      `Amount Needed: ${fertilizerResult}\n`;
     
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${calculator.slug}-results.txt`;
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    generatePdf({
+        title: calculator.name,
+        slug: calculator.slug,
+        inputs: [
+            { key: 'Garden Area', value: `${values.gardenArea} ${units === 'imperial' ? 'sq ft' : 'sq m'}` },
+            { key: 'Application Rate', value: `${values.applicationRate} ${units === 'imperial' ? 'lbs of Nitrogen per 1000 sq ft' : 'kg of N per 100 sq m'}` },
+            { key: 'Fertilizer Ratio (N-P-K)', value: `${values.nitrogenRatio}-${values.phosphorusRatio}-${values.potassiumRatio}` },
+        ],
+        results: [
+            { key: 'Amount Needed', value: fertilizerResult },
+        ]
+    });
   };
   
   return (
@@ -158,13 +158,25 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
         </Form>
         {fertilizerResult && (
           <Card className="mt-6 bg-accent">
-            <CardHeader><CardTitle>Fertilizer Required</CardTitle></CardHeader>
+            <CardHeader>
+                <CardTitle>Fertilizer Required</CardTitle>
+                <CardDescription>The total amount of your specific fertilizer to apply.</CardDescription>
+            </CardHeader>
             <CardContent className="flex items-center justify-between">
-              <div>
-                <p className="text-muted-foreground">Estimated Amount</p>
-                <p className="text-2xl font-bold">{fertilizerResult}</p>
-              </div>
-              <Button variant="ghost" size="icon" onClick={handleDownload} aria-label="Download Results"><Download className="h-6 w-6" /></Button>
+              <p className="text-2xl font-bold">{fertilizerResult}</p>
+              <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button onClick={handleDownload} variant="secondary">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download PDF
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Download results as PDF</p>
+                    </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </CardContent>
           </Card>
         )}
