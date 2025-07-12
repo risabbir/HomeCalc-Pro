@@ -232,10 +232,10 @@ export function Chatbot() {
   return (
     <>
       { !isOpen && showHelpBubble && (
-        <div className="fixed bottom-24 right-4 md:right-6 z-40 animate-in fade-in-50 slide-in-from-bottom-4">
+        <div className="fixed bottom-20 md:bottom-24 right-4 md:right-6 z-40 animate-in fade-in-50 slide-in-from-bottom-4">
             <Card className="p-3 shadow-none">
                  <CardContent className="p-0 flex items-center gap-2">
-                    <p className="text-sm font-medium">How can I help with your project?</p>
+                    <p className="text-xs sm:text-sm font-medium">How can I help with your project?</p>
                     <Button 
                         variant="ghost" 
                         size="icon" 
@@ -254,8 +254,8 @@ export function Chatbot() {
           variant="default"
           onClick={() => setIsOpen(true)}
           className={cn(
-            "fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 h-14 w-14 md:h-16 md:w-16 rounded-full flex items-center justify-center p-0 shrink-0 [&_svg]:size-7 md:[&_svg]:size-8",
-            "transition-all duration-300 ease-in-out hover:scale-110",
+            "fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 h-14 w-14 rounded-full flex items-center justify-center p-0 shrink-0 [&_svg]:size-7",
+            "transition-all duration-300 ease-in-out hover:scale-110 md:h-16 md:w-16 md:[&_svg]:size-8",
             isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
           )}
           aria-label="Open chatbot"
