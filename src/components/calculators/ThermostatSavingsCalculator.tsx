@@ -136,7 +136,7 @@ export function ThermostatSavingsCalculator({ calculator }: { calculator: Omit<C
         {savingsResult && (
           <Card className="mt-6 bg-accent">
             <CardHeader><CardTitle>Estimated Annual Savings</CardTitle></CardHeader>
-            <CardContent className="flex items-center justify-between">
+            <CardContent className="flex flex-wrap items-center justify-between gap-4">
               <p className="text-2xl font-bold">{savingsResult}</p>
                 <TooltipProvider>
                     <Tooltip>

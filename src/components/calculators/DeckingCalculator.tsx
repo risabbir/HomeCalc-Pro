@@ -214,7 +214,7 @@ export function DeckingCalculator({ calculator }: { calculator: Omit<Calculator,
                 <CardTitle>Estimated Materials</CardTitle>
                 <CardDescription>Includes waste factor. Does not include hardware or footings.</CardDescription>
             </CardHeader>
-            <CardContent className="flex items-center justify-between">
+            <CardContent className="flex flex-wrap items-center justify-between gap-4">
               <div className="text-lg font-bold">
                 <p>~{deckingResult.boardsToBuy} deck boards</p>
                 <p>~{deckingResult.joistsNeeded} joists</p>

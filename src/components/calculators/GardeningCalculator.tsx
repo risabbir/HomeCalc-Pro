@@ -162,7 +162,7 @@ export function GardeningCalculator({ calculator }: { calculator: Omit<Calculato
                 <CardTitle>Fertilizer Required</CardTitle>
                 <CardDescription>The total amount of your specific fertilizer to apply.</CardDescription>
             </CardHeader>
-            <CardContent className="flex items-center justify-between">
+            <CardContent className="flex flex-wrap items-center justify-between gap-4">
               <p className="text-2xl font-bold">{fertilizerResult}</p>
               <TooltipProvider>
                 <Tooltip>

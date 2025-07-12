@@ -235,7 +235,7 @@ export function HvacLoadCalculator({ calculator }: { calculator: Omit<Calculator
             {loadResult && (
             <Card className="mt-6 bg-accent">
                 <CardHeader><CardTitle>Estimated HVAC Load</CardTitle></CardHeader>
-                <CardContent className="flex items-center justify-between">
+                <CardContent className="flex flex-wrap items-center justify-between gap-4">
                 <div className="font-bold">
                     <p>Cooling: {loadResult.cooling}</p>
                     <p>Heating: {loadResult.heating}</p>

@@ -179,7 +179,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                 <CardTitle>Soil Volume Needed</CardTitle>
                 <CardDescription>The total amount of soil required for your project dimensions.</CardDescription>
             </CardHeader>
-            <CardContent className="flex items-center justify-between">
+            <CardContent className="flex flex-wrap items-center justify-between gap-4">
               <p className="text-2xl font-bold">
                 {units === 'imperial' ? `${soilResult.cubicFeet.toFixed(2)} cu ft` : `${(soilResult.cubicFeet / 35.315).toFixed(2)} cu m`}
                 {units === 'imperial' && <span className="text-lg text-muted-foreground ml-2">({soilResult.cubicYards.toFixed(2)} cu yd)</span>}

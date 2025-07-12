@@ -142,12 +142,12 @@ export function ApplianceEnergyCostCalculator({ calculator }: { calculator: Omit
                 <CardTitle>Estimated Annual Cost</CardTitle>
                 <CardDescription>This is the estimated cost to run this appliance for one year.</CardDescription>
             </CardHeader>
-            <CardContent className="flex items-center justify-between">
+            <CardContent className="flex flex-wrap items-center justify-between gap-4">
               <p className="text-3xl font-bold">{costResult}</p>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button onClick={handleDownload}>
+                    <Button onClick={handleDownload} variant="secondary">
                       <Download className="mr-2 h-4 w-4" />
                       Download PDF
                     </Button>

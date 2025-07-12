@@ -195,7 +195,7 @@ export function FurnaceCostCalculator({ calculator }: { calculator: Omit<Calcula
         {costResult && (
           <Card className="mt-6 bg-accent">
             <CardHeader><CardTitle>Estimated Installation Cost</CardTitle></CardHeader>
-            <CardContent className="flex items-center justify-between">
+            <CardContent className="flex flex-wrap items-center justify-between gap-4">
               <p className="text-2xl font-bold">{costResult}</p>
               <TooltipProvider>
                 <Tooltip>

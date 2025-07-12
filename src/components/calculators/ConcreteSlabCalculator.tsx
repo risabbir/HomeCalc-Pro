@@ -182,7 +182,7 @@ export function ConcreteSlabCalculator({ calculator }: { calculator: Omit<Calcul
                 <CardTitle>Concrete Needed</CardTitle>
                 <CardDescription>Results include the waste factor you provided.</CardDescription>
             </CardHeader>
-            <CardContent className="flex items-center justify-between">
+            <CardContent className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="text-2xl font-bold">{concreteResult.volume.toFixed(2)} {units === 'imperial' ? 'cubic yards' : 'cubic meters'}</p>
                 <p className="text-muted-foreground">or ~{concreteResult.bagsNeeded} (80lb / 36kg) bags</p>
