@@ -232,7 +232,7 @@ export function Chatbot() {
   return (
     <>
       { !isOpen && showHelpBubble && (
-        <div className="fixed bottom-16 right-4 z-40 animate-in fade-in-50 slide-in-from-bottom-4 md:bottom-24 md:right-6">
+        <div className="fixed bottom-20 right-4 z-40 animate-in fade-in-50 slide-in-from-bottom-4 md:bottom-20 md:right-6">
             <Card className="p-2 sm:p-3 shadow-none border">
                  <CardContent className="p-0 flex items-center gap-2">
                     <p className="text-xs sm:text-sm font-medium">How can I help with your project?</p>
