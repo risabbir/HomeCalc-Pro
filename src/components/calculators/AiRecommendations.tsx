@@ -101,7 +101,7 @@ function AiRecommendationsComponent() {
                     />
                      {recommendations.length > 0 && (
                         <div className="mt-6">
-                            <h4 className="font-semibold mb-3">Here are our suggestions:</h4>
+                            <h4 className="font-semibold mb-3">Based on your project, here are the tools that can help:</h4>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {recommendations.map(rec => {
                                     const slug = getSlugForRecommendation(rec);
