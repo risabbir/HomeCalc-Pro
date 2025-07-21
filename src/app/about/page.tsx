@@ -133,7 +133,7 @@ export default function AboutPage() {
                              <Card className="flex flex-col items-center p-6 bg-secondary/50 hover:-translate-y-1 transition-transform duration-300">
                                 <Handshake className="h-10 w-10 text-primary mb-4"/>
                                 <h3 className="font-semibold text-lg">Contribute</h3>
-                                <p className="text-sm text-muted-foreground mt-1">If you're a developer, consider contributing to our open-source project.</p>
+                                <p className="text-sm text-muted-foreground mt-1">If you're a developer, consider contributing your expertise to our project.</p>
                             </Card>
                         </div>
                     </AnimatedSection>
