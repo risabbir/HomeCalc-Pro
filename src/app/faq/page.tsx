@@ -2,7 +2,7 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
-import { Building2, Lightbulb, ShieldQuestion, HelpCircle, Wind, Droplets, Triangle, Grid3x3, RectangleHorizontal, Fence, Bath, Sun, CarIcon, Sprout } from "lucide-react";
+import { Building2, Lightbulb, ShieldQuestion, HelpCircle } from "lucide-react";
 import { ReportAnIssue } from "@/components/layout/ReportAnIssue";
 import type { Metadata } from 'next';
 
@@ -133,19 +133,21 @@ export default function FaqPage() {
             </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-8">
             {faqSections.map((section) => (
-                <Card key={section.title} className="p-2 md:p-4 h-full">
+                <Card key={section.title} className="p-2 md:p-4">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-3">
-                            <section.icon className="h-7 w-7 text-primary" />
+                        <CardTitle className="flex items-center gap-4">
+                            <div className="bg-primary/10 p-3 rounded-lg">
+                                <section.icon className="h-7 w-7 text-primary" />
+                            </div>
                             {section.title}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <Accordion type="single" collapsible className="w-full">
                             {section.faqs.map((faq, index) => (
-                                <AccordionItem key={`${section.title}-${index}`} value={`item-${index}`}>
+                                <AccordionItem key={`${section.title}-${index}`} value={`item-${index}`} className="border-b last:border-b-0">
                                     <AccordionTrigger className="text-left text-base">{faq.question}</AccordionTrigger>
                                     <AccordionContent className="text-base text-muted-foreground">
                                         <p>{renderAnswer(faq.answer)}</p>
