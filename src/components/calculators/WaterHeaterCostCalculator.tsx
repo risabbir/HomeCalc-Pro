@@ -22,8 +22,10 @@ const formSchema = z.object({
   energyRate: z.string().min(1, 'Required.'),
   groundwaterTemp: z.string().min(1, 'Required.'),
   setTemp: z.string().min(1, 'Required.'),
+  familySize: z.string().optional(),
   tankCost: z.string().optional(),
   tanklessCost: z.string().optional(),
+  heaterType: z.string().optional(), // Not in form, but used for logic
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -46,6 +48,7 @@ export function WaterHeaterCostCalculator({ calculator }: { calculator: Omit<Cal
       energyRate: '0.17', // $/kWh
       groundwaterTemp: '50', // Fahrenheit
       setTemp: '120', // Fahrenheit
+      familySize: '4',
       tankCost: '1500',
       tanklessCost: '3000',
     },
@@ -109,6 +112,7 @@ export function WaterHeaterCostCalculator({ calculator }: { calculator: Omit<Cal
         slug: calculator.slug,
         inputs: [
             { key: 'Hot Water Usage', value: `${values.hotWaterUsage} gal/day` },
+            { key: 'Family Size', value: `${values.familySize} people` },
             { key: 'Energy Rate', value: `$${values.energyRate}/kWh` },
             { key: 'Groundwater Temp', value: `${values.groundwaterTemp}°F` },
             { key: 'Water Heater Temp', value: `${values.setTemp}°F` },
@@ -137,9 +141,16 @@ export function WaterHeaterCostCalculator({ calculator }: { calculator: Omit<Cal
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField control={form.control} name="familySize" render={({ field }) => (
+                    <FormItem>
+                        <div className="flex items-center gap-1.5"><FormLabel>Family Size</FormLabel><HelpInfo>Helps estimate total water usage.</HelpInfo></div>
+                        <FormControl><Input type="number" placeholder="e.g., 4" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
                 <FormField control={form.control} name="hotWaterUsage" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Hot Water Usage (gal/day)</FormLabel>
+                        <div className="flex items-center gap-1.5"><FormLabel>Hot Water Usage (gal/day)</FormLabel><HelpInfo>Average person uses 15-20 gallons/day.</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 60" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>

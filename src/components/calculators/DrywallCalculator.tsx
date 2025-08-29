@@ -9,7 +9,7 @@ import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -22,6 +22,8 @@ const formSchema = z.object({
   wallArea: z.string().min(1, 'Wall area is required.'),
   ceilingArea: z.string().optional(),
   sheetSize: z.enum(['4x8', '4x12']),
+  materialType: z.enum(['regular', 'moisture-resistant', 'fire-resistant']),
+  screwSpacing: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -42,12 +44,15 @@ export function DrywallCalculator({ calculator }: { calculator: Omit<Calculator,
       wallArea: '',
       ceilingArea: '0',
       sheetSize: '4x8',
+      materialType: 'regular',
+      screwSpacing: '12'
     },
   });
 
   const onSubmit = (values: FormValues) => {
     const walls = parseFloat(values.wallArea);
     const ceiling = parseFloat(values.ceilingArea || '0');
+    const screwSpacing = parseInt(values.screwSpacing || '12');
 
     if (walls < 0 || ceiling < 0) {
         toast({ title: 'Invalid Area', description: 'Please enter non-negative values.', variant: 'destructive' });
@@ -58,8 +63,9 @@ export function DrywallCalculator({ calculator }: { calculator: Omit<Calculator,
     const sheetArea = values.sheetSize === '4x8' ? 32 : 48;
 
     const sheets = Math.ceil(totalArea / sheetArea);
-    // Approx. 1 lb of screws per 300 sq ft
-    const screws = Math.ceil(totalArea / 300);
+    // Approx. 1 lb of screws per 300 sq ft, adjusted for spacing
+    const screwFactor = 12 / screwSpacing;
+    const screws = Math.ceil(totalArea / 300 * screwFactor);
     // Approx. 1 (4.5 gal) bucket of compound per 450 sq ft
     const compound = Math.ceil(totalArea / 450);
 
@@ -85,6 +91,8 @@ export function DrywallCalculator({ calculator }: { calculator: Omit<Calculator,
             { key: 'Total Wall Area', value: `${values.wallArea} sq ft` },
             { key: 'Ceiling Area', value: `${values.ceilingArea || '0'} sq ft` },
             { key: 'Drywall Sheet Size', value: `${values.sheetSize} ft` },
+            { key: 'Material Type', value: values.materialType },
+            { key: 'Screw Spacing', value: `${values.screwSpacing || '12'}"` },
         ],
         results: [
             { key: 'Drywall Sheets Needed', value: `~${result.sheets} sheets (includes 10% waste)` },
@@ -121,7 +129,7 @@ export function DrywallCalculator({ calculator }: { calculator: Omit<Calculator,
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="sheetSize" render={({ field }) => (
-                    <FormItem className="md:col-span-2">
+                    <FormItem>
                         <FormLabel>Drywall Sheet Size</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
@@ -131,6 +139,27 @@ export function DrywallCalculator({ calculator }: { calculator: Omit<Calculator,
                         </SelectContent>
                       </Select>
                       <FormMessage />
+                    </FormItem>
+                )}/>
+                 <FormField control={form.control} name="materialType" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Drywall Type</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                        <SelectContent>
+                          <SelectItem value="regular">Regular</SelectItem>
+                          <SelectItem value="moisture-resistant">Moisture-Resistant (Green Board)</SelectItem>
+                          <SelectItem value="fire-resistant">Fire-Resistant (Type X)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                )}/>
+                <FormField control={form.control} name="screwSpacing" render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                        <div className="flex items-center gap-1.5"><FormLabel>Screw Spacing (inches)</FormLabel><HelpInfo>Distance between screws. 12" for ceilings, 16" for walls is common.</HelpInfo></div>
+                        <FormControl><Input type="number" placeholder="e.g., 12" {...field} /></FormControl>
+                        <FormMessage />
                     </FormItem>
                 )}/>
             </div>
@@ -149,7 +178,7 @@ export function DrywallCalculator({ calculator }: { calculator: Omit<Calculator,
           <Card className="mt-6 bg-accent">
             <CardHeader>
                 <CardTitle>Estimated Materials</CardTitle>
-                 <CardDescription>Includes a 10% waste factor.</CardDescription>
+                 <CardDescription>Includes a 10% waste factor for drywall sheets.</CardDescription>
             </CardHeader>
             <CardContent>
                 <ul className="text-lg font-bold space-y-2">
@@ -158,7 +187,7 @@ export function DrywallCalculator({ calculator }: { calculator: Omit<Calculator,
                     <li>~{result.compound} buckets of joint compound (4.5 gal)</li>
                 </ul>
             </CardContent>
-             <CardContent>
+             <CardFooter>
                 <TooltipProvider>
                     <Tooltip>
                     <TooltipTrigger asChild>
@@ -172,7 +201,7 @@ export function DrywallCalculator({ calculator }: { calculator: Omit<Calculator,
                     </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
-            </CardContent>
+            </CardFooter>
           </Card>
         )}
       </CardContent>

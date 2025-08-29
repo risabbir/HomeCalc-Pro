@@ -20,9 +20,11 @@ import Link from 'next/link';
 
 const formSchema = z.object({
   roomType: z.enum(['bathroom', 'kitchen', 'whole-house']),
-  roomArea: z.string().min(1, 'Room area is required.'),
+  roomLength: z.string().min(1, 'Length is required'),
+  roomWidth: z.string().min(1, 'Width is required'),
   ceilingHeight: z.string().min(1, 'Ceiling height is required.'),
   occupants: z.string().optional(),
+  climateRegion: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -41,19 +43,23 @@ export function VentilationFanCalculator({ calculator }: { calculator: Omit<Calc
     resolver: zodResolver(formSchema),
     defaultValues: {
       roomType: 'bathroom',
-      roomArea: '',
+      roomLength: '10',
+      roomWidth: '8',
       ceilingHeight: '8',
       occupants: '2',
+      climateRegion: 'cold-dry',
     },
   });
 
   const onSubmit = (values: FormValues) => {
-    const area = parseFloat(values.roomArea);
+    const length = parseFloat(values.roomLength);
+    const width = parseFloat(values.roomWidth);
     const height = parseFloat(values.ceilingHeight);
     const occupants = parseInt(values.occupants || '0');
+    const area = length * width;
 
     if (area <= 0 || height <= 0) {
-      toast({ title: 'Invalid dimensions', description: 'Please enter positive values for area and height.', variant: 'destructive' });
+      toast({ title: 'Invalid dimensions', description: 'Please enter positive values for dimensions.', variant: 'destructive' });
       return;
     }
     
@@ -61,27 +67,22 @@ export function VentilationFanCalculator({ calculator }: { calculator: Omit<Calc
     
     switch (values.roomType) {
       case 'bathroom':
-        // HVI recommends 1 CFM per square foot, minimum of 50 CFM
         cfm = Math.max(50, area);
         break;
       case 'kitchen':
-        // Based on air changes per hour (ACH). 15 ACH is recommended for kitchens.
         cfm = (area * height * 15) / 60;
         break;
       case 'whole-house':
-        // ASHRAE 62.2-2016 standard: CFM = (Floor Area * 0.03) + (Bedrooms + 1 * 7.5)
         if (occupants <= 0) {
           toast({ title: 'Occupants required', description: 'Please enter the number of occupants for whole-house calculation.', variant: 'destructive' });
           return;
         }
-        // Simplified based on occupants
         cfm = (area * 0.03) + (occupants * 7.5);
         break;
     }
 
     const roundedCfm = Math.ceil(cfm);
 
-    // Determine fan size. Duct sizes are usually even numbers.
     let fanSize = "4 inch";
     if (roundedCfm > 90) fanSize = "6 inch";
     if (roundedCfm > 200) fanSize = "8 inch";
@@ -107,15 +108,21 @@ export function VentilationFanCalculator({ calculator }: { calculator: Omit<Calc
       return;
     }
     
+    const inputs = [
+        { key: 'Room Type', value: values.roomType.charAt(0).toUpperCase() + values.roomType.slice(1) },
+        { key: 'Room Length', value: `${values.roomLength} ft` },
+        { key: 'Room Width', value: `${values.roomWidth} ft` },
+        { key: 'Ceiling Height', value: `${values.ceilingHeight} ft` },
+    ];
+    if (values.roomType === 'whole-house') {
+        inputs.push({ key: 'Number of Occupants', value: values.occupants || '0' });
+        inputs.push({ key: 'Climate Region', value: values.climateRegion || 'N/A' });
+    }
+
     generatePdf({
         title: calculator.name,
         slug: calculator.slug,
-        inputs: [
-            { key: 'Room Type', value: values.roomType.charAt(0).toUpperCase() + values.roomType.slice(1) },
-            { key: 'Room Area', value: `${values.roomArea} sq ft` },
-            { key: 'Ceiling Height', value: `${values.ceilingHeight} ft` },
-            ...(values.roomType === 'whole-house' ? [{ key: 'Number of Occupants', value: values.occupants || '0' }] : []),
-        ],
+        inputs,
         results: [
             { key: 'Recommended Airflow', value: `${result.cfm} CFM` },
             { key: 'Suggested Fan/Duct Size', value: result.fanSize },
@@ -150,10 +157,17 @@ export function VentilationFanCalculator({ calculator }: { calculator: Omit<Calc
                       <FormMessage />
                     </FormItem>
                 )}/>
-                <FormField control={form.control} name="roomArea" render={({ field }) => (
+                <FormField control={form.control} name="roomLength" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Room Area (sq ft)</FormLabel>
-                        <FormControl><Input type="number" placeholder="e.g., 100" {...field} /></FormControl>
+                        <FormLabel>Room Length (ft)</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                <FormField control={form.control} name="roomWidth" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Room Width (ft)</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
@@ -165,13 +179,29 @@ export function VentilationFanCalculator({ calculator }: { calculator: Omit<Calc
                     </FormItem>
                 )}/>
                 {form.watch('roomType') === 'whole-house' && (
+                    <>
                     <FormField control={form.control} name="occupants" render={({ field }) => (
-                        <FormItem className="md:col-span-2">
-                             <div className="flex items-center gap-1.5"><FormLabel>Number of Occupants</FormLabel><HelpInfo>The number of people living in the home, used for whole-house ventilation calculations (ASHRAE 62.2 standard).</HelpInfo></div>
+                        <FormItem>
+                             <div className="flex items-center gap-1.5"><FormLabel># of Occupants</FormLabel><HelpInfo>The number of people living in the home, used for whole-house ventilation calculations (ASHRAE 62.2 standard).</HelpInfo></div>
                             <FormControl><Input type="number" placeholder="e.g., 4" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
+                     <FormField control={form.control} name="climateRegion" render={({ field }) => (
+                        <FormItem>
+                             <FormLabel>Climate Region</FormLabel>
+                             <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                                <SelectContent>
+                                    <SelectItem value="hot-humid">Hot-Humid</SelectItem>
+                                    <SelectItem value="cold-dry">Cold-Dry</SelectItem>
+                                    <SelectItem value="mixed">Mixed</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}/>
+                    </>
                 )}
             </div>
             

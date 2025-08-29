@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
@@ -22,6 +22,7 @@ import Link from 'next/link';
 const formSchema = z.object({
   roomArea: z.string().min(1, 'Room area is required.'),
   initialHumidity: z.enum(['moderately-damp', 'very-damp', 'wet', 'extremely-wet']),
+  desiredHumidity: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -42,6 +43,7 @@ export function DehumidifierCalculator({ calculator }: { calculator: Omit<Calcul
     defaultValues: {
       roomArea: '1500',
       initialHumidity: 'very-damp',
+      desiredHumidity: '50',
     },
   });
 
@@ -58,7 +60,6 @@ export function DehumidifierCalculator({ calculator }: { calculator: Omit<Calcul
 
     const newPints = PINT_CAPACITY_MAP_2019[values.initialHumidity][areaKey];
     
-    // Approximate conversion from new 2019 DOE standard to old standard
     const oldPints = Math.round((newPints / 0.6));
 
     setResult({ newPints, oldPints });
@@ -76,13 +77,18 @@ export function DehumidifierCalculator({ calculator }: { calculator: Omit<Calcul
       return;
     }
     
+    const inputs = [
+        { key: 'Room Area', value: `${values.roomArea} sq ft` },
+        { key: 'Room Condition', value: values.initialHumidity.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) },
+    ];
+    if (values.desiredHumidity) {
+        inputs.push({ key: 'Desired Humidity', value: `${values.desiredHumidity}%` });
+    }
+
     generatePdf({
         title: calculator.name,
         slug: calculator.slug,
-        inputs: [
-            { key: 'Room Area', value: `${values.roomArea} sq ft` },
-            { key: 'Room Condition', value: values.initialHumidity.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) },
-        ],
+        inputs,
         results: [
             { key: 'Recommended Size (2019+ Models)', value: `${result.newPints} Pint Capacity` },
             { key: 'Equivalent Size (Pre-2019 Models)', value: `~${result.oldPints} Pint Capacity` },
@@ -125,6 +131,13 @@ export function DehumidifierCalculator({ calculator }: { calculator: Omit<Calcul
                       <FormMessage />
                     </FormItem>
                 )}/>
+                 <FormField control={form.control} name="desiredHumidity" render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                        <div className="flex items-center gap-1.5"><FormLabel>Desired Humidity (%) (Optional)</FormLabel><HelpInfo>The target humidity level you want to achieve. 45-50% is ideal for comfort and mold prevention.</HelpInfo></div>
+                        <FormControl><Input type="number" placeholder="e.g., 50" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
             </div>
             
             <div className="flex flex-wrap items-center gap-4">
@@ -149,11 +162,13 @@ export function DehumidifierCalculator({ calculator }: { calculator: Omit<Calcul
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-background rounded-lg p-4 border text-center">
                     <p className="text-sm font-semibold">For units made AFTER 2019:</p>
-                    <p className="text-3xl font-bold text-primary">{result.newPints} Pints</p>
+                    <p className="text-3xl font-bold text-primary">{result.newPints} Pints/Day</p>
+                    <p className="text-xs text-muted-foreground">Moisture Removal Capacity</p>
                 </div>
                  <div className="bg-background rounded-lg p-4 border text-center">
                     <p className="text-sm font-semibold">For units made BEFORE 2019:</p>
-                    <p className="text-3xl font-bold text-muted-foreground">~{result.oldPints} Pints</p>
+                    <p className="text-3xl font-bold text-muted-foreground">~{result.oldPints} Pints/Day</p>
+                     <p className="text-xs text-muted-foreground">Equivalent Capacity</p>
                 </div>
             </CardContent>
             <CardContent>

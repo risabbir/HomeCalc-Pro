@@ -9,19 +9,21 @@ import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { HelpInfo } from '../layout/HelpInfo';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { generatePdf } from '@/lib/pdfGenerator';
 import Link from 'next/link';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 const formSchema = z.object({
   roofArea: z.string().min(1, 'Roof area is required.'),
   roofPitch: z.string().min(1, 'Roof pitch is required.'),
   wasteFactor: z.string().min(1, 'Waste factor is required.'),
   materialCost: z.string().optional(),
+  materialType: z.enum(['asphalt', 'metal', 'tiles']),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -36,6 +38,7 @@ interface Result {
     squares: number;
     bundles: number;
     totalCost: string | null;
+    installationTips: string;
 }
 
 export function RoofingCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
@@ -49,6 +52,7 @@ export function RoofingCalculator({ calculator }: { calculator: Omit<Calculator,
       roofPitch: '6/12',
       wasteFactor: '15',
       materialCost: '',
+      materialType: 'asphalt',
     },
   });
 
@@ -73,7 +77,14 @@ export function RoofingCalculator({ calculator }: { calculator: Omit<Calculator,
 
     const totalCost = costPerSquare > 0 ? (squares * costPerSquare).toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : null;
 
-    setResult({ squares, bundles, totalCost });
+    let installationTips = "Always follow manufacturer guidelines. Ensure proper underlayment and flashing are used.";
+    if (values.materialType === 'metal') {
+        installationTips = "Metal roofing requires specialized tools and techniques. Cutting panels accurately and managing overlaps is critical.";
+    } else if (values.materialType === 'tiles') {
+        installationTips = "Clay or concrete tiles are heavy. Ensure your roof structure can support the weight. Professional installation is highly recommended.";
+    }
+
+    setResult({ squares, bundles, totalCost, installationTips });
   };
 
   const handleClear = () => {
@@ -88,14 +99,16 @@ export function RoofingCalculator({ calculator }: { calculator: Omit<Calculator,
       return;
     }
     
-    const results = [
+    const pdfResults = [
         { key: 'Roofing Squares Needed', value: `${result.squares.toFixed(2)} squares` },
         { key: 'Shingle Bundles Needed', value: `~${result.bundles} bundles` },
     ];
 
     if (result.totalCost) {
-        results.push({ key: 'Estimated Material Cost', value: result.totalCost });
+        pdfResults.push({ key: 'Estimated Material Cost', value: result.totalCost });
     }
+    pdfResults.push({ key: 'Installation Tip', value: result.installationTips });
+
 
     generatePdf({
         title: calculator.name,
@@ -103,10 +116,11 @@ export function RoofingCalculator({ calculator }: { calculator: Omit<Calculator,
         inputs: [
             { key: 'Ground-Level Area', value: `${values.roofArea} sq ft` },
             { key: 'Roof Pitch', value: `${values.roofPitch}` },
+            { key: 'Material Type', value: values.materialType },
             { key: 'Waste Factor', value: `${values.wasteFactor}%` },
             ...(values.materialCost ? [{ key: 'Cost per Square', value: `$${values.materialCost}` }] : []),
         ],
-        results: results,
+        results: pdfResults,
         disclaimer: 'Estimate is for standard asphalt shingles (3 bundles/square). Does not include underlayment, flashing, or other accessories.'
     });
   };
@@ -123,6 +137,20 @@ export function RoofingCalculator({ calculator }: { calculator: Omit<Calculator,
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField control={form.control} name="materialType" render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                        <FormLabel>Roofing Material</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                            <SelectContent>
+                                <SelectItem value="asphalt">Asphalt Shingles</SelectItem>
+                                <SelectItem value="metal">Metal Roofing</SelectItem>
+                                <SelectItem value="tiles">Clay/Concrete Tiles</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
                 <FormField control={form.control} name="roofArea" render={({ field }) => (
                     <FormItem>
                         <div className="flex items-center gap-1.5"><FormLabel>Roof Area (sq ft)</FormLabel><HelpInfo>The ground-level square footage that the roof covers, not the actual surface area.</HelpInfo></div>
@@ -173,26 +201,29 @@ export function RoofingCalculator({ calculator }: { calculator: Omit<Calculator,
                 <CardTitle>Estimated Materials</CardTitle>
                 <CardDescription>Includes waste factor.</CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-wrap items-center justify-between gap-4">
+            <CardContent>
               <div>
                 <p className="text-lg font-bold">~{result.squares.toFixed(2)} squares</p>
                 <p className="text-lg font-bold">~{result.bundles} bundles (shingles)</p>
                 {result.totalCost && <p className="text-lg font-bold mt-2">Est. Material Cost: {result.totalCost}</p>}
+                <p className="text-sm text-muted-foreground mt-4">{result.installationTips}</p>
               </div>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button onClick={handleDownload} variant="secondary">
-                        <Download className="mr-2 h-4 w-4" />
-                        Download PDF
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Download results as PDF</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
             </CardContent>
+             <CardFooter>
+                <TooltipProvider>
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button onClick={handleDownload} variant="secondary">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download PDF
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Download results as PDF</p>
+                    </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </CardFooter>
           </Card>
         )}
       </CardContent>

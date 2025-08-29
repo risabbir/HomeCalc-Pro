@@ -7,15 +7,16 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { HelpInfo } from '../layout/HelpInfo';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { generatePdf } from '@/lib/pdfGenerator';
 import Link from 'next/link';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 const formSchema = z.object({
   areaToTile: z.string().min(1, 'Area is required.'),
@@ -23,6 +24,8 @@ const formSchema = z.object({
   tileLength: z.string().min(1, 'Tile length is required.'),
   wasteFactor: z.string().min(1, 'Waste factor is required.'),
   groutWidth: z.string().optional(),
+  materialType: z.enum(['ceramic', 'porcelain', 'stone']),
+  costPerTile: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -30,6 +33,8 @@ type FormValues = z.infer<typeof formSchema>;
 interface Result {
     tilesNeeded: number;
     totalArea: number;
+    totalCost: string | null;
+    layoutSuggestion: string;
 }
 
 export function TileCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
@@ -44,6 +49,8 @@ export function TileCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       tileLength: '12',
       wasteFactor: '10',
       groutWidth: '0.125',
+      materialType: 'porcelain',
+      costPerTile: ''
     },
   });
 
@@ -53,6 +60,7 @@ export function TileCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     const tileL = parseFloat(values.tileLength);
     const grout = parseFloat(values.groutWidth || '0');
     const waste = parseFloat(values.wasteFactor) / 100;
+    const cost = parseFloat(values.costPerTile || '0');
 
     if (area <= 0 || tileW <= 0 || tileL <= 0) {
         toast({ title: 'Invalid dimensions', description: 'Please enter positive values.', variant: 'destructive' });
@@ -63,8 +71,15 @@ export function TileCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     const tilesNeededRaw = area / singleTileArea;
     const tilesNeeded = Math.ceil(tilesNeededRaw * (1 + waste));
     const totalArea = (tilesNeeded * tileW * tileL) / 144;
+    const totalCost = cost > 0 ? (tilesNeeded * cost).toLocaleString('en-US', {style: 'currency', currency: 'USD'}) : null;
 
-    setResult({ tilesNeeded, totalArea });
+    let layoutSuggestion = "A standard grid (stacked) layout is most common and easiest for DIY projects.";
+    if (tileL / tileW > 2 || tileW / tileL > 2) {
+        layoutSuggestion = "For plank tiles, a running bond (offset) pattern is recommended to minimize visible imperfections (lippage)."
+    }
+
+
+    setResult({ tilesNeeded, totalArea, totalCost, layoutSuggestion });
   };
 
   const handleClear = () => {
@@ -79,19 +94,28 @@ export function TileCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       return;
     }
     
+    const pdfResults = [
+        { key: 'Tiles Needed', value: `${result.tilesNeeded} tiles` },
+        { key: 'Total Material Required', value: `${result.totalArea.toFixed(2)} sq ft (includes waste)` },
+    ];
+
+    if (result.totalCost) {
+        pdfResults.push({key: 'Estimated Material Cost', value: result.totalCost});
+    }
+    pdfResults.push({key: 'Layout Suggestion', value: result.layoutSuggestion});
+
     generatePdf({
         title: calculator.name,
         slug: calculator.slug,
         inputs: [
             { key: 'Area to Tile', value: `${values.areaToTile} sq ft` },
             { key: 'Tile Size (W x L)', value: `${values.tileWidth}" x ${values.tileLength}"` },
+            { key: 'Tile Material', value: values.materialType },
             { key: 'Grout Line Width', value: `${values.groutWidth || '0'}"` },
             { key: 'Waste Factor', value: `${values.wasteFactor}%` },
+            { key: 'Cost Per Tile', value: `$${values.costPerTile || '0'}` },
         ],
-        results: [
-            { key: 'Tiles Needed', value: `${result.tilesNeeded} tiles` },
-            { key: 'Total Material Required', value: `${result.totalArea.toFixed(2)} sq ft (includes waste)` },
-        ]
+        results: pdfResults,
     });
   };
   
@@ -108,9 +132,23 @@ export function TileCalculator({ calculator }: { calculator: Omit<Calculator, 'I
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="areaToTile" render={({ field }) => (
-                    <FormItem className="md:col-span-2">
+                    <FormItem>
                         <FormLabel>Area to Tile (sq ft)</FormLabel>
                         <FormControl><Input type="number" placeholder="e.g., 100" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                <FormField control={form.control} name="materialType" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Tile Material</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                            <SelectContent>
+                                <SelectItem value="ceramic">Ceramic</SelectItem>
+                                <SelectItem value="porcelain">Porcelain</SelectItem>
+                                <SelectItem value="stone">Natural Stone</SelectItem>
+                            </SelectContent>
+                        </Select>
                         <FormMessage />
                     </FormItem>
                 )}/>
@@ -142,6 +180,13 @@ export function TileCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                         <FormMessage />
                     </FormItem>
                 )}/>
+                <FormField control={form.control} name="costPerTile" render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                        <div className="flex items-center gap-1.5"><FormLabel>Cost Per Tile ($) (Optional)</FormLabel><HelpInfo>Enter the price of a single tile to estimate total material cost.</HelpInfo></div>
+                        <FormControl><Input type="number" step="0.01" placeholder="e.g., 2.50" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
             </div>
             
             <div className="flex flex-wrap items-center gap-4">
@@ -159,25 +204,29 @@ export function TileCalculator({ calculator }: { calculator: Omit<Calculator, 'I
             <CardHeader>
                 <CardTitle>Estimated Materials Needed</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-wrap items-center justify-between gap-4">
+            <CardContent>
               <div>
                 <p className="text-2xl font-bold">~{result.tilesNeeded} tiles</p>
                 <p className="text-muted-foreground">{result.totalArea.toFixed(2)} sq ft of material (including waste)</p>
+                {result.totalCost && <p className="text-lg font-semibold mt-2">Est. Material Cost: {result.totalCost}</p>}
+                 <p className="text-sm text-muted-foreground mt-4">{result.layoutSuggestion}</p>
               </div>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button onClick={handleDownload} variant="secondary">
-                        <Download className="mr-2 h-4 w-4" />
-                        Download PDF
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Download results as PDF</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
             </CardContent>
+             <CardFooter>
+                <TooltipProvider>
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button onClick={handleDownload} variant="secondary">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download PDF
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Download results as PDF</p>
+                    </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </CardFooter>
           </Card>
         )}
       </CardContent>

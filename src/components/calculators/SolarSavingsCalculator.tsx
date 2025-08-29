@@ -58,7 +58,17 @@ export function SolarSavingsCalculator({ calculator }: { calculator: Omit<Calcul
     const sunHours = parseFloat(values.sunlightHours);
     const cost = parseFloat(values.installCost);
     const rate = parseFloat(values.energyRate);
-    const incentives = parseFloat(values.incentives || '0');
+    const incentivesInput = values.incentives || '0';
+
+    let incentives = 0;
+    if (incentivesInput.includes('%')) {
+        const percentage = parseFloat(incentivesInput.replace('%', ''));
+        if (!isNaN(percentage)) {
+            incentives = cost * (percentage / 100);
+        }
+    } else {
+        incentives = parseFloat(incentivesInput);
+    }
 
     if ([bill, sunHours, cost, rate, incentives].some(v => isNaN(v) || v < 0)) {
         toast({ title: 'Invalid Inputs', description: 'Please enter valid numbers.', variant: 'destructive' });
@@ -76,7 +86,6 @@ export function SolarSavingsCalculator({ calculator }: { calculator: Omit<Calcul
     const paybackPeriod = netCost / annualSavings;
     const lifetimeSavings = (annualSavings * 25) - netCost;
 
-    // Environmental Impact: 1 MWh = 0.37 metric tons CO2. 1 tree sequesters ~48 lbs CO2/yr.
     const lifetimeProductionMwh = (annualProductionKwh * 25) / 1000;
     const co2SavedMetricTons = lifetimeProductionMwh * 0.37;
     const treesEquivalent = Math.round((co2SavedMetricTons * 2204.62) / 48);
@@ -114,7 +123,7 @@ export function SolarSavingsCalculator({ calculator }: { calculator: Omit<Calcul
             { key: 'Energy Rate', value: `$${values.energyRate}/kWh` },
             { key: 'Peak Sunlight Hours/Day', value: `${values.sunlightHours} hrs` },
             { key: 'Gross Installation Cost', value: `$${values.installCost}` },
-            { key: 'Incentives & Tax Credits', value: `$${values.incentives || '0'}` },
+            { key: 'Incentives & Tax Credits', value: `${values.incentives || '0'}` },
         ],
         results: [
             { key: 'Recommended System Size', value: `${result.systemSize.toFixed(2)} kW` },
@@ -170,8 +179,8 @@ export function SolarSavingsCalculator({ calculator }: { calculator: Omit<Calcul
                 )}/>
                  <FormField control={form.control} name="incentives" render={({ field }) => (
                     <FormItem className="md:col-span-2">
-                        <div className="flex items-center gap-1.5"><FormLabel>Incentives ($) (Optional)</FormLabel><HelpInfo>The total value of federal, state, and local tax credits or rebates.</HelpInfo></div>
-                        <FormControl><Input type="number" placeholder="e.g., 6000" {...field} /></FormControl>
+                        <div className="flex items-center gap-1.5"><FormLabel>Incentives ($ or %) (Optional)</FormLabel><HelpInfo>Total value of federal/state/local tax credits or rebates. Enter a dollar amount or a percentage (e.g., 30%).</HelpInfo></div>
+                        <FormControl><Input type="text" placeholder="e.g., 6000 or 30%" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>

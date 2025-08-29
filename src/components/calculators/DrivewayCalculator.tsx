@@ -9,7 +9,7 @@ import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -23,6 +23,8 @@ const formSchema = z.object({
   width: z.string().min(1, 'Width is required.'),
   thickness: z.string().min(1, 'Thickness is required.'),
   material: z.enum(['asphalt', 'concrete', 'pavers']),
+  baseDepth: z.string().min(1, 'Base depth is required'),
+  materialCost: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -30,6 +32,7 @@ type FormValues = z.infer<typeof formSchema>;
 interface Result {
     baseVolume: number;
     materialAmount: string;
+    totalCost: string | null;
 }
 
 export function DrivewayCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
@@ -39,10 +42,12 @@ export function DrivewayCalculator({ calculator }: { calculator: Omit<Calculator
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      length: '',
-      width: '',
+      length: '50',
+      width: '10',
       thickness: '4',
       material: 'concrete',
+      baseDepth: '6',
+      materialCost: ''
     },
   });
 
@@ -50,6 +55,8 @@ export function DrivewayCalculator({ calculator }: { calculator: Omit<Calculator
     const length = parseFloat(values.length);
     const width = parseFloat(values.width);
     const thickness = parseFloat(values.thickness);
+    const baseDepth = parseFloat(values.baseDepth) / 12;
+    const cost = parseFloat(values.materialCost || '0');
 
     if (length <= 0 || width <= 0 || thickness <= 0) {
         toast({ title: 'Invalid Dimensions', description: 'Please enter positive values.', variant: 'destructive' });
@@ -57,29 +64,32 @@ export function DrivewayCalculator({ calculator }: { calculator: Omit<Calculator
     }
 
     const area = length * width;
-    const baseDepth = 6 / 12; // 6 inches of gravel base
     const baseVolume = (area * baseDepth) / 27; // in cubic yards
 
     let materialAmount = '';
+    let totalCost = null;
+    let materialVolume = 0;
     
     switch (values.material) {
         case 'concrete':
-            const concreteVolume = (area * (thickness / 12)) / 27; // cu yards
-            materialAmount = `${concreteVolume.toFixed(2)} cubic yards of concrete`;
+            materialVolume = (area * (thickness / 12)) / 27; // cu yards
+            materialAmount = `${materialVolume.toFixed(2)} cubic yards of concrete`;
+            if(cost > 0) totalCost = (baseVolume * 40 + materialVolume * cost).toLocaleString('en-US', { style: 'currency', currency: 'USD' }); // gravel ~$40/yd
             break;
         case 'asphalt':
-            const asphaltWeight = (area * (thickness / 12) * 145) / 2000; // tons
-            materialAmount = `${asphaltWeight.toFixed(2)} tons of asphalt`;
+            materialVolume = (area * (thickness / 12) * 145) / 2000; // tons
+            materialAmount = `${materialVolume.toFixed(2)} tons of asphalt`;
+            if(cost > 0) totalCost = (baseVolume * 40 + materialVolume * cost).toLocaleString('en-US', { style: 'currency', currency: 'USD' }); // asphalt ~$150/ton
             break;
         case 'pavers':
-            // Assume standard 4x8 paver
-            const paverArea = (4*8)/144;
-            const paversNeeded = Math.ceil(area / paverArea * 1.05); // 5% waste
+            materialVolume = Math.ceil(area * 1.05); // # of pavers (assuming 1 sq ft per paver for simplicity of cost)
+            const paversNeeded = Math.ceil(area / ((8*4)/144) * 1.05); // 5% waste
             materialAmount = `${paversNeeded} pavers (4"x8")`;
+            if(cost > 0) totalCost = (baseVolume * 40 + materialVolume * cost).toLocaleString('en-US', { style: 'currency', currency: 'USD' }); // pavers ~$5/sqft
             break;
     }
 
-    setResult({ baseVolume, materialAmount });
+    setResult({ baseVolume, materialAmount, totalCost });
   };
 
   const handleClear = () => {
@@ -94,6 +104,15 @@ export function DrivewayCalculator({ calculator }: { calculator: Omit<Calculator
       return;
     }
     
+    const pdfResults = [
+        { key: 'Gravel Base Needed', value: `${result.baseVolume.toFixed(2)} cubic yards` },
+        { key: 'Top Material Needed', value: result.materialAmount },
+    ];
+
+    if (result.totalCost) {
+        pdfResults.push({key: 'Estimated Material Cost', value: result.totalCost});
+    }
+
     generatePdf({
         title: calculator.name,
         slug: calculator.slug,
@@ -102,11 +121,10 @@ export function DrivewayCalculator({ calculator }: { calculator: Omit<Calculator
             { key: 'Driveway Width', value: `${values.width} ft` },
             { key: 'Material Type', value: values.material.charAt(0).toUpperCase() + values.material.slice(1) },
             { key: 'Material Thickness', value: `${values.thickness} in` },
+            { key: 'Gravel Base Depth', value: `${values.baseDepth} in` },
+            { key: 'Material Cost per unit', value: `$${values.materialCost || '0'}` },
         ],
-        results: [
-            { key: 'Gravel Base Needed', value: `${result.baseVolume.toFixed(2)} cubic yards` },
-            { key: 'Top Material Needed', value: result.materialAmount },
-        ]
+        results: pdfResults,
     });
   };
   
@@ -115,7 +133,7 @@ export function DrivewayCalculator({ calculator }: { calculator: Omit<Calculator
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Estimate the materials needed for your new driveway project, including the gravel base and the top material (concrete, asphalt, or pavers). See our <Link href="/resources/driveway-guide" className="text-primary underline">Driveway Guide</Link> for details.
+            Estimate the materials needed for your new driveway project, including the crucial gravel base and the top material (concrete, asphalt, or pavers). See our <Link href="/resources/driveway-guide" className="text-primary underline">Driveway Guide</Link> for details on material pros and cons.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -151,9 +169,23 @@ export function DrivewayCalculator({ calculator }: { calculator: Omit<Calculator
                     </FormItem>
                 )}/>
                 <FormField control={form.control} name="thickness" render={({ field }) => (
-                    <FormItem className="md:col-span-2">
+                    <FormItem>
                         <div className="flex items-center gap-1.5"><FormLabel>Material Thickness (in)</FormLabel><HelpInfo>The depth of the top layer of material. 4 inches is common for concrete/asphalt.</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 4" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                 <FormField control={form.control} name="baseDepth" render={({ field }) => (
+                    <FormItem>
+                        <div className="flex items-center gap-1.5"><FormLabel>Gravel Base Depth (in)</FormLabel><HelpInfo>The depth of the compacted gravel base. 4-8 inches is standard, with deeper bases for colder climates or heavy vehicle traffic.</HelpInfo></div>
+                        <FormControl><Input type="number" placeholder="e.g., 6" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                 <FormField control={form.control} name="materialCost" render={({ field }) => (
+                    <FormItem className='md:col-span-2'>
+                        <div className="flex items-center gap-1.5"><FormLabel>Material Cost (Optional)</FormLabel><HelpInfo>Enter cost per cubic yard (Concrete), per ton (Asphalt), or per sq. ft. (Pavers) for a cost estimate.</HelpInfo></div>
+                        <FormControl><Input type="number" placeholder="e.g., 150" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
@@ -173,15 +205,16 @@ export function DrivewayCalculator({ calculator }: { calculator: Omit<Calculator
           <Card className="mt-6 bg-accent">
             <CardHeader>
                 <CardTitle>Estimated Materials</CardTitle>
-                 <CardDescription>Assumes a 6-inch gravel base.</CardDescription>
+                 <CardDescription>Includes materials for the base and top layer.</CardDescription>
             </CardHeader>
             <CardContent>
                 <ul className="text-lg font-bold space-y-2">
                     <li>~{result.baseVolume.toFixed(2)} cubic yards of gravel base</li>
                     <li>{result.materialAmount}</li>
+                     {result.totalCost && <li className="text-primary pt-2">Est. Material Cost: {result.totalCost}</li>}
                 </ul>
             </CardContent>
-             <CardContent>
+             <CardFooter>
                 <TooltipProvider>
                     <Tooltip>
                     <TooltipTrigger asChild>
@@ -195,7 +228,7 @@ export function DrivewayCalculator({ calculator }: { calculator: Omit<Calculator
                     </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
-            </CardContent>
+            </CardFooter>
           </Card>
         )}
       </CardContent>

@@ -24,6 +24,7 @@ const formSchema = z.object({
   depth: z.string().min(1, 'Depth is required.'),
   bagSize: z.string().optional(),
   materialType: z.enum(['topsoil', 'mulch', 'compost', 'gravel']),
+  soilAmendments: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -46,7 +47,8 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       width: '',
       depth: '6',
       bagSize: '',
-      materialType: 'topsoil'
+      materialType: 'topsoil',
+      soilAmendments: '',
     },
   });
 
@@ -95,6 +97,10 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     if (values.bagSize) {
         inputs.push({ key: 'Bag Size', value: `${values.bagSize} ${units === 'imperial' ? 'cu ft' : 'liters'}` });
     }
+    if (values.soilAmendments) {
+        inputs.push({ key: 'Soil Amendments', value: values.soilAmendments });
+    }
+
 
     const cubicMeters = soilResult.cubicFeet / 35.315;
     const resultVol = units === 'imperial' 
@@ -107,6 +113,8 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     if (soilResult.bagsNeeded) {
         results.push({ key: 'Estimated Bags Needed', value: `${soilResult.bagsNeeded} bags` });
     }
+    results.push({key: 'Preparation Tip', value: 'Mix soil amendments (if any) with the top layer of existing soil before adding new material.'})
+
 
     generatePdf({
         title: calculator.name,
@@ -167,20 +175,29 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                 )}/>
                 <FormField control={form.control} name="depth" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><HelpInfo>Recommended depth for most vegetable gardens is 6-12 inches (15-30 cm).</HelpInfo></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><HelpInfo>Recommended depth for most vegetable gardens is 6-12 inches (15-30 cm). For mulch, 2-3 inches is typical.</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 6" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
             </div>
 
-            <FormField control={form.control} name="bagSize" render={({ field }) => (
-                <FormItem>
-                    <div className="flex items-center gap-1.5"><FormLabel>Bag Size ({units === 'imperial' ? 'cu ft' : 'liters'}) (Optional)</FormLabel><HelpInfo>Enter the volume of the bags you plan to buy to estimate the required quantity.</HelpInfo></div>
-                    <FormControl><Input type="number" placeholder={units === 'imperial' ? "e.g., 1.5" : "e.g., 50"} {...field} /></FormControl>
-                    <FormMessage />
-                </FormItem>
-            )}/>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <FormField control={form.control} name="bagSize" render={({ field }) => (
+                    <FormItem>
+                        <div className="flex items-center gap-1.5"><FormLabel>Bag Size ({units === 'imperial' ? 'cu ft' : 'liters'}) (Optional)</FormLabel><HelpInfo>Enter the volume of the bags you plan to buy to estimate the required quantity.</HelpInfo></div>
+                        <FormControl><Input type="number" placeholder={units === 'imperial' ? "e.g., 1.5" : "e.g., 50"} {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                 <FormField control={form.control} name="soilAmendments" render={({ field }) => (
+                    <FormItem>
+                        <div className="flex items-center gap-1.5"><FormLabel>Soil Amendments (Optional)</FormLabel><HelpInfo>List any amendments you plan to add, like compost or fertilizer. This is for your records in the PDF download.</HelpInfo></div>
+                        <FormControl><Input type="text" placeholder="e.g., Compost, Peat Moss" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+            </div>
 
             <div className="flex flex-wrap items-center gap-4">
               <Button type="submit">Calculate</Button>

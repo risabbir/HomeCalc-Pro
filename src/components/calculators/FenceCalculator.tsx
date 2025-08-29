@@ -9,7 +9,7 @@ import type { Calculator } from '@/lib/calculators';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Download, X } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -20,9 +20,12 @@ import Link from 'next/link';
 
 const formSchema = z.object({
   fenceLength: z.string().min(1, 'Fence length is required.'),
+  fenceHeight: z.string().optional(),
   postSpacing: z.string().min(1, 'Post spacing is required.'),
   panelWidth: z.string().min(1, 'Panel/Picket width is required.'),
   picketSpacing: z.string().optional(),
+  materialType: z.enum(['wood', 'vinyl', 'chain-link']),
+  gateOptions: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -32,6 +35,13 @@ interface Result {
     panels: number | null;
     pickets: number | null;
     rails: number;
+    totalCost: string | null;
+}
+
+const COST_FACTORS = {
+    wood: 25, // per linear foot
+    vinyl: 35,
+    'chain-link': 15,
 }
 
 export function FenceCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
@@ -42,16 +52,20 @@ export function FenceCalculator({ calculator }: { calculator: Omit<Calculator, '
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fenceLength: '',
+      fenceLength: '100',
+      fenceHeight: '6',
       postSpacing: '8',
       panelWidth: '8',
       picketSpacing: '2',
+      materialType: 'wood',
+      gateOptions: '1',
     },
   });
 
   const onSubmit = (values: FormValues) => {
     const length = parseFloat(values.fenceLength);
     const postGap = parseFloat(values.postSpacing);
+    const gates = parseInt(values.gateOptions || '0');
 
     if (length <= 0 || postGap <= 0) {
         toast({ title: 'Invalid Dimensions', description: 'Please enter positive values.', variant: 'destructive' });
@@ -59,9 +73,9 @@ export function FenceCalculator({ calculator }: { calculator: Omit<Calculator, '
     }
 
     const sections = Math.ceil(length / postGap);
-    const posts = sections + 1;
-    // Assuming 2 rails for standard fences
-    const rails = sections * 2;
+    const posts = sections + 1 + (gates * 2); // 2 posts per gate
+    // Assuming 2 rails for standard fences < 6ft, 3 for taller
+    const rails = sections * (parseFloat(values.fenceHeight || '6') > 6 ? 3 : 2);
 
     let panels = null;
     let pickets = null;
@@ -79,7 +93,12 @@ export function FenceCalculator({ calculator }: { calculator: Omit<Calculator, '
         }
     }
 
-    setResult({ posts, panels, pickets, rails });
+    const materialCost = COST_FACTORS[values.materialType] * length;
+    const gateCost = gates * 300; // Average gate cost
+    const totalCost = (materialCost + gateCost).toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+
+
+    setResult({ posts, panels, pickets, rails, totalCost });
   };
 
   const handleClear = () => {
@@ -94,16 +113,19 @@ export function FenceCalculator({ calculator }: { calculator: Omit<Calculator, '
       return;
     }
     
-    const results = [
+    const pdfResults = [
         { key: 'Fence Posts', value: `~${result.posts} posts` },
         { key: 'Horizontal Rails', value: `~${result.rails} rails (${values.postSpacing} ft length)` },
     ];
 
     if (result.panels) {
-        results.push({ key: 'Fence Panels', value: `~${result.panels} panels (${values.panelWidth} ft width)` });
+        pdfResults.push({ key: 'Fence Panels', value: `~${result.panels} panels (${values.panelWidth} ft width)` });
     }
     if (result.pickets) {
-        results.push({ key: 'Fence Pickets', value: `~${result.pickets} pickets (${values.panelWidth}" width)` });
+        pdfResults.push({ key: 'Fence Pickets', value: `~${result.pickets} pickets (${values.panelWidth}" width)` });
+    }
+    if (result.totalCost) {
+        pdfResults.push({ key: 'Estimated Material & Gate Cost', value: result.totalCost });
     }
 
     generatePdf({
@@ -111,11 +133,15 @@ export function FenceCalculator({ calculator }: { calculator: Omit<Calculator, '
         slug: calculator.slug,
         inputs: [
             { key: 'Total Fence Length', value: `${values.fenceLength} ft` },
+            { key: 'Fence Height', value: `${values.fenceHeight} ft` },
+            { key: 'Material Type', value: values.materialType },
             { key: 'Post Spacing', value: `${values.postSpacing} ft` },
+            { key: '# of Gates', value: `${values.gateOptions}` },
             ...(fenceType === 'panel' ? [{ key: 'Panel Width', value: `${values.panelWidth} ft` }] : []),
             ...(fenceType === 'picket' ? [{ key: 'Picket Width', value: `${values.panelWidth}"` }, {key: 'Picket Spacing', value: `${values.picketSpacing}"` }] : []),
         ],
-        results: results,
+        results: pdfResults,
+        disclaimer: 'Cost estimate is for materials only and does not include labor, concrete for posts, or hardware. Prices vary significantly by location and material quality.'
     });
   };
   
@@ -128,18 +154,30 @@ export function FenceCalculator({ calculator }: { calculator: Omit<Calculator, '
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="mb-4">
-            <Select onValueChange={(v) => setFenceType(v as 'panel' | 'picket')} defaultValue="panel">
-                <SelectTrigger><SelectValue/></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="panel">Panel Fence</SelectItem>
-                    <SelectItem value="picket">Picket Fence (Stick-built)</SelectItem>
-                </SelectContent>
-            </Select>
-        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField control={form.control} name="materialType" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Material Type</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                            <SelectContent>
+                                <SelectItem value="wood">Wood</SelectItem>
+                                <SelectItem value="vinyl">Vinyl</SelectItem>
+                                <SelectItem value="chain-link">Chain Link</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
+                 <FormField control={form.control} name="gateOptions" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Number of Gates</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
                 <FormField control={form.control} name="fenceLength" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Total Fence Length (ft)</FormLabel>
@@ -147,14 +185,33 @@ export function FenceCalculator({ calculator }: { calculator: Omit<Calculator, '
                         <FormMessage />
                     </FormItem>
                 )}/>
+                <FormField control={form.control} name="fenceHeight" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Fence Height (ft)</FormLabel>
+                        <FormControl><Input type="number" placeholder="e.g., 6" {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}/>
                  <FormField control={form.control} name="postSpacing" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Post Spacing (ft)</FormLabel><HelpInfo>The distance from the center of one post to the center of the next. 8 feet is standard.</HelpInfo></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Post Spacing (ft)</FormLabel><HelpInfo>The distance from the center of one post to the center of the next. 6-8 feet is standard.</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 8" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
                 )}/>
-                <FormField control={form.control} name="panelWidth" render={({ field }) => (
+                <div className='md:col-span-2'>
+                    <label className='text-sm font-medium'>Infill Type</label>
+                    <div className="mt-2">
+                        <Select onValueChange={(v) => setFenceType(v as 'panel' | 'picket')} defaultValue="panel">
+                            <SelectTrigger><SelectValue/></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="panel">Pre-made Panels</SelectItem>
+                                <SelectItem value="picket">Individual Pickets (Stick-built)</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+                 <FormField control={form.control} name="panelWidth" render={({ field }) => (
                     <FormItem>
                         <FormLabel>{fenceType === 'panel' ? 'Panel Width (ft)' : 'Picket Width (in)'}</FormLabel>
                         <FormControl><Input type="number" placeholder={fenceType === 'panel' ? "e.g., 8" : "e.g., 5.5"} {...field} /></FormControl>
@@ -185,17 +242,19 @@ export function FenceCalculator({ calculator }: { calculator: Omit<Calculator, '
         {result && (
           <Card className="mt-6 bg-accent">
             <CardHeader>
-                <CardTitle>Estimated Materials</CardTitle>
+                <CardTitle>Estimated Materials & Cost</CardTitle>
+                <CardDescription>Does not include concrete or hardware.</CardDescription>
             </CardHeader>
             <CardContent>
                 <ul className="text-lg font-bold space-y-2">
                     <li>~{result.posts} Posts</li>
                     <li>~{result.rails} Rails</li>
-                    {result.panels && <li>~{result.panels} Panels</li>}
-                    {result.pickets && <li>~{result.pickets} Pickets</li>}
+                    {result.panels != null && <li>~{result.panels} Panels</li>}
+                    {result.pickets != null && <li>~{result.pickets} Pickets</li>}
+                    {result.totalCost && <li className="text-primary pt-2">Estimated Cost: {result.totalCost}</li>}
                 </ul>
             </CardContent>
-             <CardContent>
+             <CardFooter>
                 <TooltipProvider>
                     <Tooltip>
                     <TooltipTrigger asChild>
@@ -209,7 +268,7 @@ export function FenceCalculator({ calculator }: { calculator: Omit<Calculator, '
                     </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
-            </CardContent>
+            </CardFooter>
           </Card>
         )}
       </CardContent>
