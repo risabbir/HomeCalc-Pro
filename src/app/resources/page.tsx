@@ -1,7 +1,7 @@
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowRight, ListChecks, Map, Ruler, Paintbrush, ClipboardCheck, Layers3, LayoutGrid, Wind, Droplets, Triangle, Grid3x3, RectangleHorizontal, Fence, Water, Sun, Car as CarIcon } from "lucide-react";
+import { ArrowRight, ListChecks, Map, Ruler, Paintbrush, ClipboardCheck, Layers3, LayoutGrid, Wind, Droplets, Triangle, Grid3x3, RectangleHorizontal, Fence, Bath, Sun, Car as CarIcon } from "lucide-react";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -92,7 +92,7 @@ const resources = [
         title: "Water Heater Types and Efficiency",
         description: "Compare tank, tankless, and heat pump water heaters to find the right one for you.",
         href: "/resources/water-heater-guide",
-        Icon: Water,
+        Icon: Bath,
     },
     {
         title: "Driveway Materials Guide",

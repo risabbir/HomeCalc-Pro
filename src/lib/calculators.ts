@@ -1,11 +1,12 @@
+
 import type { LucideIcon } from 'lucide-react';
 import React from 'react';
 import { 
   ThermometerSun, Sprout, Home, Wind, PlugZap, Building2, AirVent, 
   Heater, Snowflake, Gauge, Square, Wallpaper as WallpaperIcon, Shovel,
   CookingPot, Construction, Layers, Fan, TrendingUp, Lightbulb,
-  Car, CircleDollarSign, Paintbrush, Layers3, Droplets, Grid3x3,
-  RectangleHorizontal, Triangle, Water, Sun, Fence
+  Car as CarIcon, CircleDollarSign, Paintbrush, Layers3, Droplets, Grid3x3,
+  RectangleHorizontal, Triangle, Sun, Fence, Bath
 } from 'lucide-react';
 
 export interface Calculator {
@@ -171,7 +172,7 @@ export const calculators: Calculator[] = [
     slug: 'driveway-materials',
     name: 'Driveway Materials Calculator',
     description: 'Estimate materials for asphalt, concrete, or paver driveways.',
-    Icon: Car,
+    Icon: CarIcon,
     category: 'Home Improvement',
   },
 
@@ -224,14 +225,14 @@ export const calculators: Calculator[] = [
     slug: 'car-loan-calculator',
     name: 'Car Loan Calculator',
     description: 'Calculate your monthly car loan payment.',
-    Icon: Car,
+    Icon: CarIcon,
     category: 'Other',
   },
   {
     slug: 'water-heater-energy-cost',
     name: 'Water Heater Energy Cost Calculator',
     description: 'Compare energy costs of tank vs. tankless water heaters.',
-    Icon: Water,
+    Icon: Bath,
     category: 'Other',
   },
   {
