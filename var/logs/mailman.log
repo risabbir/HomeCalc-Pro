@@ -1,0 +1,27 @@
+Aug 29 16:22:27 2025 (19962) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19963) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19962) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19964) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19965) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19966) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19966) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19967) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19968) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19969) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19969) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19970) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19969) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19970) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19971) Master watcher caught SIGTERM.  Exiting.
+Aug 29 16:22:27 2025 (19932) Master started
+Aug 29 16:22:27 2025 (19973) ESRCH on pid: 19961
+Aug 29 16:22:27 2025 (19973) ESRCH on pid: 19962
+Aug 29 16:22:27 2025 (19973) ESRCH on pid: 19963
+Aug 29 16:22:27 2025 (19973) ESRCH on pid: 19964
+Aug 29 16:22:27 2025 (19973) ESRCH on pid: 19965
+Aug 29 16:22:27 2025 (19973) ESRCH on pid: 19966
+Aug 29 16:22:27 2025 (19973) ESRCH on pid: 19967
+Aug 29 16:22:27 2025 (19973) ESRCH on pid: 19968
+Aug 29 16:22:27 2025 (19973) ESRCH on pid: 19969
+Aug 29 16:22:33 2025 (19932) Runner digest reached maximum restart limit of 10, not restarting.
+Aug 29 16:22:33 2025 (19932) Master stopped
