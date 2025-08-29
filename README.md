@@ -12,7 +12,7 @@
 
 ## Key Features
 
-- **22+ Production-Ready Calculators**  
+- **31 Production-Ready Calculators**  
   Tools for HVAC, Home Improvement, Gardening, and Financial Planning.
 - **AI Calculator Recommendations**  
   Describe your project in plain English and get the best calculator suggestions.
