@@ -4,7 +4,8 @@ import {
   ThermometerSun, Sprout, Home, Wind, PlugZap, Building2, AirVent, 
   Heater, Snowflake, Gauge, Square, Wallpaper as WallpaperIcon, Shovel,
   CookingPot, Construction, Layers, Fan, TrendingUp, Lightbulb,
-  Car, CircleDollarSign, Paintbrush, Layers3
+  Car, CircleDollarSign, Paintbrush, Layers3, Droplets, Grid3x3,
+  RectangleHorizontal, Triangle, Water, Sun, Fence
 } from 'lucide-react';
 
 export interface Calculator {
@@ -80,6 +81,20 @@ export const calculators: Calculator[] = [
     Icon: Layers3,
     category: 'HVAC',
   },
+  {
+    slug: 'ventilation-fan-cfm',
+    name: 'Ventilation Fan CFM Calculator',
+    description: 'Calculate required airflow (CFM) for kitchens and bathrooms.',
+    Icon: Wind,
+    category: 'HVAC',
+  },
+  {
+    slug: 'dehumidifier-size',
+    name: 'Dehumidifier Size Calculator',
+    description: 'Determine the appropriate dehumidifier size for a room or basement.',
+    Icon: Droplets,
+    category: 'HVAC',
+  },
 
   // Home Improvement
   {
@@ -124,12 +139,47 @@ export const calculators: Calculator[] = [
     Icon: Layers,
     category: 'Home Improvement',
   },
+  {
+    slug: 'roofing-materials',
+    name: 'Roofing Materials Calculator',
+    description: 'Estimate shingles or tiles needed, considering roof pitch.',
+    Icon: Triangle,
+    category: 'Home Improvement',
+  },
+  {
+    slug: 'tile-calculator',
+    name: 'Tile Calculator',
+    description: 'Calculate tiles needed for flooring or walls, including waste.',
+    Icon: Grid3x3,
+    category: 'Home Improvement',
+  },
+  {
+    slug: 'drywall-calculator',
+    name: 'Drywall Calculator',
+    description: 'Estimate drywall sheets, screws, and joint compound needed.',
+    Icon: RectangleHorizontal,
+    category: 'Home Improvement',
+  },
+  {
+    slug: 'fence-materials',
+    name: 'Fence Materials Calculator',
+    description: 'Estimate posts, rails, and panels needed for your fence project.',
+    Icon: Fence,
+    category: 'Home Improvement',
+  },
+  {
+    slug: 'driveway-materials',
+    name: 'Driveway Materials Calculator',
+    description: 'Estimate materials for asphalt, concrete, or paver driveways.',
+    Icon: Car,
+    category: 'Home Improvement',
+  },
 
   // Gardening
   {
     slug: 'soil-volume',
-    name: 'Soil Volume Calculator',
-    description: 'Calculate the volume of soil needed for a garden bed.',
+    name: 'Soil & Mulch Calculator',
+    description: 'Calculate the volume of soil or mulch needed for a garden bed.',
     Icon: Shovel,
     category: 'Gardening',
   },
@@ -175,6 +225,20 @@ export const calculators: Calculator[] = [
     name: 'Car Loan Calculator',
     description: 'Calculate your monthly car loan payment.',
     Icon: Car,
+    category: 'Other',
+  },
+  {
+    slug: 'water-heater-energy-cost',
+    name: 'Water Heater Energy Cost Calculator',
+    description: 'Compare energy costs of tank vs. tankless water heaters.',
+    Icon: Water,
+    category: 'Other',
+  },
+  {
+    slug: 'solar-savings',
+    name: 'Solar Savings Calculator',
+    description: 'Estimate energy bill savings and ROI for solar panel installation.',
+    Icon: Sun,
     category: 'Other',
   },
 ];

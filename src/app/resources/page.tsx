@@ -1,7 +1,7 @@
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowRight, ListChecks, Map, Ruler, Paintbrush, ClipboardCheck, Layers3, LayoutGrid } from "lucide-react";
+import { ArrowRight, ListChecks, Map, Ruler, Paintbrush, ClipboardCheck, Layers3, LayoutGrid, Wind, Droplets, Triangle, Grid3x3, RectangleHorizontal, Fence, Water, Sun, Car as CarIcon } from "lucide-react";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -51,6 +51,60 @@ const resources = [
         description: "Plan a functional and beautiful space by understanding the core principles of kitchen design.",
         href: "/resources/kitchen-layout-guide",
         Icon: LayoutGrid,
+    },
+    {
+        title: "Understanding Home Ventilation",
+        description: "Learn why proper home ventilation is crucial and how to choose the right exhaust fan.",
+        href: "/resources/understanding-home-ventilation",
+        Icon: Wind,
+    },
+    {
+        title: "Choosing the Right Dehumidifier",
+        description: "A guide to selecting the correct dehumidifier size based on pint capacity and room conditions.",
+        href: "/resources/choosing-a-dehumidifier",
+        Icon: Droplets,
+    },
+    {
+        title: "Roofing Materials and Installation",
+        description: "Learn about materials like asphalt shingles and metal, and understand roof pitch.",
+        href: "/resources/roofing-guide",
+        Icon: Triangle,
+    },
+    {
+        title: "Tile Selection and Installation Tips",
+        description: "Tips for selecting the right tile and ensuring a professional-looking installation.",
+        href: "/resources/tile-installation-guide",
+        Icon: Grid3x3,
+    },
+    {
+        title: "Drywall Installation Guide",
+        description: "A step-by-step guide to hanging, taping, and finishing drywall panels.",
+        href: "/resources/drywall-guide",
+        Icon: RectangleHorizontal,
+    },
+    {
+        title: "Fence Installation Guide",
+        description: "Learn how to plan, set posts, and install different types of fencing.",
+        href: "/resources/fence-guide",
+        Icon: Fence,
+    },
+    {
+        title: "Water Heater Types and Efficiency",
+        description: "Compare tank, tankless, and heat pump water heaters to find the right one for you.",
+        href: "/resources/water-heater-guide",
+        Icon: Water,
+    },
+    {
+        title: "Driveway Materials Guide",
+        description: "Explore the pros and cons of asphalt, concrete, and pavers for your driveway.",
+        href: "/resources/driveway-guide",
+        Icon: CarIcon,
+    },
+    {
+        title: "Solar Panel Installation Guide",
+        description: "Understand the basics of solar energy, system sizing, and the installation process.",
+        href: "/resources/solar-panel-guide",
+        Icon: Sun,
     },
 ]
 

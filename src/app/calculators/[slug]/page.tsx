@@ -27,6 +27,17 @@ import { MiniSplitCostEstimator } from '@/components/calculators/MiniSplitCostEs
 import { SavingsCalculator } from '@/components/calculators/SavingsCalculator';
 import { CarLoanCalculator } from '@/components/calculators/CarLoanCalculator';
 
+// New Calculators
+import { VentilationFanCalculator } from '@/components/calculators/VentilationFanCalculator';
+import { DehumidifierCalculator } from '@/components/calculators/DehumidifierCalculator';
+import { RoofingCalculator } from '@/components/calculators/RoofingCalculator';
+import { TileCalculator } from '@/components/calculators/TileCalculator';
+import { DrywallCalculator } from '@/components/calculators/DrywallCalculator';
+import { FenceCalculator } from '@/components/calculators/FenceCalculator';
+import { WaterHeaterCostCalculator } from '@/components/calculators/WaterHeaterCostCalculator';
+import { DrivewayCalculator } from '@/components/calculators/DrivewayCalculator';
+import { SolarSavingsCalculator } from '@/components/calculators/SolarSavingsCalculator';
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const calculator = calculators.find((c) => c.slug === params.slug);
   
@@ -76,6 +87,10 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
         return <AtticInsulationCalculator calculator={calculatorData} />;
       case 'mini-split-cost':
         return <MiniSplitCostEstimator calculator={calculatorData} />;
+      case 'ventilation-fan-cfm':
+        return <VentilationFanCalculator calculator={calculatorData} />;
+      case 'dehumidifier-size':
+        return <DehumidifierCalculator calculator={calculatorData} />;
 
       // Home Improvement
       case 'paint-coverage':
@@ -90,6 +105,16 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
         return <DeckingCalculator calculator={calculatorData} />;
       case 'concrete-slab-calculator':
         return <ConcreteSlabCalculator calculator={calculatorData} />;
+      case 'roofing-materials':
+        return <RoofingCalculator calculator={calculatorData} />;
+      case 'tile-calculator':
+        return <TileCalculator calculator={calculatorData} />;
+      case 'drywall-calculator':
+        return <DrywallCalculator calculator={calculatorData} />;
+      case 'fence-materials':
+        return <FenceCalculator calculator={calculatorData} />;
+      case 'driveway-materials':
+        return <DrivewayCalculator calculator={calculatorData} />;
 
       // Gardening
       case 'fertilizer-needs':
@@ -108,6 +133,10 @@ export default function CalculatorPage({ params }: { params: { slug: string } })
         return <SavingsCalculator calculator={calculatorData} />;
       case 'car-loan-calculator':
         return <CarLoanCalculator calculator={calculatorData} />;
+      case 'water-heater-energy-cost':
+        return <WaterHeaterCostCalculator calculator={calculatorData} />;
+      case 'solar-savings':
+        return <SolarSavingsCalculator calculator={calculatorData} />;
 
 
       default:
