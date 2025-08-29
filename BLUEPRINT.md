@@ -12,10 +12,10 @@ To empower homeowners, DIY enthusiasts, and professionals with a comprehensive, 
 
 ## 2. Core Features (Production-Ready)
 
-### 2.1. Calculator Suite (22 Total)
+### 2.1. Calculator Suite (31 Total)
 A fully functional set of calculators, each with a dedicated page, user-friendly interface, and PDF download functionality.
 
--   **HVAC (9 Calculators):**
+-   **HVAC (11 Calculators):**
     -   HVAC Load Calculator (Manual J)
     -   AC Size (BTU) Calculator
     -   Duct Size Calculator
@@ -25,25 +25,34 @@ A fully functional set of calculators, each with a dedicated page, user-friendly
     -   Heat Pump Cost Estimator
     -   Thermostat Savings Calculator
     -   Attic Insulation Calculator
+    -   Ventilation Fan CFM Calculator
+    -   Dehumidifier Size Calculator
 
--   **Home Improvement (6 Calculators):**
+-   **Home Improvement (11 Calculators):**
     -   Paint Coverage Calculator
     -   Flooring Calculator
     -   Wallpaper Calculator
     -   Kitchen Remodel Estimator
     -   Decking Materials Calculator
     -   Concrete Slab Calculator
+    -   Roofing Materials Calculator
+    -   Tile Calculator
+    -   Drywall Calculator
+    -   Fence Materials Calculator
+    -   Driveway Materials Calculator
 
 -   **Gardening (2 Calculators):**
-    -   Soil Volume Calculator
+    -   Soil & Mulch Calculator
     -   Fertilizer Needs Calculator
 
--   **Other / Financial (5 Calculators):**
+-   **Other / Financial (7 Calculators):**
     -   Mortgage Calculator
     -   Appliance Energy Cost Calculator
     -   Energy Savings Calculator
     -   Savings Calculator
     -   Car Loan Calculator
+    -   Water Heater Energy Cost Calculator
+    -   Solar Savings Calculator
 
 ### 2.2. AI-Powered Features
 -   **AI Calculator Recommendations:** A dedicated page where users can describe their project in natural language and receive a list of relevant calculators.
@@ -51,8 +60,8 @@ A fully functional set of calculators, each with a dedicated page, user-friendly
 -   **AI Chatbot ("HomeCalc Helper"):** A floating chatbot powered by Google Gemini that can answer a wide range of home-related questions and guide users to the correct calculator.
 -   **Dynamic Preset Questions:** The homepage and chatbot feature a randomized, relevant set of starter questions to drive engagement with AI features.
 
-### 2.3. Content & Resources (7+ Pages)
--   **Resource Hub:** A central page linking to all guides and checklists.
+### 2.3. Content & Resources (16+ Pages)
+-   **Resource Hub:** A central, searchable page linking to all guides and checklists.
 -   **Individual Guides:**
     -   Guide to U.S. Climate & USDA Plant Hardiness Zones
     -   How to Measure a Room Accurately
@@ -61,6 +70,15 @@ A fully functional set of calculators, each with a dedicated page, user-friendly
     -   Seasonal HVAC Maintenance Checklist
     -   A Homeowner's Guide to Insulation
     -   Kitchen Layout Planning Guide
+    -   Understanding Home Ventilation
+    -   Choosing the Right Dehumidifier
+    -   Roofing Materials and Installation Guide
+    -   Tile Selection and Installation Tips
+    -   Drywall Installation Guide
+    -   Fence Installation Guide
+    -   Water Heater Types and Efficiency
+    -   Driveway Materials Guide
+    -   Solar Panel Installation Guide
 
 ### 2.4. Core Application Features
 -   **Calculator Directory:** A filterable and searchable main page to navigate all calculators.
