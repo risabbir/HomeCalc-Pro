@@ -18,7 +18,7 @@ const ChatbotInputSchema = z.object({
   query: z.string().describe('The user\'s question or message.'),
   history: z.array(z.object({
     role: z.enum(['user', 'model']),
-    content: z.string(),
+    content: z.any(),
   })).optional().describe('The conversation history.'),
   userLocation: z.string().optional().describe("The user's current city and state, e.g., 'Austin, TX'. This will be used to find local service providers if needed.")
 });
@@ -81,8 +81,13 @@ ${availableCalculators}
 
 Here is the conversation history (if any):
 {{#each history}}
-  {{role}}: {{content}}
+  {{#if this.role '===' 'user'}}
+    user: {{this.content}}
+  {{else}}
+    model: {{this.content}}
+  {{/if}}
 {{/each}}
+
 
 User's latest question: {{{query}}}
 `,
@@ -95,17 +100,16 @@ const chatbotFlow = ai.defineFlow(
     outputSchema: ChatbotOutputSchema,
   },
   async (input) => {
-    const {output} = await prompt(input);
+    const {output, history} = await prompt(input);
     if (!output) {
       return { answer: "I'm sorry, I couldn't generate a response. Please try again." };
     }
     
-    // Ensure that if a tool call was made to find providers, the link is a Google Maps search URL.
-    // This prevents the model from returning a non-link response after a successful tool call.
-    const lastUserMessage = input.history?.slice(-1)[0];
-    if (lastUserMessage?.role === 'model' && lastUserMessage.content.includes('findLocalProviders')) {
-        if (!output.link) {
-            const query = input.query.toLowerCase().split(" ").find(w => ["plumber", "painter", "electrician", "contractor"].includes(w)) || "home service";
+    const lastModelMessage = history?.slice(-1)[0];
+    if (lastModelMessage?.role === 'model' && lastModelMessage.content.some(p => p.toolRequest)) {
+        const toolName = lastModelMessage.content.find(p => p.toolRequest)?.toolRequest?.name;
+        if(toolName === 'findLocalProviders') {
+            const query = input.query.toLowerCase().split(" ").find(w => ["plumber", "painter", "electrician", "contractor", "hvac"].includes(w)) || "home service";
             output.link = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
             output.answer = `I found some professionals for you. Here is a link to view them on Google Maps.`;
         }
