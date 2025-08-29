@@ -136,17 +136,17 @@ export default function ResourcesPage() {
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-16">
-      <div className="text-center mb-8 max-w-3xl mx-auto">
+      <div className="text-center mb-12 max-w-3xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4">Helpful DIY Resources</h1>
         <p className="text-muted-foreground text-lg mb-8">
           Planning is the key to a successful project. Use these guides, checklists, and expert tips to help you get started right.
         </p>
-         <div className="relative max-w-lg mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+         <div className="relative max-w-xl mx-auto">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search guides (e.g., 'deck' or 'hvac')..."
-              className="w-full pl-12 pr-4 h-12 text-base rounded-full border shadow-sm focus-visible:ring-2"
+              className="w-full pl-14 pr-4 h-14 text-base rounded-full border-2 shadow-sm focus-visible:ring-2"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               aria-label="Search for a resource guide"
@@ -182,3 +182,4 @@ export default function ResourcesPage() {
     </div>
   );
 }
+
