@@ -16,12 +16,14 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { HelpInfo } from '../layout/HelpInfo';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { generatePdf } from '@/lib/pdfGenerator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const formSchema = z.object({
   length: z.string().min(1, 'Length is required.'),
   width: z.string().min(1, 'Width is required.'),
   depth: z.string().min(1, 'Depth is required.'),
   bagSize: z.string().optional(),
+  materialType: z.enum(['topsoil', 'mulch', 'compost', 'gravel']),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -43,7 +45,8 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       length: '',
       width: '',
       depth: '6',
-      bagSize: ''
+      bagSize: '',
+      materialType: 'topsoil'
     },
   });
 
@@ -84,9 +87,10 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
     }
     
     const inputs = [
+        { key: 'Material Type', value: values.materialType.charAt(0).toUpperCase() + values.materialType.slice(1) },
         { key: 'Bed Length', value: `${values.length} ${units === 'imperial' ? 'ft' : 'm'}` },
         { key: 'Bed Width', value: `${values.width} ${units === 'imperial' ? 'ft' : 'm'}` },
-        { key: 'Soil Depth', value: `${values.depth} ${units === 'imperial' ? 'in' : 'cm'}` },
+        { key: 'Material Depth', value: `${values.depth} ${units === 'imperial' ? 'in' : 'cm'}` },
     ];
     if (values.bagSize) {
         inputs.push({ key: 'Bag Size', value: `${values.bagSize} ${units === 'imperial' ? 'cu ft' : 'liters'}` });
@@ -98,7 +102,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       : `${cubicMeters.toFixed(2)} cu m`;
     
     const results = [
-        { key: 'Total Soil Volume', value: resultVol }
+        { key: 'Total Volume Needed', value: resultVol }
     ];
     if (soilResult.bagsNeeded) {
         results.push({ key: 'Estimated Bags Needed', value: `${soilResult.bagsNeeded} bags` });
@@ -117,7 +121,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-            Starting a new garden bed or topping up an old one? Calculate the volume of soil you'll need. Results are provided in cubic feet/yards for bulk delivery and in estimated bags for smaller jobs.
+            Starting a new garden bed or topping up an old one? Calculate the volume of soil or mulch you'll need. Results are provided in cubic feet/yards for bulk delivery and in estimated bags for smaller jobs.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -131,6 +135,21 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                     </TabsList>
                 </Tabs>
             </div>
+            <FormField control={form.control} name="materialType" render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Material Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+                    <SelectContent>
+                        <SelectItem value="topsoil">Topsoil</SelectItem>
+                        <SelectItem value="mulch">Mulch</SelectItem>
+                        <SelectItem value="compost">Compost</SelectItem>
+                        <SelectItem value="gravel">Gravel / Rocks</SelectItem>
+                    </SelectContent>
+                    </Select>
+                    <FormMessage />
+                </FormItem>
+            )}/>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <FormField control={form.control} name="length" render={({ field }) => (
                     <FormItem>
@@ -148,7 +167,7 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
                 )}/>
                 <FormField control={form.control} name="depth" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Soil Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><HelpInfo>Recommended depth for most vegetable gardens is 6-12 inches (15-30 cm).</HelpInfo></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Depth ({units === 'imperial' ? 'in' : 'cm'})</FormLabel><HelpInfo>Recommended depth for most vegetable gardens is 6-12 inches (15-30 cm).</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 6" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -176,8 +195,8 @@ export function SoilCalculator({ calculator }: { calculator: Omit<Calculator, 'I
         {soilResult && (
           <Card className="mt-6 bg-accent">
             <CardHeader>
-                <CardTitle>Soil Volume Needed</CardTitle>
-                <CardDescription>The total amount of soil required for your project dimensions.</CardDescription>
+                <CardTitle>Volume Needed</CardTitle>
+                <CardDescription>The total amount of material required for your project dimensions.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap items-center justify-between gap-4">
               <p className="text-2xl font-bold">

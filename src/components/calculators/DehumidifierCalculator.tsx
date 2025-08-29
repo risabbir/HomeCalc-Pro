@@ -26,22 +26,22 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const PINT_CAPACITY_MAP = {
+const PINT_CAPACITY_MAP_2019 = {
     'moderately-damp': { 500: 20, 1000: 25, 1500: 30, 2000: 35, 2500: 40 },
     'very-damp': { 500: 25, 1000: 30, 1500: 35, 2000: 40, 2500: 45 },
     'wet': { 500: 30, 1000: 35, 1500: 40, 2000: 45, 2500: 50 },
     'extremely-wet': { 500: 35, 1000: 40, 1500: 45, 2000: 50, 2500: 55 },
-}
+} as const;
 
 export function DehumidifierCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<{ newPints: number, oldPints: number } | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      roomArea: '',
-      initialHumidity: 'moderately-damp',
+      roomArea: '1500',
+      initialHumidity: 'very-damp',
     },
   });
 
@@ -52,13 +52,16 @@ export function DehumidifierCalculator({ calculator }: { calculator: Omit<Calcul
       return;
     }
 
-    const areaKey = Object.keys(PINT_CAPACITY_MAP['moderately-damp']).reduce((prev, curr) => 
+    const areaKey = Object.keys(PINT_CAPACITY_MAP_2019['moderately-damp']).reduce((prev, curr) => 
         Math.abs(parseInt(curr) - area) < Math.abs(parseInt(prev) - area) ? curr : prev
-    );
+    ) as keyof typeof PINT_CAPACITY_MAP_2019['moderately-damp'];
 
-    const pints = PINT_CAPACITY_MAP[values.initialHumidity][areaKey as keyof typeof PINT_CAPACITY_MAP.moderately-damp];
+    const newPints = PINT_CAPACITY_MAP_2019[values.initialHumidity][areaKey];
+    
+    // Approximate conversion from new 2019 DOE standard to old standard
+    const oldPints = Math.round((newPints / 0.6));
 
-    setResult(`${pints} Pint Capacity Dehumidifier`);
+    setResult({ newPints, oldPints });
   };
 
   const handleClear = () => {
@@ -81,8 +84,10 @@ export function DehumidifierCalculator({ calculator }: { calculator: Omit<Calcul
             { key: 'Room Condition', value: values.initialHumidity.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) },
         ],
         results: [
-            { key: 'Recommended Size', value: result },
-        ]
+            { key: 'Recommended Size (2019+ Models)', value: `${result.newPints} Pint Capacity` },
+            { key: 'Equivalent Size (Pre-2019 Models)', value: `~${result.oldPints} Pint Capacity` },
+        ],
+        disclaimer: 'Modern dehumidifiers are rated under a new 2019 DOE standard. A new 35-pint model is roughly equivalent to an old 50-pint model.'
     });
   };
   
@@ -114,7 +119,7 @@ export function DehumidifierCalculator({ calculator }: { calculator: Omit<Calcul
                           <SelectItem value="moderately-damp">Moderately Damp (feels clammy)</SelectItem>
                           <SelectItem value="very-damp">Very Damp (musty odor)</SelectItem>
                           <SelectItem value="wet">Wet (visible water beads)</SelectItem>
-                          <SelectItem value="extremely-wet">Extremely Wet (standing water)</SelectItem>
+                          <SelectItem value="extremely-wet">Extremely Wet (seepage)</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -136,26 +141,35 @@ export function DehumidifierCalculator({ calculator }: { calculator: Omit<Calcul
           <Card className="mt-6 bg-accent">
             <CardHeader>
                 <CardTitle>Recommended Dehumidifier Size</CardTitle>
-                <Alert className='mt-2'>
-                    <AlertTitle>Note on Sizing</AlertTitle>
-                    <AlertDescription>Dehumidifier capacity is based on moisture removal over 24 hours under specific test conditions (60% humidity). This calculator provides a recommendation based on the older standard (pints at 80°F, 60% RH).</AlertDescription>
+                <Alert className='mt-4 border-primary/20'>
+                    <AlertTitle>Important: New Sizing Standards</AlertTitle>
+                    <AlertDescription>Dehumidifier testing standards changed in 2019. Our primary recommendation is for modern units. The pre-2019 equivalent is for comparison only.</AlertDescription>
                 </Alert>
             </CardHeader>
-            <CardContent className="flex flex-wrap items-center justify-between gap-4">
-              <p className="text-2xl font-bold">{result}</p>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button onClick={handleDownload} variant="secondary">
-                        <Download className="mr-2 h-4 w-4" />
-                        Download PDF
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Download results as PDF</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+            <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-background rounded-lg p-4 border text-center">
+                    <p className="text-sm font-semibold">For units made AFTER 2019:</p>
+                    <p className="text-3xl font-bold text-primary">{result.newPints} Pints</p>
+                </div>
+                 <div className="bg-background rounded-lg p-4 border text-center">
+                    <p className="text-sm font-semibold">For units made BEFORE 2019:</p>
+                    <p className="text-3xl font-bold text-muted-foreground">~{result.oldPints} Pints</p>
+                </div>
+            </CardContent>
+            <CardContent>
+                <TooltipProvider>
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button onClick={handleDownload} variant="secondary">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download PDF
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Download results as PDF</p>
+                    </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </CardContent>
           </Card>
         )}

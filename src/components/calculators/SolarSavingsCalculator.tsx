@@ -32,6 +32,10 @@ interface Result {
     paybackPeriod: number;
     lifetimeSavings: number;
     systemSize: number;
+    environmentalImpact: {
+        co2: string;
+        trees: number;
+    }
 }
 
 export function SolarSavingsCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
@@ -63,14 +67,31 @@ export function SolarSavingsCalculator({ calculator }: { calculator: Omit<Calcul
 
     const annualUsageKwh = (bill * 12) / rate;
     const systemSizeKw = (annualUsageKwh / (sunHours * 365)) / 0.85; // 0.85 = avg system efficiency factor
+    const annualProductionKwh = systemSizeKw * sunHours * 365 * 0.85;
     
-    // Assume solar covers 95% of usage
-    const annualSavings = annualUsageKwh * 0.95 * rate;
+    // Assume solar covers 95% of usage, up to what's produced
+    const savedKwh = Math.min(annualUsageKwh * 0.95, annualProductionKwh);
+    const annualSavings = savedKwh * rate;
     const netCost = cost - incentives;
     const paybackPeriod = netCost / annualSavings;
     const lifetimeSavings = (annualSavings * 25) - netCost;
 
-    setResult({ annualSavings, paybackPeriod, lifetimeSavings, systemSize: systemSizeKw });
+    // Environmental Impact: 1 MWh = 0.37 metric tons CO2. 1 tree sequesters ~48 lbs CO2/yr.
+    const lifetimeProductionMwh = (annualProductionKwh * 25) / 1000;
+    const co2SavedMetricTons = lifetimeProductionMwh * 0.37;
+    const treesEquivalent = Math.round((co2SavedMetricTons * 2204.62) / 48);
+
+
+    setResult({ 
+        annualSavings, 
+        paybackPeriod, 
+        lifetimeSavings, 
+        systemSize: systemSizeKw,
+        environmentalImpact: {
+            co2: co2SavedMetricTons.toFixed(2),
+            trees: treesEquivalent,
+        }
+    });
   };
 
   const handleClear = () => {
@@ -100,6 +121,8 @@ export function SolarSavingsCalculator({ calculator }: { calculator: Omit<Calcul
             { key: 'Estimated Annual Savings', value: `$${result.annualSavings.toFixed(2)}` },
             { key: 'Simple Payback Period', value: `${result.paybackPeriod.toFixed(1)} years` },
             { key: '25-Year Net Savings', value: `$${result.lifetimeSavings.toLocaleString(undefined, {maximumFractionDigits: 0})}` },
+            { key: 'Lifetime CO2 Reduction', value: `${result.environmentalImpact.co2} metric tons` },
+            { key: 'Equivalent to Planting', value: `${result.environmentalImpact.trees} trees` },
         ],
         disclaimer: 'This is a simplified financial estimate. Actual performance and savings depend on many factors including system orientation, weather, and utility policies.'
     });
@@ -185,6 +208,10 @@ export function SolarSavingsCalculator({ calculator }: { calculator: Omit<Calcul
                  <div className="p-2 bg-background rounded-lg border">
                     <p className="text-sm text-muted-foreground">25-Yr Savings</p>
                     <p className="text-xl font-bold">${result.lifetimeSavings.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+                </div>
+                <div className="col-span-2 md:col-span-4 p-4 bg-green-500/10 text-green-800 dark:text-green-300 rounded-lg border border-green-500/20">
+                    <p className="text-sm font-semibold">Lifetime Environmental Impact</p>
+                    <p className="text-lg">~{result.environmentalImpact.co2} metric tons of CO2 offset, the equivalent of planting {result.environmentalImpact.trees} trees!</p>
                 </div>
             </CardContent>
              <CardFooter>

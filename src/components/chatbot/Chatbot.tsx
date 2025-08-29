@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -19,6 +19,19 @@ interface Message {
 }
 
 const allPresetQuestions = [
+  // New Calculator Questions
+  "How do I choose the right size ventilation fan for my bathroom?",
+  "What does CFM mean for a fan?",
+  "I have a damp basement, what size dehumidifier do I need?",
+  "My roof is 1500 sq ft with a 6/12 pitch. How many bundles of shingles do I need?",
+  "How much extra tile should I buy for waste?",
+  "How many sheets of drywall do I need for a 12x15 room?",
+  "I'm building a 100-foot-long fence. How many 8-foot panels do I need?",
+  "Is a tankless water heater cheaper to run than a tank model?",
+  "How much gravel do I need for the base of a 10x20 ft concrete driveway?",
+  "How much will it cost to install solar panels on my house?",
+  "How many bags of mulch do I need to cover 200 sq ft with a 3-inch layer?",
+  
   // HVAC
   "How much money can I save with a smart thermostat?",
   "What's the difference between SEER and SEER2 for AC units?",
@@ -217,7 +230,7 @@ export function Chatbot() {
 
     if (isExternal) {
         return (
-            <a href={link} target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ size: 'sm' }), 'mt-2')}>
+            <a href={link} target="_blank" rel="noopener noreferrer" className={cn("inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-9 px-3 mt-2")}>
                 {buttonText}
             </a>
         );

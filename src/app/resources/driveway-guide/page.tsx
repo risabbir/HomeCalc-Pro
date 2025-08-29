@@ -34,29 +34,42 @@ export default function DrivewayGuidePage() {
                             <CardTitle as="h2">The Crucial Foundation: The Gravel Base</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-muted-foreground">No matter which surface material you choose, the success of your driveway depends on its base. A properly compacted gravel base (typically 4-8 inches deep) is essential to provide a stable foundation, ensure proper drainage, and prevent cracking and heaving caused by frost and soil movement. Do not skip this step.</p>
+                            <p className="text-muted-foreground">No matter which surface material you choose, the success and longevity of your driveway depend entirely on its base. A properly prepared and compacted gravel sub-base is non-negotiable. It serves several critical functions:</p>
+                             <ul className="list-disc pl-5 text-muted-foreground space-y-2 mt-4">
+                                <li><strong>Stability:</strong> It creates a solid, stable layer that distributes the weight of vehicles evenly, preventing the top surface from sinking or developing ruts.</li>
+                                <li><strong>Drainage:</strong> It allows water to drain away from the driveway surface, which is crucial for preventing damage from frost heave in cold climates.</li>
+                                <li><strong>Frost Protection:</strong> A deep enough base places the foundation below the frost line, stopping the ground from freezing and expanding upwards, which would crack the driveway.</li>
+                            </ul>
+                            <p className="text-muted-foreground mt-4">A typical gravel base is 4 to 8 inches deep, consisting of crushed aggregate stone that is graded and tightly compacted with a mechanical tamper or roller. Do not skip or skimp on this step.</p>
                         </CardContent>
                     </Card>
                     
                     <Card>
                         <CardHeader>
-                            <CardTitle as="h2">Common Driveway Materials</CardTitle>
+                            <CardTitle as="h2">Common Driveway Materials Compared</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-6">
                              <div>
-                                <h3 className="font-semibold">Concrete</h3>
-                                <p className="text-muted-foreground">A durable and long-lasting option with a clean look. It's strong and requires little maintenance, but repairs can be difficult and costly. It's prone to cracking in climates with extreme freeze-thaw cycles if not installed correctly.</p>
+                                <h3 className="font-semibold">Concrete (Poured Cement)</h3>
+                                <p className="text-muted-foreground">A durable and long-lasting option with a clean, modern look. It's strong and requires little maintenance, but repairs can be difficult to blend and costly. Concrete is prone to cracking in climates with extreme freeze-thaw cycles if not installed with proper control joints and a solid base.</p>
                             </div>
                             <div>
                                 <h3 className="font-semibold">Asphalt (Blacktop)</h3>
-                                <p className="text-muted-foreground">More flexible than concrete, making it a better choice for very cold climates as it resists cracking. It's generally less expensive to install but requires periodic sealing (every 3-5 years) to maintain its appearance and prevent deterioration.</p>
+                                <p className="text-muted-foreground">More flexible than concrete, making it a better choice for very cold climates as it resists cracking from frost heave. It's generally less expensive to install but requires periodic sealing (every 3-5 years) to maintain its rich black color and prevent oxidation and deterioration.</p>
                             </div>
                             <div>
                                 <h3 className="font-semibold">Pavers (Concrete or Brick)</h3>
-                                <p className="text-muted-foreground">Offers the most design flexibility and aesthetic appeal. Pavers are strong and individual units can be replaced if they become stained or damaged. This is typically the most expensive option due to the intensive labor required for installation.</p>
+                                <p className="text-muted-foreground">Offers the most design flexibility and high-end aesthetic appeal. Pavers are incredibly strong, and individual units can be lifted and replaced if they become stained or damaged. This is typically the most expensive option due to the intensive labor required for proper installation over a sand setting bed.</p>
                             </div>
                         </CardContent>
                     </Card>
+                     <Alert variant="destructive">
+                         <AlertTriangle className="h-4 w-4" />
+                         <AlertTitle as="h3">Installation is Key</AlertTitle>
+                         <AlertDescription>
+                            The performance of any driveway material is heavily dependent on the quality of the installation. A poorly prepared base will cause even the most expensive material to fail prematurely. For projects of this scale, hiring experienced, reputable contractors is highly recommended.
+                         </AlertDescription>
+                    </Alert>
                 </main>
                  <aside className="lg:col-span-1">
                     <div className="sticky top-28 space-y-8">

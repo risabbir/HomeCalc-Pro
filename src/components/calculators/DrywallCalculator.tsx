@@ -54,14 +54,14 @@ export function DrywallCalculator({ calculator }: { calculator: Omit<Calculator,
         return;
     }
     
-    const totalArea = walls + ceiling;
+    const totalArea = (walls + ceiling) * 1.1; // Add 10% for waste
     const sheetArea = values.sheetSize === '4x8' ? 32 : 48;
 
     const sheets = Math.ceil(totalArea / sheetArea);
-    // Approx. 1 lb of screws per 1000 sq ft
-    const screws = Math.ceil(totalArea / 1000);
-    // Approx. 1 (4.5 gal) bucket of compound per 500 sq ft
-    const compound = Math.ceil(totalArea / 500);
+    // Approx. 1 lb of screws per 300 sq ft
+    const screws = Math.ceil(totalArea / 300);
+    // Approx. 1 (4.5 gal) bucket of compound per 450 sq ft
+    const compound = Math.ceil(totalArea / 450);
 
     setResult({ sheets, screws, compound });
   };
@@ -87,7 +87,7 @@ export function DrywallCalculator({ calculator }: { calculator: Omit<Calculator,
             { key: 'Drywall Sheet Size', value: `${values.sheetSize} ft` },
         ],
         results: [
-            { key: 'Drywall Sheets Needed', value: `~${result.sheets} sheets` },
+            { key: 'Drywall Sheets Needed', value: `~${result.sheets} sheets (includes 10% waste)` },
             { key: 'Drywall Screws Needed', value: `~${result.screws} lbs` },
             { key: 'Joint Compound Needed', value: `~${result.compound} buckets (4.5 gal)` },
         ]
@@ -108,7 +108,7 @@ export function DrywallCalculator({ calculator }: { calculator: Omit<Calculator,
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField control={form.control} name="wallArea" render={({ field }) => (
                     <FormItem>
-                        <div className="flex items-center gap-1.5"><FormLabel>Wall Area (sq ft)</FormLabel><HelpInfo>The total square footage of all walls to be drywalled. (Length x Height for each wall, then add them up).</HelpInfo></div>
+                        <div className="flex items-center gap-1.5"><FormLabel>Wall Area (sq ft)</FormLabel><HelpInfo>The total square footage of all walls to be drywalled. (Length x Height for each wall, then add them up). Do not subtract for doors/windows.</HelpInfo></div>
                         <FormControl><Input type="number" placeholder="e.g., 400" {...field} /></FormControl>
                         <FormMessage />
                     </FormItem>
@@ -149,6 +149,7 @@ export function DrywallCalculator({ calculator }: { calculator: Omit<Calculator,
           <Card className="mt-6 bg-accent">
             <CardHeader>
                 <CardTitle>Estimated Materials</CardTitle>
+                 <CardDescription>Includes a 10% waste factor.</CardDescription>
             </CardHeader>
             <CardContent>
                 <ul className="text-lg font-bold space-y-2">

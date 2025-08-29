@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { HelpInfo } from '../layout/HelpInfo';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { generatePdf } from '@/lib/pdfGenerator';
+import Link from 'next/link';
 
 const formSchema = z.object({
   roomType: z.enum(['bathroom', 'kitchen', 'whole-house']),
@@ -26,8 +27,14 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface Result {
+    cfm: number;
+    fanSize: string;
+    energyStar: string;
+}
+
 export function VentilationFanCalculator({ calculator }: { calculator: Omit<Calculator, 'Icon'> }) {
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<Result | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -54,24 +61,38 @@ export function VentilationFanCalculator({ calculator }: { calculator: Omit<Calc
     
     switch (values.roomType) {
       case 'bathroom':
-        // 1 CFM per square foot, minimum of 50 CFM
+        // HVI recommends 1 CFM per square foot, minimum of 50 CFM
         cfm = Math.max(50, area);
         break;
       case 'kitchen':
-        // Based on air changes per hour (ACH). 15 ACH is recommended.
+        // Based on air changes per hour (ACH). 15 ACH is recommended for kitchens.
         cfm = (area * height * 15) / 60;
         break;
       case 'whole-house':
-        // ASHRAE 62.2-2016 standard: CFM = (Area * 0.03) + (Occupants * 7.5)
+        // ASHRAE 62.2-2016 standard: CFM = (Floor Area * 0.03) + (Bedrooms + 1 * 7.5)
         if (occupants <= 0) {
           toast({ title: 'Occupants required', description: 'Please enter the number of occupants for whole-house calculation.', variant: 'destructive' });
           return;
         }
+        // Simplified based on occupants
         cfm = (area * 0.03) + (occupants * 7.5);
         break;
     }
 
-    setResult(`${Math.ceil(cfm)} CFM`);
+    const roundedCfm = Math.ceil(cfm);
+
+    // Determine fan size. Duct sizes are usually even numbers.
+    let fanSize = "4 inch";
+    if (roundedCfm > 90) fanSize = "6 inch";
+    if (roundedCfm > 200) fanSize = "8 inch";
+    if (roundedCfm > 400) fanSize = "10 inch";
+    if (roundedCfm > 650) fanSize = "12 inch";
+
+    setResult({
+        cfm: roundedCfm,
+        fanSize,
+        energyStar: roundedCfm <= 300 ? "Look for an Energy Star rated fan for efficiency." : "Energy Star ratings are less common for very high CFM fans."
+    });
   };
 
   const handleClear = () => {
@@ -96,7 +117,9 @@ export function VentilationFanCalculator({ calculator }: { calculator: Omit<Calc
             ...(values.roomType === 'whole-house' ? [{ key: 'Number of Occupants', value: values.occupants || '0' }] : []),
         ],
         results: [
-            { key: 'Recommended Airflow', value: result },
+            { key: 'Recommended Airflow', value: `${result.cfm} CFM` },
+            { key: 'Suggested Fan/Duct Size', value: result.fanSize },
+            { key: 'Efficiency Note', value: result.energyStar },
         ]
     });
   };
@@ -106,7 +129,7 @@ export function VentilationFanCalculator({ calculator }: { calculator: Omit<Calc
       <CardHeader>
         <CardTitle>How to use this calculator</CardTitle>
         <CardDescription>
-          Proper ventilation is key to good indoor air quality. Select the room type and enter its dimensions to find the recommended fan airflow capacity in Cubic Feet per Minute (CFM).
+            Proper ventilation is key to good indoor air quality. Select the room type and enter its dimensions to find the recommended fan airflow capacity in Cubic Feet per Minute (CFM). For more details, see our <Link href="/resources/understanding-home-ventilation" className="text-primary underline">Ventilation Guide</Link>.
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
@@ -144,7 +167,7 @@ export function VentilationFanCalculator({ calculator }: { calculator: Omit<Calc
                 {form.watch('roomType') === 'whole-house' && (
                     <FormField control={form.control} name="occupants" render={({ field }) => (
                         <FormItem className="md:col-span-2">
-                            <FormLabel>Number of Occupants</FormLabel>
+                             <div className="flex items-center gap-1.5"><FormLabel>Number of Occupants</FormLabel><HelpInfo>The number of people living in the home, used for whole-house ventilation calculations (ASHRAE 62.2 standard).</HelpInfo></div>
                             <FormControl><Input type="number" placeholder="e.g., 4" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
@@ -167,8 +190,12 @@ export function VentilationFanCalculator({ calculator }: { calculator: Omit<Calc
             <CardHeader>
                 <CardTitle>Recommended Fan Airflow</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-wrap items-center justify-between gap-4">
-              <p className="text-2xl font-bold">{result}</p>
+            <CardContent className="space-y-2">
+                <div className="text-2xl font-bold">{result.cfm} CFM</div>
+                <div><strong>Suggested Fan/Duct Size:</strong> {result.fanSize}</div>
+                <div className="text-sm text-muted-foreground">{result.energyStar}</div>
+            </CardContent>
+            <CardContent>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
