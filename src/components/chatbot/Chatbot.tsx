@@ -16,6 +16,11 @@ interface Message {
   role: 'user' | 'model';
   content: string;
   link?: string | null;
+  // This is the raw content structure needed for the AI history
+  rawContent: {
+    text?: string;
+    toolRequest?: { name: string, input: any }
+  }[];
 }
 
 const allPresetQuestions = [
@@ -45,7 +50,7 @@ const allPresetQuestions = [
   "How can I improve the air quality in my home?",
   "Explain what a 'ton' means for an AC unit.",
   "What is AFUE for furnaces?",
-  "How can I tell if my ducts are leaking?",
+  "How do I tell if my ducts are leaking?",
   "What's better for my home, a furnace or a heat pump?",
   "Are attic fans a good investment for energy savings?",
   "What are some common HVAC maintenance tasks I can do myself?",
@@ -153,7 +158,7 @@ export function Chatbot() {
   const [showHelpBubble, setShowHelpBubble] = useState(true);
   const [showPresets, setShowPresets] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', content: "Hi! How can I help you plan your next home project?" }
+    { role: 'model', content: "Hi! How can I help you plan your next home project?", rawContent: [{text: "Hi! How can I help you plan your next home project?"}] }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -192,7 +197,7 @@ export function Chatbot() {
     if (!query || isLoading) return;
 
     setShowPresets(false);
-    const userMessage: Message = { role: 'user', content: query };
+    const userMessage: Message = { role: 'user', content: query, rawContent: [{text: query}] };
     setMessages(prev => [...prev, userMessage]);
     
     if (!queryOverride) {
@@ -201,10 +206,10 @@ export function Chatbot() {
     setIsLoading(true);
 
     try {
-      const history = [...messages, userMessage].map(({ role, content }) => ({ role, content: content.toString() }));
+      const history = [...messages, userMessage].map(({ role, rawContent }) => ({ role, content: rawContent }));
       const res = await getChatbotResponse({ query: query, history });
       
-      const modelMessage: Message = { role: 'model', content: res.answer, link: res.link };
+      const modelMessage: Message = { role: 'model', content: res.answer, link: res.link, rawContent: [{text: res.answer}] };
       setMessages(prev => [...prev, modelMessage]);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Sorry, I encountered an error. Please try again.';
@@ -213,7 +218,7 @@ export function Chatbot() {
         description: errorMessage,
         variant: 'destructive',
       });
-      const errorResponseMessage: Message = { role: 'model', content: "Sorry, I'm having trouble connecting right now. Please try again later." };
+      const errorResponseMessage: Message = { role: 'model', content: "Sorry, I'm having trouble connecting right now. Please try again later.", rawContent: [{text: "Sorry, I'm having trouble connecting right now. Please try again later."}] };
       setMessages(prev => [...prev, errorResponseMessage]);
     } finally {
       setIsLoading(false);

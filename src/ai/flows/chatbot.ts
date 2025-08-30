@@ -14,11 +14,23 @@ import {z} from 'genkit';
 import { calculators } from '@/lib/calculators';
 import { findLocalProviders, Provider } from '@/services/places';
 
+// Define specific schemas for the content within the history
+const UserContentSchema = z.object({
+    text: z.string()
+});
+const ModelContentSchema = z.object({
+    text: z.string().optional(),
+    toolRequest: z.object({
+        name: z.string(),
+        input: z.any()
+    }).optional()
+});
+
 const ChatbotInputSchema = z.object({
   query: z.string().describe('The user\'s question or message.'),
   history: z.array(z.object({
     role: z.enum(['user', 'model']),
-    content: z.any(),
+    content: z.array(z.union([UserContentSchema, ModelContentSchema])),
   })).optional().describe('The conversation history.'),
   userLocation: z.string().optional().describe("The user's current city and state, e.g., 'Austin, TX'. This will be used to find local service providers if needed.")
 });
@@ -81,10 +93,10 @@ ${availableCalculators}
 
 Here is the conversation history (if any):
 {{#each history}}
-  {{#if this.role '===' 'user'}}
-    user: {{this.content}}
+  {{#if (eq this.role 'user')}}
+    user: {{this.content.0.text}}
   {{else}}
-    model: {{this.content}}
+    model: {{#if this.content.0.text}}{{this.content.0.text}}{{else}}Tool call: {{this.content.0.toolRequest.name}}({{json this.content.0.toolRequest.input}}){{/if}}
   {{/if}}
 {{/each}}
 
