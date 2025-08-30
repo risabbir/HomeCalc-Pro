@@ -107,14 +107,22 @@ export function Header() {
               </div>
             </div>
 
-            {navLinks.slice(1).map((link) => (
-              <Button key={link.href} variant="ghost" asChild>
-                <Link href={link.href} className={getNavLinkClass(link.href)}>
-                  {link.Icon && <link.Icon className="mr-1.5 h-4 w-4" />}
-                  {link.label}
+            <Button variant="ghost" asChild>
+                <Link href="/ai-recommendations" className={getNavLinkClass('/ai-recommendations')}>
+                  <Wand2 className="mr-1.5 h-4 w-4" />
+                  AI Assistant
                 </Link>
-              </Button>
-            ))}
+            </Button>
+            <Button variant="ghost" asChild>
+                <Link href="/resources" className={getNavLinkClass('/resources', true)}>
+                    Resources
+                </Link>
+            </Button>
+             <Button variant="ghost" asChild>
+                <Link href="/about" className={getNavLinkClass('/about')}>
+                    About Us
+                </Link>
+            </Button>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -139,16 +147,14 @@ export function Header() {
                     </div>
                     <ScrollArea className='flex-1'>
                       <div className="flex flex-col gap-1 p-6 pt-0 text-lg">
-                          {navLinks.map((link) => (
-                              <SheetClose asChild key={link.href}>
-                                  <Link 
-                                    href={link.href}
-                                    className={getMobileNavLinkClass(link.href)}
-                                  >
-                                      {link.label}
-                                  </Link>
-                              </SheetClose>
-                          ))}
+                          <SheetClose asChild>
+                              <Link 
+                                href="/"
+                                className={getMobileNavLinkClass("/")}
+                              >
+                                  Home
+                              </Link>
+                          </SheetClose>
 
                           <Accordion type="single" collapsible className="w-full">
                               <AccordionItem value="calculators" className="border-b-0">
@@ -185,6 +191,31 @@ export function Header() {
                                   </AccordionContent>
                               </AccordionItem>
                           </Accordion>
+                          
+                          <SheetClose asChild>
+                              <Link 
+                                href="/ai-recommendations"
+                                className={getMobileNavLinkClass("/ai-recommendations")}
+                              >
+                                  AI Assistant
+                              </Link>
+                          </SheetClose>
+                          <SheetClose asChild>
+                              <Link 
+                                href="/resources"
+                                className={getMobileNavLinkClass("/resources", true)}
+                              >
+                                  Resources
+                              </Link>
+                          </SheetClose>
+                          <SheetClose asChild>
+                              <Link 
+                                href="/about"
+                                className={getMobileNavLinkClass("/about")}
+                              >
+                                  About Us
+                              </Link>
+                          </SheetClose>
                       </div>
                     </ScrollArea>
                 </SheetContent>
