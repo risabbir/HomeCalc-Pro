@@ -7,12 +7,18 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { getAiRecommendations } from '@/lib/actions';
-import { Loader2, Wand2, Info } from 'lucide-react';
+import { Loader2, Wand2, Info, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { calculators } from '@/lib/calculators';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ReportAnIssue } from '../layout/ReportAnIssue';
+import { allPresetQuestions } from '@/lib/preset-questions';
+
+const getShuffledItems = (arr: string[], num: number) => {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, num);
+}
 
 function AiRecommendationsComponent() {
   const searchParams = useSearchParams();
@@ -21,6 +27,11 @@ function AiRecommendationsComponent() {
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [noResultsMessage, setNoResultsMessage] = useState<string | null>(null);
   const { toast } = useToast();
+  const [presetQuestions, setPresetQuestions] = useState<string[]>([]);
+
+  useEffect(() => {
+    setPresetQuestions(getShuffledItems(allPresetQuestions, 5));
+  }, []);
 
   const runRecommendations = useCallback(async (description: string) => {
     if (!description) return;
@@ -73,11 +84,16 @@ function AiRecommendationsComponent() {
     return found?.slug;
   }
 
+  const handlePresetClick = (prompt: string) => {
+    setProjectDescription(prompt);
+    runRecommendations(prompt);
+  };
+
   return (
     <div className="mt-16">
         <h2 className="text-3xl font-bold text-center mb-2 font-headline">Need a suggestion?</h2>
-        <p className="text-muted-foreground text-center mb-8">
-            Describe your project, and our AI will recommend the perfect calculator.
+        <p className="text-muted-foreground text-center mb-8 max-w-2xl mx-auto">
+            Describe your project, and our AI will recommend the perfect calculator. For example: "I'm building a deck, painting my bedroom, and want to redo my garden beds."
         </p>
         <Card className="max-w-2xl mx-auto">
             <form onSubmit={handleSubmit}>
@@ -92,7 +108,7 @@ function AiRecommendationsComponent() {
                 </CardHeader>
                 <CardContent>
                     <Textarea
-                        placeholder="Describe your project, e.g., 'I'm building a deck and want to paint my living room.'"
+                        placeholder="Describe your project here..."
                         value={projectDescription}
                         onChange={(e) => setProjectDescription(e.target.value)}
                         disabled={loading}
@@ -139,6 +155,24 @@ function AiRecommendationsComponent() {
                 </CardFooter>
             </form>
         </Card>
+        <div className="max-w-2xl mx-auto mt-12">
+          <h3 className="text-xl font-semibold text-center mb-4">Don't know what to ask? Try one of these:</h3>
+          <div className="space-y-3">
+              {presetQuestions.map((prompt) => (
+                <button 
+                  onClick={() => handlePresetClick(prompt)}
+                  key={prompt} 
+                  className="group block w-full"
+                  disabled={loading}
+                >
+                    <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between text-left">
+                        <span className="font-medium">"{prompt}"</span>
+                        <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
+                    </div>
+                </button>
+              ))}
+          </div>
+        </div>
         <div className="max-w-2xl mx-auto">
           <ReportAnIssue />
         </div>

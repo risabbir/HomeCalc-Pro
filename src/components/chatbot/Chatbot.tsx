@@ -45,7 +45,7 @@ export function Chatbot() {
 
   useEffect(() => {
     // Randomize questions only on the client-side to prevent hydration mismatch
-    setPresetQuestions(getShuffledItems(allPresetQuestions, 5));
+    setPresetQuestions(getShuffledItems(allPresetQuestions, 3));
   }, []);
 
 
