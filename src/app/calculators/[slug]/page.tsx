@@ -38,7 +38,13 @@ import { WaterHeaterCostCalculator } from '@/components/calculators/WaterHeaterC
 import { DrivewayCalculator } from '@/components/calculators/DrivewayCalculator';
 import { SolarSavingsCalculator } from '@/components/calculators/SolarSavingsCalculator';
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+interface PageProps {
+    params: {
+        slug: string;
+    };
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const calculator = calculators.find((c) => c.slug === params.slug);
   
   if (!calculator) {
@@ -57,7 +63,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default function CalculatorPage({ params }: { params: { slug: string } }) {
+export default function CalculatorPage({ params }: PageProps) {
   const calculator = calculators.find((c) => c.slug === params.slug);
 
   if (!calculator) {
