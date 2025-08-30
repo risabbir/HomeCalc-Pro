@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './ThemeToggle';
 import { calculators } from '@/lib/calculators';
-import { ChevronDown, Wand2, Heart } from 'lucide-react';
+import { ChevronDown, Wand2, Home, BookOpen, Info, GanttChartSquare } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import * as React from 'react';
 import { useState } from 'react';
@@ -29,10 +29,10 @@ export function Header() {
   })).filter(c => c.calculators.length > 0);
 
   const navLinks = [
-    { href: '/', label: 'Home' },
+    { href: '/', label: 'Home', Icon: Home },
     { href: '/ai-recommendations', label: 'AI Assistant', Icon: Wand2 },
-    { href: '/resources', label: 'Resources' },
-    { href: '/about', label: 'About Us' },
+    { href: '/resources', label: 'Resources', Icon: BookOpen },
+    { href: '/about', label: 'About Us', Icon: Info },
   ];
 
   const getNavLinkClass = (href: string, isStartsWith = false) => {
@@ -46,7 +46,7 @@ export function Header() {
   const getMobileNavLinkClass = (href: string, isStartsWith = false) => {
       const isActive = isStartsWith ? pathname.startsWith(href) : pathname === href;
       return cn(
-          "py-2.5 text-xl font-medium rounded-md px-3 hover:text-primary text-foreground/80",
+          "flex items-center gap-4 py-3 text-xl font-medium rounded-md px-3 hover:text-primary text-foreground/80",
           isActive ? "text-primary bg-accent" : "hover:bg-accent"
       );
   };
@@ -139,38 +139,43 @@ export function Header() {
                     </div>
                     <ScrollArea className='flex-1'>
                       <div className="flex flex-col gap-1 p-6 pt-0 text-lg">
-                          <SheetClose asChild>
-                              <Link 
-                                href="/"
-                                className={getMobileNavLinkClass('/')}
-                              >
-                                  Home
-                              </Link>
-                          </SheetClose>
+                          {navLinks.map((link) => (
+                              <SheetClose asChild key={link.href}>
+                                  <Link 
+                                    href={link.href}
+                                    className={getMobileNavLinkClass(link.href)}
+                                  >
+                                      <link.Icon className='h-6 w-6' />
+                                      {link.label}
+                                  </Link>
+                              </SheetClose>
+                          ))}
 
                           <Accordion type="single" collapsible className="w-full">
                               <AccordionItem value="calculators" className="border-b-0">
                                   <AccordionTrigger className={cn(
-                                      "py-2.5 text-xl font-medium hover:no-underline rounded-md px-3 hover:text-primary",
+                                      "flex items-center gap-4 py-3 text-xl font-medium hover:no-underline rounded-md px-3 hover:text-primary",
                                       pathname.startsWith('/calculators') ? "text-primary bg-accent" : "text-foreground/80 hover:bg-accent"
                                   )}>
+                                    <GanttChartSquare className="h-6 w-6" />
                                     Calculators
                                   </AccordionTrigger>
-                                  <AccordionContent className="pl-5">
+                                  <AccordionContent className="pl-8">
                                       <div className="flex flex-col gap-1">
                                       {calculatorsByCategory.map((category) => (
                                           <div key={category.name}>
-                                              <h4 className="font-semibold text-lg text-muted-foreground mb-2 mt-3">{category.name}</h4>
+                                              <h4 className="font-semibold text-base text-muted-foreground mb-2 mt-3">{category.name}</h4>
                                               <div className="flex flex-col gap-2">
                                               {category.calculators.map(calc => (
                                                   <SheetClose asChild key={calc.slug}>
                                                       <Link 
                                                         href={`/calculators/${calc.slug}`}
                                                         className={cn(
-                                                            "hover:text-primary py-2 text-lg rounded-md px-2",
-                                                            pathname === `/calculators/${calc.slug}` ? "text-primary bg-accent" : "hover:bg-accent"
+                                                            "hover:text-primary text-base flex items-center gap-2 py-1.5 rounded-md px-2",
+                                                            pathname === `/calculators/${calc.slug}` ? "text-primary bg-accent" : "text-muted-foreground hover:bg-accent"
                                                         )}
                                                       >
+                                                        <calc.Icon className="h-4 w-4" />
                                                         {calc.name}
                                                       </Link>
                                                   </SheetClose>
@@ -182,17 +187,6 @@ export function Header() {
                                   </AccordionContent>
                               </AccordionItem>
                           </Accordion>
-                          
-                          {navLinks.slice(1).map((link) => (
-                              <SheetClose asChild key={link.href}>
-                                  <Link 
-                                    href={link.href}
-                                    className={getMobileNavLinkClass(link.href)}
-                                  >
-                                      {link.label}
-                                  </Link>
-                              </SheetClose>
-                          ))}
                       </div>
                     </ScrollArea>
                 </SheetContent>
