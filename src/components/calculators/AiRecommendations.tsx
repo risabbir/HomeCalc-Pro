@@ -1,19 +1,19 @@
 
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { getAiRecommendations } from '@/lib/actions';
-import { Loader2, Wand2, Info, ArrowRight } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { ArrowRight, Info, Loader2, Wand2 } from 'lucide-react';
 import Link from 'next/link';
-import { calculators } from '@/lib/calculators';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { ReportAnIssue } from '../layout/ReportAnIssue';
+
+import { getAiRecommendations } from '@/lib/actions';
 import { allPresetQuestions } from '@/lib/preset-questions';
+import { calculators } from '@/lib/calculators';
+import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
 
 const getShuffledItems = (arr: string[], num: number) => {
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
@@ -91,19 +91,15 @@ function AiRecommendationsComponent() {
 
   return (
     <div className="mt-16">
-        <h2 className="text-3xl font-bold text-center mb-2 font-headline">Need a suggestion?</h2>
-        <p className="text-muted-foreground text-center mb-8 max-w-2xl mx-auto">
-            Describe your project, and our AI will recommend the perfect calculator. For example: "I'm building a deck, painting my bedroom, and want to redo my garden beds."
-        </p>
         <Card className="max-w-2xl mx-auto">
             <form onSubmit={handleSubmit}>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Wand2 className="text-primary" />
-                        AI Calculator Recommendations
+                <CardHeader className="text-center">
+                    <CardTitle className="text-3xl font-bold font-headline mb-2 flex items-center justify-center gap-2">
+                        <Wand2 className="h-8 w-8 text-primary" />
+                        Need a suggestion?
                     </CardTitle>
-                    <CardDescription>
-                        Tell us what you're working on. The more detail you provide, the better the recommendations will be.
+                    <CardDescription className="max-w-xl mx-auto">
+                        Tell us what you're working on. The more detail you provide, the better the recommendations will be. For example: "I'm building a deck and painting my bedroom."
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -148,34 +144,13 @@ function AiRecommendationsComponent() {
                     )}
                 </CardContent>
                 <CardFooter>
-                    <Button type="submit" disabled={loading}>
+                    <Button type="submit" disabled={loading} size="lg">
                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Get Recommendations
                     </Button>
                 </CardFooter>
             </form>
         </Card>
-        <div className="max-w-2xl mx-auto mt-12">
-          <h3 className="text-xl font-semibold text-center mb-4">Don't know what to ask? Try one of these:</h3>
-          <div className="space-y-3">
-              {presetQuestions.map((prompt) => (
-                <button 
-                  onClick={() => handlePresetClick(prompt)}
-                  key={prompt} 
-                  className="group block w-full"
-                  disabled={loading}
-                >
-                    <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between text-left">
-                        <span className="font-medium">"{prompt}"</span>
-                        <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
-                    </div>
-                </button>
-              ))}
-          </div>
-        </div>
-        <div className="max-w-2xl mx-auto">
-          <ReportAnIssue />
-        </div>
     </div>
   );
 }
