@@ -19,6 +19,7 @@ const UserContentSchema = z.object({
     role: z.literal('user'),
     text: z.string()
 });
+
 const ModelContentSchema = z.object({
     role: z.literal('model'),
     text: z.string().optional(),
@@ -93,10 +94,10 @@ ${availableCalculators}
 
 Here is the conversation history (if any):
 {{#each history}}
-  {{#if (eq this.role "user")}}
-    user: {{this.text}}
+  {{#if (eq role "user")}}
+    user: {{text}}
   {{else}}
-    model: {{#if this.text}}{{this.text}}{{else}}Tool call: {{this.toolRequest.name}}({{json this.toolRequest.input}}){{/if}}
+    model: {{#if text}}{{text}}{{else}}Tool call: {{toolRequest.name}}({{json toolRequest.input}}){{/if}}
   {{/if}}
 {{/each}}
 
@@ -112,19 +113,10 @@ const chatbotFlow = ai.defineFlow(
     outputSchema: ChatbotOutputSchema,
   },
   async (input) => {
-    const {output, history} = await prompt(input);
+    const {output} = await prompt(input);
+    
     if (!output) {
       return { answer: "I'm sorry, I couldn't generate a response. Please try again." };
-    }
-    
-    const lastModelMessage = history?.slice(-1)[0];
-    if (lastModelMessage?.role === 'model' && lastModelMessage.content.some(p => p.toolRequest)) {
-        const toolName = lastModelMessage.content.find(p => p.toolRequest)?.toolRequest?.name;
-        if(toolName === 'findLocalProviders') {
-            const query = input.query.toLowerCase().split(" ").find(w => ["plumber", "painter", "electrician", "contractor", "hvac"].includes(w)) || "home service";
-            output.link = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
-            output.answer = `I found some professionals for you. Here is a link to view them on Google Maps.`;
-        }
     }
 
     return output;
