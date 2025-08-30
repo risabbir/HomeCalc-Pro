@@ -145,7 +145,6 @@ export function Header() {
                                     href={link.href}
                                     className={getMobileNavLinkClass(link.href)}
                                   >
-                                      <link.Icon className='h-6 w-6' />
                                       {link.label}
                                   </Link>
                               </SheetClose>
