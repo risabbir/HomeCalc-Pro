@@ -28,13 +28,6 @@ export function Header() {
     calculators: calculators.filter(calc => calc.category === category),
   })).filter(c => c.calculators.length > 0);
 
-  const navLinks = [
-    { href: '/', label: 'Home', Icon: Home },
-    { href: '/ai-recommendations', label: 'AI Assistant', Icon: Wand2 },
-    { href: '/resources', label: 'Resources', Icon: BookOpen },
-    { href: '/about', label: 'About Us', Icon: Info },
-  ];
-
   const getNavLinkClass = (href: string, isStartsWith = false) => {
     const isActive = isStartsWith ? pathname.startsWith(href) : pathname === href;
     return cn(
