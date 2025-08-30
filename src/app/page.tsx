@@ -186,14 +186,19 @@ export default function Home() {
                     </Button>
                 </div>
                 <div className="space-y-3">
-                    {selectedPrompts.length > 0 && selectedPrompts.map((prompt) => (
+                    {selectedPrompts.length > 0 ? selectedPrompts.map((prompt) => (
                       <Link href={`/ai-recommendations?prompt=${encodeURIComponent(prompt)}`} key={prompt} className="group block">
                           <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between">
                               <span className="font-medium">"{prompt}"</span>
                               <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
                           </div>
                       </Link>
-                    ))}
+                    )) : (
+                      // Render placeholder skeletons while waiting for client-side randomization
+                      Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="p-4 border bg-background rounded-lg h-[60px] animate-pulse"></div>
+                      ))
+                    )}
                 </div>
             </div>
         </section>
