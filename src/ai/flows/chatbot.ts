@@ -94,10 +94,11 @@ ${availableCalculators}
 
 Here is the conversation history (if any):
 {{#each history}}
-  {{#if (eq role "user")}}
-    user: {{text}}
-  {{else}}
-    model: {{#if text}}{{text}}{{else}}Tool call: {{toolRequest.name}}({{json toolRequest.input}}){{/if}}
+  {{#if text}}
+    {{role}}: {{text}}
+  {{/if}}
+  {{#if toolRequest}}
+    model: Tool call: {{toolRequest.name}}({{json toolRequest.input}})
   {{/if}}
 {{/each}}
 
