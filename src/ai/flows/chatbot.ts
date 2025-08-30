@@ -68,7 +68,7 @@ const availableCalculators = calculators.map(c => `- ${c.name} (slug: ${c.slug})
 
 const prompt = ai.definePrompt({
   name: 'chatbotPrompt',
-  model: 'googleai/gemini-1.5-flash-latest',
+  model: 'googleai/gemini-1.5-flash',
   tools: [findProvidersTool],
   input: {schema: ChatbotInputSchema},
   output: {schema: ChatbotOutputSchema},

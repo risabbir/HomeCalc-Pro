@@ -31,7 +31,7 @@ export async function aiAssistedCalculations(input: AiAssistedCalculationsInput)
 
 const prompt = ai.definePrompt({
   name: 'aiAssistedCalculationsPrompt',
-  model: 'googleai/gemini-1.5-flash-latest',
+  model: 'googleai/gemini-1.5-flash',
   input: {schema: AiAssistedCalculationsInputSchema},
   output: {schema: AiAssistedCalculationsOutputSchema},
   prompt: `You are a friendly and helpful AI assistant for a web application called HomeCalc Pro. Your role is to help users complete home-related calculations by providing reasonable estimates for missing information.

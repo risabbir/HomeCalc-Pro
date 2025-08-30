@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -38,7 +39,7 @@ const availableCalculatorsForPrompt = calculators.map(c => `- ${c.name}: ${c.des
 
 const prompt = ai.definePrompt({
   name: 'recommendCalculatorsPrompt',
-  model: 'googleai/gemini-1.5-flash-latest',
+  model: 'googleai/gemini-1.5-flash',
   input: {schema: RecommendCalculatorsInputSchema},
   output: {schema: RecommendCalculatorsOutputSchema},
   prompt: `You are a hyper-intelligent and helpful AI assistant for HomeCalc Pro, a website with a comprehensive suite of home-related calculators. Your primary function is to accurately recommend the most relevant calculators by deeply analyzing a user's project description.
