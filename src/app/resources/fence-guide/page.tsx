@@ -96,5 +96,5 @@ export default function FenceGuidePage() {
                 </aside>
             </div>
         </div>
-    )
+    );
 }
