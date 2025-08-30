@@ -12,6 +12,8 @@ import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { buttonVariants } from '../ui/button';
+import { allPresetQuestions } from '@/lib/preset-questions';
+
 
 interface Message {
   role: 'user' | 'model';
@@ -19,131 +21,6 @@ interface Message {
   toolRequest?: { name: string, input: any };
   link?: string | null;
 }
-
-
-const allPresetQuestions = [
-  // New Calculator Questions
-  "How do I choose the right size ventilation fan for my bathroom?",
-  "What does CFM mean for a fan?",
-  "I have a damp basement, what size dehumidifier do I need?",
-  "My roof is 1500 sq ft with a 6/12 pitch. How many bundles of shingles do I need?",
-  "How much extra tile should I buy for waste?",
-  "How many sheets of drywall do I need for a 12x15 room?",
-  "I'm building a 100-foot-long fence. How many 8-foot panels do I need?",
-  "Is a tankless water heater cheaper to run than a tank model?",
-  "How much gravel do I need for the base of a 10x20 ft concrete driveway?",
-  "How much will it cost to install solar panels on my house?",
-  "How many bags of mulch do I need to cover 200 sq ft with a 3-inch layer?",
-  
-  // HVAC
-  "How much money can I save with a smart thermostat?",
-  "What's the difference between SEER and SEER2 for AC units?",
-  "What size AC unit do I need for a 2000 sq ft house?",
-  "What are the signs that I need a new furnace?",
-  "What are the benefits of a ductless mini-split system?",
-  "How often should I change my HVAC air filter?",
-  "What is a 'Manual J' calculation and why is it important?",
-  "Is a heat pump a good option for my climate?",
-  "What's the best temperature to set my thermostat to in the summer?",
-  "How can I improve the air quality in my home?",
-  "Explain what a 'ton' means for an AC unit.",
-  "What is AFUE for furnaces?",
-  "How do I tell if my ducts are leaking?",
-  "What's better for my home, a furnace or a heat pump?",
-  "Are attic fans a good investment for energy savings?",
-  "What are some common HVAC maintenance tasks I can do myself?",
-  "How much does a new furnace typically cost?",
-  "What's the average lifespan of an air conditioner?",
-  "Why is my AC unit freezing up?",
-  "What are the pros and cons of different types of insulation?",
-  "How do I find my climate zone for HVAC sizing?",
-  "What are the main components of a central AC system?",
-  "Can you explain how a heat pump works in the winter?",
-  "Is it worth upgrading to a variable-speed furnace?",
-  "How does humidity affect how my home feels?",
-
-  // Home Improvement
-  "What do I need to know before building a deck?",
-  "What's the best type of paint for a bathroom?",
-  "What's a reasonable budget for a mid-range kitchen renovation?",
-  "What are the most durable types of flooring for a family with pets?",
-  "How do I properly prepare a wall for wallpaper?",
-  "What are the pros and cons of granite vs. quartz countertops?",
-  "What's the most important safety tip for any DIY project?",
-  "How can I tell if a wall is load-bearing?",
-  "What are some common mistakes to avoid when painting a room?",
-  "Give me a step-by-step guide for installing laminate flooring.",
-  "What are the different types of paint finishes (sheens)?",
-  "How much extra material should I buy for a flooring project?",
-  "What is a 'waste factor' in construction?",
-  "How do I calculate the perimeter of a room for trim work?",
-  "What's the best way to pour a small concrete slab for a shed?",
-  "How long should I wait before staining a new wood deck?",
-  "What tools are essential for a beginner DIYer?",
-  "How do I find a stud in the wall?",
-  "What's the difference between stock and custom cabinets?",
-  "What are some budget-friendly kitchen upgrade ideas?",
-  "How can I make a small room look bigger with paint?",
-  "What are the safety precautions for using a power saw?",
-  "How do I fix a small hole in my drywall?",
-  "What's the best way to clean and maintain a wood deck?",
-  "How do I measure for new kitchen countertops?",
-
-  // Gardening
-  "What is my USDA plant hardiness zone and what can I plant?",
-  "How much compost should I add to my garden bed?",
-  "What are some low-maintenance plants for a shady area?",
-  "How can I test the pH of my garden soil?",
-  "What's the difference between fertilizer numbers like 10-10-10?",
-  "How do I get rid of common garden pests naturally?",
-  "When is the best time to plant tomatoes in my area?",
-  "What are some good companion plants for a vegetable garden?",
-  "How deep should I make my raised garden bed?",
-  "What are the basics of starting a compost pile?",
-  "What does 'full sun' mean for a plant label?",
-  "How do I improve clay soil in my garden?",
-  "What's the difference between an annual and a perennial plant?",
-  "How often should I water my vegetable garden?",
-  "What are some drought-tolerant plants for my region?",
-  "How do I properly space my plants when I put them in the ground?",
-  "What are the signs of overwatering a plant?",
-  "What is 'deadheading' and why should I do it?",
-  "What's a good natural weed killer for my driveway cracks?",
-  "How do I attract pollinators like bees and butterflies to my garden?",
-  "What are the benefits of using mulch in a garden?",
-  "Can I grow vegetables in containers on my balcony?",
-  "What is crop rotation and why is it important?",
-  "How do I prepare my garden for winter?",
-  "What are some easy-to-grow herbs for a beginner gardener?",
-
-  // Other / Financial
-  "Can you help me calculate my monthly mortgage payment?",
-  "What would my monthly payment be for a $30,000 car loan?",
-  "How much will my investment be worth in 15 years with compound interest?",
-  "What are some simple ways to save on my energy bill?",
-  "What are the pros and cons of a 15-year vs a 30-year mortgage?",
-  "What is PMI and how can I avoid it?",
-  "How much of an emergency fund should I have as a homeowner?",
-  "Should I get a fixed-rate or adjustable-rate mortgage?",
-  "What's the first step in planning for retirement?",
-  "How can I improve my credit score before applying for a loan?",
-  "What is compound interest and how does it work?",
-  "How much will my monthly car payment be with a $5,000 down payment?",
-  "What is 'PITI' in a mortgage payment?",
-  "How much sooner will I pay off my mortgage if I make one extra payment a year?",
-  "Is it better to have a lower interest rate or a shorter loan term on a car?",
-  "How does a down payment affect my monthly mortgage?",
-  "What are some common closing costs when buying a home?",
-  "How do I calculate the total interest paid on a loan?",
-  "What's a good rule of thumb for how much house I can afford?",
-  "How do I start an investment account?",
-  "What's the difference between a Roth IRA and a Traditional IRA?",
-  "How much will I save on gas if I switch to an electric car?",
-  "What are some high-yield savings accounts?",
-  "How can I create a household budget?",
-  "What are the tax advantages of owning a home?",
-];
-
 
 // Function to shuffle an array and get the first N items
 const getShuffledItems = (arr: string[], num: number) => {
@@ -168,7 +45,7 @@ export function Chatbot() {
 
   useEffect(() => {
     // Randomize questions only on the client-side to prevent hydration mismatch
-    setPresetQuestions(getShuffledItems(allPresetQuestions, 3));
+    setPresetQuestions(getShuffledItems(allPresetQuestions, 5));
   }, []);
 
 
@@ -233,7 +110,7 @@ export function Chatbot() {
 
     if (isExternal) {
         return (
-            <a href={link} target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ variant: "link", size: "sm" }), "mt-2 gap-1.5 h-auto p-0 text-accent-foreground/80")}>
+            <a href={link} target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ variant: "link", size: "sm" }), "mt-2 gap-1.5 h-auto p-0 text-amber-600 dark:text-amber-400")}>
                 {buttonText} <ExternalLink className="h-3.5 w-3.5" />
             </a>
         );
