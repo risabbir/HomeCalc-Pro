@@ -98,5 +98,5 @@ export default function SolarGuidePage() {
                 </aside>
             </div>
         </div>
-    )
+    );
 }

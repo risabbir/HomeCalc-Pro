@@ -49,7 +49,7 @@ export default function FenceGuidePage() {
                             <CardDescription>
                                 The posts are the foundation of your fence. They must be set correctly for the fence to be strong and straight.
                             </CardDescription>
-                        </Header>
+                        </CardHeader>
                         <CardContent>
                              <ol className="list-decimal pl-5 text-muted-foreground space-y-2">
                                 <li><strong>Dig Post Holes:</strong> Use a post-hole digger to excavate holes. The general rule is that 1/3 of the post's length should be in the ground. The hole's depth must be below your local frost line to prevent heaving.</li>

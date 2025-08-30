@@ -107,5 +107,5 @@ export default function VentilationGuidePage() {
                 </aside>
             </div>
         </div>
-    )
+    );
 }

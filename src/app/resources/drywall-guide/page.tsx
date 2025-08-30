@@ -103,5 +103,5 @@ export default function DrywallGuidePage() {
                 </aside>
             </div>
         </div>
-    )
+    );
 }

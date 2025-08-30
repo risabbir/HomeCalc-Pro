@@ -104,5 +104,5 @@ export default function TileGuidePage() {
                 </aside>
             </div>
         </div>
-    )
+    );
 }

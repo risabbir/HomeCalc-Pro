@@ -103,5 +103,5 @@ export default function DehumidifierGuidePage() {
                 </aside>
             </div>
         </div>
-    )
+    );
 }
