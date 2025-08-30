@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ThemeToggle } from './ThemeToggle';
 import { calculators } from '@/lib/calculators';
 import { ChevronDown, Wand2, Home, BookOpen, Info, GanttChartSquare } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle } from '@/components/ui/sheet';
 import * as React from 'react';
 import { useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -131,6 +131,7 @@ export function Header() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-full max-w-sm flex flex-col p-0">
+                    <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
                     <div className='p-6 pb-0'>
                       <SheetClose asChild>
                         <Link href="/" className="mb-8 inline-block" tabIndex={-1}>
@@ -190,7 +191,7 @@ export function Header() {
                                 href="/ai-recommendations"
                                 className={getMobileNavLinkClass("/ai-recommendations")}
                               >
-                                  AI Assistant
+                                AI Assistant
                               </Link>
                           </SheetClose>
                           <SheetClose asChild>
