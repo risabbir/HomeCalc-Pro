@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, User, X, MessagesSquare, ArrowRight } from 'lucide-react';
+import { Send, User, X, MessagesSquare, ArrowRight, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { buttonVariants } from '../ui/button';
 
 interface Message {
   role: 'user' | 'model';
@@ -232,8 +233,8 @@ export function Chatbot() {
 
     if (isExternal) {
         return (
-            <a href={link} target="_blank" rel="noopener noreferrer" className={cn("inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-9 px-3 mt-2")}>
-                {buttonText}
+            <a href={link} target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ variant: "link", size: "sm" }), "mt-2 gap-1.5 h-auto p-0 text-accent-foreground/80")}>
+                {buttonText} <ExternalLink className="h-3.5 w-3.5" />
             </a>
         );
     }
