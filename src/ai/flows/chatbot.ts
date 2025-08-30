@@ -93,7 +93,7 @@ ${availableCalculators}
 
 Here is the conversation history (if any):
 {{#each history}}
-  {{#if (eq this.role 'user')}}
+  {{#if (this.role == 'user')}}
     user: {{this.content.0.text}}
   {{else}}
     model: {{#if this.content.0.text}}{{this.content.0.text}}{{else}}Tool call: {{this.content.0.toolRequest.name}}({{json this.content.0.toolRequest.input}}){{/if}}
