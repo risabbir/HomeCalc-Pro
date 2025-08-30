@@ -80,8 +80,8 @@ export function Chatbot() {
     setIsLoading(true);
 
     try {
-      // Map only the necessary parts of the history
-      const historyForApi = messages.map(({ role, content }) => ({
+      // Map only the necessary parts of the history, and only the last 10 messages
+      const historyForApi = messages.slice(-10).map(({ role, content }) => ({
         role,
         content: content.map(c => ({ text: c.text })),
       }));
