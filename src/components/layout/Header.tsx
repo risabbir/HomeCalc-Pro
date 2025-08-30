@@ -157,7 +157,6 @@ export function Header() {
                                       "flex items-center gap-4 py-3 text-xl font-medium hover:no-underline rounded-md px-3 hover:text-primary",
                                       pathname.startsWith('/calculators') ? "text-primary bg-accent" : "text-foreground/80 hover:bg-accent"
                                   )}>
-                                    <GanttChartSquare className="h-6 w-6" />
                                     Calculators
                                   </AccordionTrigger>
                                   <AccordionContent className="pl-8">
