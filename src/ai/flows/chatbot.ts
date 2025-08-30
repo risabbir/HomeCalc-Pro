@@ -16,9 +16,11 @@ import { findLocalProviders, Provider } from '@/services/places';
 
 // Define specific schemas for the content within the history
 const UserContentSchema = z.object({
+    role: z.literal('user'),
     text: z.string()
 });
 const ModelContentSchema = z.object({
+    role: z.literal('model'),
     text: z.string().optional(),
     toolRequest: z.object({
         name: z.string(),
@@ -26,12 +28,10 @@ const ModelContentSchema = z.object({
     }).optional()
 });
 
+
 const ChatbotInputSchema = z.object({
   query: z.string().describe('The user\'s question or message.'),
-  history: z.array(z.object({
-    role: z.enum(['user', 'model']),
-    content: z.array(z.union([UserContentSchema, ModelContentSchema])),
-  })).optional().describe('The conversation history.'),
+  history: z.array(z.union([UserContentSchema, ModelContentSchema])).optional().describe('The conversation history.'),
   userLocation: z.string().optional().describe("The user's current city and state, e.g., 'Austin, TX'. This will be used to find local service providers if needed.")
 });
 export type ChatbotInput = z.infer<typeof ChatbotInputSchema>;
@@ -93,10 +93,10 @@ ${availableCalculators}
 
 Here is the conversation history (if any):
 {{#each history}}
-  {{#if (this.role == 'user')}}
-    user: {{this.content.0.text}}
+  {{#if (eq this.role "user")}}
+    user: {{this.text}}
   {{else}}
-    model: {{#if this.content.0.text}}{{this.content.0.text}}{{else}}Tool call: {{this.content.0.toolRequest.name}}({{json this.content.0.toolRequest.input}}){{/if}}
+    model: {{#if this.text}}{{this.text}}{{else}}Tool call: {{this.toolRequest.name}}({{json this.toolRequest.input}}){{/if}}
   {{/if}}
 {{/each}}
 
