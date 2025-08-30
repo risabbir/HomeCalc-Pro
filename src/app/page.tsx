@@ -137,9 +137,10 @@ const getRandomItem = (arr: string[]) => arr[Math.floor(Math.random() * arr.leng
 
 export default function Home() {
   const [selectedPrompts, setSelectedPrompts] = useState<string[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Run randomization on client-side only to prevent hydration mismatch
+    setIsMounted(true);
     setSelectedPrompts(examplePrompts.map(category => getRandomItem(category.prompts)));
   }, []);
   
@@ -186,17 +187,20 @@ export default function Home() {
                     </Button>
                 </div>
                 <div className="space-y-3">
-                    {selectedPrompts.length > 0 ? selectedPrompts.map((prompt) => (
-                      <Link href={`/ai-recommendations?prompt=${encodeURIComponent(prompt)}`} key={prompt} className="group block">
-                          <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between">
-                              <span className="font-medium">"{prompt}"</span>
-                              <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
-                          </div>
-                      </Link>
-                    )) : (
-                      // Render placeholder skeletons while waiting for client-side randomization
+                    {!isMounted ? (
+                      // Render placeholder skeletons on the server and initial client render
                       Array.from({ length: 4 }).map((_, i) => (
                         <div key={i} className="p-4 border bg-background rounded-lg h-[60px] animate-pulse"></div>
+                      ))
+                    ) : (
+                      // Render the actual prompts only on the client after mounting
+                      selectedPrompts.map((prompt) => (
+                        <Link href={`/ai-recommendations?prompt=${encodeURIComponent(prompt)}`} key={prompt} className="group block">
+                            <div className="p-4 border bg-background rounded-lg hover:border-primary/50 hover:bg-accent transition-colors flex items-center justify-between">
+                                <span className="font-medium">"{prompt}"</span>
+                                <ArrowRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
+                            </div>
+                        </Link>
                       ))
                     )}
                 </div>
