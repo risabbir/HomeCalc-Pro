@@ -12,7 +12,7 @@ import { getChatbotResponse } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { buttonVariants } from '../ui/button';
-import { allPresetQuestions } from '@/lib/preset-questions';
+import { chatbotQuestions } from '@/lib/chatbot-questions';
 
 
 interface Message {
@@ -45,7 +45,7 @@ export function Chatbot() {
 
   useEffect(() => {
     // Randomize questions only on the client-side to prevent hydration mismatch
-    setPresetQuestions(getShuffledItems(allPresetQuestions, 3));
+    setPresetQuestions(getShuffledItems(chatbotQuestions, 3));
   }, []);
 
 

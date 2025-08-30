@@ -8,129 +8,7 @@ import Link from 'next/link';
 import { ArrowRight, Wand2, Calculator, ListChecks } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
-
-const examplePrompts = [
-  {
-    category: 'HVAC',
-    prompts: [
-      "I'm replacing the furnace in my 2000 sq ft house in a cold climate.",
-      "Planning to add new attic insulation to improve my home's efficiency.",
-      "Thinking about upgrading my old AC unit to a new high-efficiency one.",
-      "I want to install a mini-split system in my garage workshop.",
-      "My energy bills are too high, I think my old AC is the problem.",
-      "Need to figure out the right duct size for a new addition to my house.",
-      "I want to compare the cost of a new furnace vs. a new heat pump.",
-      "How much can I save by using a programmable thermostat?",
-      "My home feels stuffy, I need to figure out the right HVAC load.",
-      "Estimating the cost for a new 3-ton, 18 SEER heat pump.",
-      "I'm considering blown-in cellulose for my attic and need to know how many bags to buy.",
-      "What size air conditioner do I need for my 500 sq ft living room?",
-      "Figuring out the cost to replace an old, inefficient oil furnace.",
-      "I'm planning a new central air system and need to estimate ductwork sizes.",
-      "I'm looking at a 2-zone mini-split system and need a cost estimate.",
-      "How much could I save annually by upgrading from a 10 SEER to a 16 SEER AC?",
-      "I need to add R-30 insulation to my 1200 sq ft attic.",
-      "My furnace is old and I need to budget for a replacement.",
-      "I'm building a sunroom and need to know what size mini-split to get.",
-      "How do I calculate the correct HVAC system size for a 2,500 sq ft home in Zone 4?",
-      "Comparing the running costs of a gas furnace versus an electric one.",
-      "I want to see the payback period for a high-efficiency AC unit.",
-      "Need to know the cost of a new 80,000 BTU gas furnace.",
-      "I'm insulating my basement and need to know what R-value to aim for.",
-      "What are the expected savings if I set my thermostat back 10 degrees at night?",
-    ],
-  },
-  {
-    category: 'Home Improvement',
-    prompts: [
-      "I want to build a new 12x16 foot deck in my backyard.",
-      "I'm planning a full kitchen remodel with semi-custom cabinets and quartz countertops.",
-      "I need to repaint my living room and two bedrooms.",
-      "I'm installing new laminate flooring in my basement.",
-      "I need to pour a concrete slab for a new shed.",
-      "I'm redoing my bathroom and need to buy new wallpaper.",
-      "I'm trying to budget for a complete kitchen tear-out and remodel.",
-      "How many boards do I need for a 20-foot long privacy fence?",
-      "I'm painting a 15x20 ft room with 8 ft ceilings and want to know how many gallons I need.",
-      "I need to calculate the amount of flooring for an L-shaped room.",
-      "How many rolls of wallpaper are needed for a room with a 24-inch pattern repeat?",
-      "Estimating the cost for a minor kitchen refresh with stock cabinets and laminate counters.",
-      "I need to build a small 8x10 floating deck and need a materials list.",
-      "How much concrete do I need for a 4-inch thick, 10x12 patio?",
-      "I'm planning to tile my 100 sq ft bathroom floor.",
-      "Budgeting for a high-end kitchen remodel with custom cabinets and a new appliance suite.",
-      "I have to paint three rooms, each approximately 12x12 ft.",
-      "Calculating the number of 5.5-inch wide deck boards for a 20x16 ft deck.",
-      "I'm pouring footings for a new pergola and need to know how much concrete to mix.",
-      "I'm getting quotes for a kitchen remodel and want a baseline estimate.",
-      "How many 16ft deck boards are needed to cover 250 square feet?",
-      "I need to paint the exterior of my house, which has about 2000 sq ft of wall surface.",
-      "Planning to install vinyl plank flooring in three bedrooms totaling 500 sq ft.",
-      "What's the cost difference between a basic and a premium kitchen renovation?",
-      "I'm putting up a new fence and need to calculate how many posts I'll need.",
-    ],
-  },
-  {
-    category: 'Gardening',
-    prompts: [
-        "I need to fill three new 4x8 raised garden beds with soil.",
-        "I'm fertilizing my 1500 sq ft lawn for the spring.",
-        "I need to calculate how much mulch to buy for my flower beds.",
-        "Planning my vegetable garden layout and need to figure out soil needs for different beds.",
-        "How much topsoil do I need to level out my backyard?",
-        "I bought a bag of 10-10-10 fertilizer and need to know how much to use on my vegetable garden.",
-        "Starting a container garden on my patio and need to calculate soil volume for various pot sizes.",
-        "I'm creating a new flower bed along a 30-foot fence line and need to know how much soil to order.",
-        "How many cubic yards of soil do I need for a 10x10 garden that's 6 inches deep?",
-        "I have a 5000 sq ft lawn and need to apply a starter fertilizer.",
-        "I'm planning to top-dress my lawn with a quarter-inch of compost.",
-        "Calculating how much potting mix I need for 10 large containers.",
-        "I have a new lawn and need to figure out how much grass seed to buy.",
-        "How much fertilizer do I need to apply 1 pound of nitrogen per 1000 sq ft?",
-        "I'm building a new retaining wall and need to calculate the backfill.",
-        "I need enough soil to fill two 3'x6'x1' raised beds.",
-        "I want to apply a 2-inch layer of mulch to all my garden beds, which total about 200 sq ft.",
-        "My soil test recommends adding 2 lbs of nitrogen to my garden.",
-        "I'm overseeding my lawn and need to know how much seed to buy.",
-        "How many bags of soil do I need if each bag is 1.5 cubic feet?",
-        "I need to calculate the amount of gravel for a new garden path.",
-        "I'm planning a new rose garden and need to amend the soil in a 10x20 ft area.",
-        "My lawn is 2,500 sq ft. How much of a 5-10-5 fertilizer should I use?",
-        "I'm filling a circular garden bed with a 10-foot diameter.",
-        "I'm trying to figure out if it's cheaper to buy soil in bags or in bulk.",
-    ],
-  },
-  {
-    category: 'Other',
-    prompts: [
-      "I'm trying to figure out a budget for a new car purchase.",
-      "I'm planning my retirement savings over the next 20 years.",
-      "I'm looking to buy a new home and need to understand the mortgage costs.",
-      "Comparing the energy usage of my old freezer to a new one.",
-      "How much will my $5,000 investment be worth in 10 years at a 7% return?",
-      "I need to figure out my monthly payment for a $400,000 mortgage.",
-      "I want to see how much I can save on electricity by replacing all my light bulbs with LEDs.",
-      "What are the total costs involved in a $25,000 car loan over 5 years?",
-      "I'm saving for a down payment and want to see how long it will take.",
-      "Calculating the monthly payment on a $500,000 home with a 30-year mortgage.",
-      "I want to see the difference in annual cost between my old washing machine and a new one.",
-      "I'm planning to invest $500 a month for 30 years and want to see the future value.",
-      "I'm buying a car and need to account for a down payment and trade-in value.",
-      "What's my PITI on a $350k mortgage with $5,000 in property taxes?",
-      "How much energy savings can I expect by upgrading my 20-year-old refrigerator?",
-      "I'm trying to reach a savings goal of $100,000.",
-      "Calculating the loan payments for a new vehicle with a $40,000 price tag.",
-      "How does a 15-year mortgage compare to a 30-year one for a $250,000 loan?",
-      "I want to see how much interest I'll pay on a car loan.",
-      "I'm upgrading from halogen lights to LED and want to estimate the savings.",
-      "I want to start a college fund for my child and need to project its growth.",
-      "What's the total cost of ownership for a car, including loan interest?",
-      "How much faster can I pay off my mortgage by adding an extra $200 per month?",
-      "Comparing two different investment scenarios with different interest rates.",
-      "I need to see the energy cost of running my portable heater all winter.",
-    ],
-  }
-];
+import { assistantSuggestions } from '@/lib/assistant-suggestions';
 
 // Function to get one random item from an array
 const getRandomItem = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
@@ -141,7 +19,11 @@ export default function Home() {
 
   useEffect(() => {
     setIsMounted(true);
-    setSelectedPrompts(examplePrompts.map(category => getRandomItem(category.prompts)));
+    
+    // Shuffling logic for all suggestions
+    const shuffledSuggestions = [...assistantSuggestions].sort(() => 0.5 - Math.random());
+    setSelectedPrompts(shuffledSuggestions.slice(0, 5));
+
   }, []);
   
   return (
@@ -189,7 +71,7 @@ export default function Home() {
                 <div className="space-y-3">
                     {!isMounted ? (
                       // Render placeholder skeletons on the server and initial client render
-                      Array.from({ length: 4 }).map((_, i) => (
+                      Array.from({ length: 5 }).map((_, i) => (
                         <div key={i} className="p-4 border bg-background rounded-lg h-[60px] animate-pulse"></div>
                       ))
                     ) : (

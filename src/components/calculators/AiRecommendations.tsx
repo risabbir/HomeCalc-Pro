@@ -7,18 +7,13 @@ import { ArrowRight, Info, Loader2, Wand2 } from 'lucide-react';
 import Link from 'next/link';
 
 import { getAiRecommendations } from '@/lib/actions';
-import { allPresetQuestions } from '@/lib/preset-questions';
+import { assistantSuggestions } from '@/lib/assistant-suggestions';
 import { calculators } from '@/lib/calculators';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-
-const getShuffledItems = (arr: string[], num: number) => {
-  const shuffled = [...arr].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, num);
-}
 
 function AiRecommendationsComponent() {
   const searchParams = useSearchParams();
@@ -27,11 +22,6 @@ function AiRecommendationsComponent() {
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [noResultsMessage, setNoResultsMessage] = useState<string | null>(null);
   const { toast } = useToast();
-  const [presetQuestions, setPresetQuestions] = useState<string[]>([]);
-
-  useEffect(() => {
-    setPresetQuestions(getShuffledItems(allPresetQuestions, 5));
-  }, []);
 
   const runRecommendations = useCallback(async (description: string) => {
     if (!description) return;
@@ -83,11 +73,6 @@ function AiRecommendationsComponent() {
     const found = calculators.find(calc => calc.name.toLowerCase() === name.toLowerCase());
     return found?.slug;
   }
-
-  const handlePresetClick = (prompt: string) => {
-    setProjectDescription(prompt);
-    runRecommendations(prompt);
-  };
 
   return (
     <div className="mt-16">
