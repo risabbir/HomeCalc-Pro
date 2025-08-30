@@ -14,7 +14,7 @@ interface PdfContent {
 // Function to fetch image and convert to Base64
 async function getImageBase64(url: string): Promise<string> {
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, { cache: 'force-cache' });
         if (!response.ok) {
             throw new Error(`Failed to fetch image: ${response.statusText}`);
         }
@@ -39,7 +39,8 @@ export async function generatePdf({ title, slug, inputs, results, disclaimer }: 
     const primaryColor = [1, 151, 224]; // Approx HSL(200, 99%, 44%)
 
     try {
-        const logoBase64 = await getImageBase64('/logo-light.png');
+        const logoUrl = new URL('/logo-light.png', window.location.origin).toString();
+        const logoBase64 = await getImageBase64(logoUrl);
         if (logoBase64 && !logoBase64.includes('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=')) {
             // The logo's aspect ratio (200/53) to calculate height from width, ensuring it's contained
             const logoWidth = 35; 
